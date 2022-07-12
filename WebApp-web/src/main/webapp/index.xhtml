@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        Hello from Facelets2
+        <h:form>
+            
+            
+            <p:dataTable value="#{MainAdministrationControllerMB.allSalesObject}"
+                     var="row" rowIndexVar="x" rowKey="y"
+                     lazy="false"
+                     >
+            <p:column headerText="Id">
+                <h:outputText value="#{row.id}"/>
+            </p:column>
+            
+            <p:column headerText="Name">
+                <h:outputText value="#{row.salesObjectName}" />
+            </p:column>
+            
+        </p:dataTable>
+            
+            <p:commandButton value="new Sales object" action="#{MainAdministrationControllerMB.newSalesObject()}"  update="@form" process="@form"/>
+            
+            <p:outputLabel value="sales object name"  rendered="#{MainAdministrationControllerMB.salesObject != null}"/>
+            <p:inputText value="#{MainAdministrationControllerMB.salesObject.salesObjectName}" rendered="#{MainAdministrationControllerMB.salesObject != null}" />
+            
+            
+            <p:commandButton value="save Sales object" action="#{MainAdministrationControllerMB.saveSalesObject()}" update="@form" process="@form"/>
+                
+        </h:form>
+    </h:body>
+</html>
+

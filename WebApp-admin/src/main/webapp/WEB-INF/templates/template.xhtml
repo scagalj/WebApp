@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:head>
+        <f:facet name="first">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+            <!--<meta name="viewport" content="width=device-width, initial-scale=0.65, maximum-scale=2.0, user-scalable=1"/>-->
+            <meta name="viewport" content="width=1260, user-scalable=1, initial-scale=1"/>
+            <meta name="apple-mobile-web-app-capable" content="yes" />
+            <!--<link rel="icon" type="image/x-icon" href="#{request.contextPath}/javax.faces.resource/images/favicon.png.xhtml"/>-->
+        </f:facet>
+        <title>Administration</title>
+        <!--<h:outputScript name="js/nanoscroller.js" library="serenity-layout" />-->
+        <!--<h:outputScript name="js/layout.js?#{startup.time}" library="serenity-layout" />-->
+        <!--<h:outputScript name="js/ripple.js" library="serenity-layout" />-->
+        <!--<h:outputStylesheet name="css/nanoscroller.css" library="serenity-layout" />-->
+        <!--<h:outputStylesheet name="css/ripple.css" library="serenity-layout" />-->
+        <!--<h:outputStylesheet name="css/layout-blue.css?#{startup.time}" library="serenity-layout" />-->
+        <!--<h:outputStylesheet name="css/customisation.css?#{startup.time}" library="serenity-layout" />-->
+    </h:head>
+
+    <h:body id="bodyComponent">
+        <ui:insert name="menu" >
+
+            <div class="layout-sidebar">
+                <div class="nano">
+                    <div class="nano-content sidebar-scroll-content">
+                        <h:form id="menuform">
+                            <div class="layout-menu-container">
+                                <p:menubar>
+                                    <p:menuitem value="Users" ajax="false" url="users.xhtml"/>
+                                    <p:menuitem value="Sales objects" ajax="false" url="salesObjects.xhtml" />
+                                    <p:menuitem value="Products" ajax="false" url="products.xhtml" />
+                                    <p:menuitem value="Orders" ajax="false" url="orders.xhtml" />
+                                </p:menubar>
+                            </div>
+                        </h:form>
+                    </div>
+                </div>
+            </div>
+
+        </ui:insert>
+
+
+        <div class="layout-main">
+            <p:growl id="msgs" skipDetailIfEqualsSummary="true" showDetail="true" globalOnly="true" widgetVar="msgWidget">
+                <p:autoUpdate/>
+            </p:growl>
+
+            <h:panelGroup layout="block" rendered="#{empty contentVisible ? true : contentVisible}" >
+                <ui:insert name="content"/>
+            </h:panelGroup>
+
+            <ui:insert name="footer">
+                <div class="layout-footer clearfix">
+                    <span class="app-logo"></span>
+                    <!--<h:panelGroup style="display: inline-block; vertical-align: top; width: auto; margin-left: 15px;" layout="block" rendered="#{SecurityMB.logedUser.credentials.superUser}">-->              
+                        <!--<h:outputText value="#{SecurityMB.logedUser.credentials.login}@#{SecurityMB.selectedDomain.hostCompany.code} (ID: #{SecurityMB.selectedDomain.hostCompany.id})" />-->
+                        <!--<h:outputText value=" - price lists update enabled" rendered="#{SecurityMB.canUpdatePriceList}" style="color: red" />-->
+                        <!--<h:outputText value=" - discounts update enabled" rendered="#{SecurityMB.canUpdateDiscounts}"  style="color: red" />-->
+                    <!--</h:panelGroup>-->
+                    <span class="footer-text-right">
+                        <span>WebApp&#x2122; </span>
+                        <span class="ui-icon ui-icon-copyright"></span> 
+                        <span> 2022. All rights reserved.</span>
+                    </span>
+                </div>
+            </ui:insert>
+            
+            <div class="layout-content">
+                <ui:insert name="modalDialogs"/>
+                <ui:insert name="otherDialogs"/>
+            </div>
+        </div>   
+
+
+    </h:body>
+
+</html>

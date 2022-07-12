@@ -1,0 +1,122 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package hr.workspace.webapp.admin.controller;
+
+import hr.workspace.controllers.interfaces.OrderController;
+import hr.workspace.models.OrderItem;
+import hr.workspace.models.Product;
+import hr.workspace.models.UserOrder;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.ejb.EJB;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
+import org.eclipse.persistence.jpa.jpql.parser.OrderByItem;
+import org.primefaces.event.SelectEvent;
+
+/**
+ *
+ * @author Stjepan
+ */
+@Named(value = "OrderControllerMB")
+@ViewScoped
+public class OrderControllerMB extends BaseManagedBean {
+
+    @EJB
+    private OrderController controller;
+    private UserOrder userOrder;
+    private Product product;
+
+    public void createNewOrder() {
+        UserOrder tmpOrder = controller.newOrder(getSecurityContext());
+        setProduct(null);
+        if (tmpOrder != null) {
+            setOrder(tmpOrder);
+            showDialog("newOrderDialogWidget");
+        }
+    }
+
+    public void editOrder(UserOrder tmpOrder) {
+        if (tmpOrder != null) {
+            setProduct(null);
+            setOrder(tmpOrder);
+            showDialog("newOrderDialogWidget");
+        }
+    }
+
+    public void saveOrder() {
+        if (getOrder() != null) {
+            UserOrder tmpOrder = controller.save(getSecurityContext(), getOrder());
+            if (tmpOrder != null) {
+                setProduct(null);
+                setOrder(null);
+            }
+        }
+    }
+
+    public void deleteOrder(UserOrder tmpOrder) {
+        if (tmpOrder != null) {
+            Boolean isObjectDeleted = controller.deleteOrder(getSecurityContext(), tmpOrder);
+        }
+    }
+
+    public UserOrder getOrder() {
+        return userOrder;
+    }
+
+    public void setOrder(UserOrder salesObject) {
+        this.userOrder = salesObject;
+    }
+
+    public UserOrder getUserOrder() {
+        return userOrder;
+    }
+
+    public void setUserOrder(UserOrder userOrder) {
+        this.userOrder = userOrder;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+    
+    public Boolean getCanEditSalesObject(UserOrder order) {
+        if (order == null) {
+            return false;
+        }
+
+        if(order.getId() != null){
+            return false;
+        }
+        return true;
+    }
+
+    public void onItemSelect(SelectEvent<Product> event) {
+        if (event.getObject() != null) {
+            Product product = event.getObject();
+            System.out.println("ITEM SELECTED: " + product.getName());
+            addOrderItemToOrder(getOrder(), product);
+            setProduct(null);
+        }
+    }
+    
+    public void addOrderItemToOrder(UserOrder order, Product product){
+        setUserOrder(controller.addProductToOrder(getSecurityContext(), order, product));
+    }
+
+    public List<Product> autoCompleteProduct(String query) {
+        ProductCommonsMB productCommonsMB = getELExpression(ProductCommonsMB.class, "#{ProductCommonsMB}");
+        List<Product> products = productCommonsMB.getAllProductsForSalesObject(getOrder().getSalesObject());
+
+        List<Product> result = products.stream().filter(so -> so.getName().toLowerCase().contains(query.toLowerCase())).collect(Collectors.toList());
+        return result;
+    }
+
+}

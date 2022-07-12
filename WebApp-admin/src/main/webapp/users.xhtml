@@ -1,0 +1,120 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/templates/template.xhtml">
+
+    <ui:param name="module" value="user" />
+
+    <ui:define name="content">
+        <h:form id="userForm">
+            <p:dataTable value="#{UserCommonsMB.allUsers}"
+                         var="row">
+
+                <p:column width="100">
+                    <p:commandButton value="edit" 
+                                     action="#{UserControllerMB.editUser(row)}" 
+                                     update="@form userDialogForm"
+                                     process="@this"
+                                     />
+                </p:column>
+
+                <p:column headerText="Id" width="50">
+                    <h:outputText value="#{row.id}"/>
+                </p:column>
+
+                <p:column headerText="First name">
+                    <h:outputText value="#{row.firstName}" />
+                </p:column>
+
+                <p:column headerText="Last name">
+                    <h:outputText value="#{row.lastName}" />
+                </p:column>
+
+                <p:column headerText="Email">
+                    <h:outputText value="#{row.email}" />
+                </p:column>
+
+                <p:column width="100">
+                    <p:commandButton value="delete" 
+                                     action="#{UserControllerMB.deleteUser(row)}" 
+                                     update="@form"
+                                     />
+                </p:column>
+
+            </p:dataTable>
+
+            <p:commandButton value="Create new"
+                             action="#{UserControllerMB.createNewUser()}" 
+                             update="@form userDialogForm"
+                             process="@this"
+                             />
+
+        </h:form>
+    </ui:define>
+
+    <ui:define name="modalDialogs">
+
+        <p:dialog widgetVar="newUserDialogWidget" 
+                  modal="true" 
+                  dynamic="true" 
+                  header="New user" 
+                  closable="true" 
+                  closeOnEscape="true"
+                  >
+            <h:form id="userDialogForm">
+                <h:panelGroup id="userDialogPanelGroup" 
+                              rendered="#{UserControllerMB.user != null}"
+                              >
+
+                    <p:commandButton value="Save"
+                                     action="#{UserControllerMB.saveUser()}"
+                                     update="@form userForm"
+                                     process="@form"
+                                     />
+                    <p:commandButton value="Canel" 
+                                     onclick="PF('newUserDialogWidget').hide()"
+                                     update="@form"
+                                     process="@form"
+                                     immediate="true"
+                                     resetValues="true"
+                                     >
+                        <p:resetInput target="@form" />
+                    </p:commandButton>
+
+                    <h:panelGrid columns="2">
+
+                        <p:outputLabel value="First name " />
+                        <p:inputText value="#{UserControllerMB.user.firstName}" required="true" />
+
+                        <p:outputLabel value="Last name " />
+                        <p:inputText value="#{UserControllerMB.user.lastName}" required="true" />
+
+                        <p:outputLabel value="Email " />
+                        <p:inputText value="#{UserControllerMB.user.email}" required="true" />
+
+                        <p:outputLabel value="Disabled: " />
+                        <p:selectBooleanCheckbox value="#{UserControllerMB.user.disabled}" required="true"/>
+
+                    </h:panelGrid>
+
+                    <p:dataTable value="#{UserControllerMB.user.orders}"
+                                 var="row" rowIndexVar="x" rowKey="y"
+                                 >
+                        <p:column headerText="Id" width="50">
+                            <h:outputText value="#{row.id}"/>
+                        </p:column>
+                        
+                        <p:column headerText="Price" width="50">
+                            <h:outputText value="#{row.finalPrice}"/>
+                        </p:column>
+
+                    </p:dataTable> 
+
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+    </ui:define>
+
+</ui:composition>

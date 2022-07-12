@@ -1,0 +1,149 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/templates/template.xhtml">
+
+    <ui:param name="module" value="orders" />
+
+    <ui:define name="content">
+        <h:form id="ordersForm">
+            
+        <p:dataTable value="#{OrderCommonsMB.allOrder}"
+                     var="row" rowIndexVar="x" rowKey="y"
+                     >
+
+            <p:column width="100">
+                <p:commandButton value="edit" 
+                                 action="#{OrderControllerMB.editOrder(row)}" 
+                                 update="@form orderDialogForm"
+                                 process="@this"
+                                 />
+            </p:column>
+            
+            <p:column headerText="Id" width="50">
+                <h:outputText value="#{row.id}"/>
+            </p:column>
+            
+            <p:column width="100">
+                <p:commandButton value="delete" 
+                                 action="#{OrderControllerMB.deleteOrder(row)}" 
+                                 update="@form"
+                                 />
+            </p:column>
+            
+        </p:dataTable>
+        
+        <p:commandButton value="Create new"
+                         action="#{OrderControllerMB.createNewOrder()}" 
+                         update="@form orderDialogForm"
+                         process="@this"
+                         />
+        </h:form>
+    </ui:define>>
+        
+    <ui:define name="modalDialogs">
+        
+        <p:dialog widgetVar="newOrderDialogWidget" 
+                  modal="true" 
+                  dynamic="true" 
+                  header="New order" 
+                  closable="true" 
+                  closeOnEscape="true"
+                  >
+            <h:form id="orderDialogForm">
+                <h:panelGroup id="orderDialogPanelGroup" 
+                              rendered="#{OrderControllerMB.order != null}"
+                              >
+                    
+                    <p:commandButton value="Save"
+                                     action="#{OrderControllerMB.saveOrder()}"
+                                     onclick="PF('newOrderDialogWidget').hide()"
+                                     update="@form ordersForm"
+                                     process="@form"
+                                     />
+                    <p:commandButton value="Canel" 
+                                     onclick="PF('newOrderDialogWidget').hide()"
+                                     update="@form"
+                                     process="@form"
+                                     immediate="true"
+                                     resetValues="true"
+                        >
+                        <p:resetInput target="@form" />
+                    </p:commandButton>
+                    
+                    <h:panelGrid columns="2">
+                        
+                        <p:outputLabel value="SalesObject:" />
+                        <p:autoComplete value="#{OrderControllerMB.order.salesObject}"
+                                        completeMethod="#{SalesObjectCommonsMB.autoCompleteSalesObjects}"
+                                        queryDelay="2" minQueryLength="2"
+                                        forceSelection="true" converter="salesObjectConverter"
+                                        var="salesObject"
+                                        itemLabel="#{salesObject.salesObjectName}" itemValue="#{salesObject}"
+                                        disabled="#{not OrderControllerMB.getCanEditSalesObject(OrderControllerMB.order)}"
+                                        >
+                            <p:ajax event="itemSelect" update="@form" process="@form"/>  
+                        </p:autoComplete>
+                        
+                        <p:outputLabel value="Client: " />
+                        <p:autoComplete value="#{OrderControllerMB.order.contactUser}"
+                                        completeMethod="#{UserCommonsMB.autoCompleteContactUser}"
+                                        queryDelay="2" minQueryLength="2"
+                                        forceSelection="true" converter="contactUserConverter"
+                                        var="contactUser"
+                                        itemLabel="#{contactUser.name}" itemValue="#{contactUser}"
+                                        />
+                        
+                        <p:outputLabel value="Disabled: " />
+                        <p:selectBooleanCheckbox value="#{OrderControllerMB.order.disabled}" required="true"/>
+
+                    </h:panelGrid>
+
+                    <h:panelGroup rendered="#{OrderControllerMB.order.salesObject != null}">
+                        <p> List of oder itemsss and final price is: #{OrderControllerMB.order.finalPrice.toPlainString()}</p> 
+                        <p:autoComplete value="#{OrderControllerMB.product}" 
+                                        completeMethod="#{OrderControllerMB.autoCompleteProduct}"
+                                        queryDelay="2" minQueryLength="2"
+                                        forceSelection="true" converter="productConverter"
+                                        var="product"
+                                        itemLabel="#{product.name}" itemValue="#{product}"
+                                        >
+                            <p:ajax event="itemSelect" update="@form" process="@form" listener="#{OrderControllerMB.onItemSelect}"/>  
+                            
+                        </p:autoComplete>
+                    
+                    <p:dataTable value="#{OrderControllerMB.order.orderItems}" 
+                                 var="oi">
+                    
+                        <p:column headerText="ID">
+                            <p:outputLabel value="#{oi.id}"/>
+                        </p:column>
+                        
+                        <p:column headerText="Quantity">
+                            <p:inputNumber value="#{oi.quantity}" />
+                        </p:column>
+                        
+                        <p:column headerText="Price">
+                            <p:inputNumber value="#{oi.price}" >
+                                <p:ajax event="change"  process="@form" update="@form" />
+                            </p:inputNumber>
+                                
+                                
+                        </p:column>
+                        
+                        <p:column headerText="Product">
+                            <p:outputLabel value="#{oi.product.name}"/>
+                        </p:column>
+                        
+                    </p:dataTable>
+                    </h:panelGroup>
+                    
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:define>
+    
+</ui:composition>

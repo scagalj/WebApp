@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>hr.workspace</groupId>
+        <artifactId>WebApp</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <groupId>hr.workspace</groupId>
+    <artifactId>WebApp-ear</artifactId>
+    <packaging>ear</packaging>
+    <name>WebApp-ear</name>
+        
+
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-ear-plugin</artifactId>
+                <version>3.0.2</version>
+                <configuration>
+                    <modules>                
+                        <webModule>
+                            <groupId>hr.workspace</groupId>
+                            <artifactId>WebApp-web</artifactId>
+                            <contextRoot>/WebApp-web</contextRoot>
+                            <bundleFileName>WebApp-web.war</bundleFileName>
+                            <unpack>true</unpack>
+                        </webModule> 
+                        <webModule>
+                            <groupId>hr.workspace</groupId>
+                            <artifactId>WebApp-admin</artifactId>
+                            <contextRoot>/WebApp-admin</contextRoot>
+                            <bundleFileName>WebApp-admin.war</bundleFileName>
+                            <unpack>true</unpack>
+                        </webModule> 
+                        <ejbModule>
+                            <groupId>hr.workspace</groupId>
+                            <artifactId>WebApp-ejb</artifactId>
+                            <bundleFileName>WebApp-ejb.jar</bundleFileName>
+                            <unpack>true</unpack>
+                        </ejbModule>
+                    </modules>
+                    <defaultLibBundleDir>lib</defaultLibBundleDir>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>${maven.resources.plugin}</version>
+                <configuration>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>   
+        </plugins>
+        <finalName>WebApp</finalName>       
+    </build>
+    
+    <dependencies>
+            
+        
+        <dependency>
+            <groupId>hr.workspace</groupId>
+            <artifactId>WebApp-ejb</artifactId>
+            <version>${project.version}</version>
+            <type>ejb</type>
+        </dependency>
+        
+        <dependency>
+            <groupId>hr.workspace</groupId>
+            <artifactId>WebApp-web</artifactId>
+            <version>${project.version}</version>
+            <type>war</type>
+        </dependency>
+               
+        <dependency>
+            <groupId>hr.workspace</groupId>
+            <artifactId>WebApp-admin</artifactId>
+            <version>${project.version}</version>
+            <type>war</type>
+        </dependency>
+        
+<!--        <dependency>
+            <groupId>org.primefaces</groupId>
+            <artifactId>primefaces</artifactId>
+            <version>${primefaces.version}</version>
+            <scope>compile</scope>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.primefaces.extensions</groupId>
+            <artifactId>primefaces-extensions</artifactId>
+            <version>${primefaces.extension.version}</version>
+            <scope>compile</scope>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.primefaces.extensions</groupId>
+            <artifactId>resources-ckeditor</artifactId>
+            <version>${primefaces.extension.resource.version}</version>
+            <scope>compile</scope>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.primefaces.themes</groupId>
+            <artifactId>serenity-theme</artifactId>
+            <version>2.1.0</version>
+            <scope>compile</scope>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.omnifaces</groupId>
+            <artifactId>omnifaces</artifactId>
+            <version>3.4.1</version>
+            <scope>compile</scope>
+            <type>jar</type>
+        </dependency>-->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.5.0</version>
+            <scope>test</scope>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.microprofile.config</groupId>
+            <artifactId>microprofile-config-api</artifactId>
+            <version>1.3</version>
+            <type>jar</type>
+        </dependency>
+    </dependencies>
+    
+</project>

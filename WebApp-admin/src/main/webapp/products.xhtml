@@ -1,0 +1,141 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/templates/template.xhtml">
+
+    <ui:param name="module" value="products" />
+
+    <ui:define name="content">
+        <h:form id="salesObjectSelectForm">
+            
+
+            <p:autoComplete value="#{ProductControllerMB.salesObject}" 
+                            completeMethod="#{SalesObjectCommonsMB.autoCompleteSalesObjects}"
+                            forceSelection="true" minQueryLength="2"
+                            converter="salesObjectConverter"
+                            var="salesObject"
+                itemLabel="#{salesObject.salesObjectName}" itemValue="#{salesObject}"
+                            >
+                <p:ajax event="itemSelect" update="@form productsForm" process="@form"/> 
+            
+            </p:autoComplete>
+<!--            <p:selectOneMenu value="#{ProductControllerMB.salesObject}" >
+                <f:selectItem itemValue="#{null}" itemLabel="Select one" />
+                <f:selectItems  value="#{SalesObjectCommonsMB.selectAllActive}" var="item"  itemLabel="#{item.label}" itemValue="#{item.value}"/>
+                
+                <f:ajax execute="@form"/>
+                <f:converter converterId="salesObjectConverter" />
+            </p:selectOneMenu> -->
+        </h:form>
+
+        <h:form id="productsForm">
+            <h:panelGroup id="productResultGroup">
+                <h:panelGroup rendered="#{ProductControllerMB.salesObject != null}">
+                    <p:dataTable value="#{ProductCommonsMB.getAllProductsForSalesObject(ProductControllerMB.salesObject)}"
+                                 var="row" rowIndexVar="x" rowKey="y"
+                                 >
+
+                        <p:column width="100">
+                            <p:commandButton value="edit" 
+                                             action="#{ProductControllerMB.editProduct(row)}" 
+                                             update="@form productDialogForm"
+                                             process="@this"
+                                             />
+                        </p:column>
+
+                        <p:column headerText="Id" width="50">
+                            <h:outputText value="#{row.id}"/>
+                        </p:column>
+
+                        <p:column headerText="Name">
+                            <h:outputText value="#{row.name}" />
+                        </p:column>
+
+                        <p:column headerText="Quantity">
+                            <h:outputText value="#{row.quantity}" />
+                        </p:column>
+
+                        <p:column headerText="Price">
+                            <h:outputText value="#{row.price}" />
+                        </p:column>
+
+                        <p:column width="100">
+                            <p:commandButton value="delete" 
+                                             action="#{ProductControllerMB.deleteProduct(row)}" 
+                                             update="@form"
+                                             />
+                        </p:column>
+
+                    </p:dataTable>
+
+                    <p:commandButton value="Create new"
+                                     action="#{ProductControllerMB.createNewProduct()}" 
+                                     update="@form productDialogForm"
+                                     process="@this"
+                                     />
+
+                </h:panelGroup>
+            </h:panelGroup>
+
+        </h:form>
+    </ui:define>
+
+    <ui:define name="modalDialogs">
+
+        <p:dialog widgetVar="newProductDialogWidget" 
+                  modal="true" 
+                  dynamic="true" 
+                  header="New product" 
+                  closable="true" 
+                  closeOnEscape="true"
+                  >
+            <h:form id="productDialogForm">
+                <h:panelGroup id="productDialogPanelGroup" 
+                              rendered="#{ProductControllerMB.product != null}"
+                              >
+
+                    <p:commandButton value="Save"
+                                     action="#{ProductControllerMB.saveProduct()}"
+                                     onclick="PF('newProductDialogWidget').hide()"
+                                     update="@form productsForm"
+                                     process="@form"
+                                     />
+                    <p:commandButton value="Canel" 
+                                     onclick="PF('newProductDialogWidget').hide()"
+                                     update="@form"
+                                     process="@form"
+                                     immediate="true"
+                                     resetValues="true"
+                                     >
+                        <p:resetInput target="@form" />
+                    </p:commandButton>
+
+                    <h:panelGrid columns="2">
+
+                        <p:outputLabel value="Name: " />
+                        <p:inputText value="#{ProductControllerMB.product.name}" required="true" />
+                        
+                        <p:outputLabel value="Product type: " />
+                        <p:selectOneMenu value="#{ProductControllerMB.product.productType}">
+                            <f:selectItems value="#{SelectMenuItemsMB.selectAllProductTypes}" 
+                                           var="item"
+                                           itemValue="#{item.value}"
+                                           itemLabel="#{item.label}"
+                                           />
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="Disabled: " />
+                        <p:selectBooleanCheckbox value="#{ProductControllerMB.product.disabled}" required="true"/>
+
+                    </h:panelGrid>
+
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:define>
+
+
+</ui:composition>

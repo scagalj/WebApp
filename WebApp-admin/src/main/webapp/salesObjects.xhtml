@@ -1,0 +1,96 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/templates/template.xhtml">
+
+    <ui:param name="module" value="salesObjects" />
+
+    <ui:define name="content">
+        <h:form id="salesObjectsForm">
+            
+        <p:dataTable value="#{SalesObjectCommonsMB.allSalesObject}"
+                     var="row" rowIndexVar="x" rowKey="y"
+                     >
+
+            <p:column width="100">
+                <p:commandButton value="edit" 
+                                 action="#{SalesObjectControllerMB.editSalesObject(row)}" 
+                                 update="@form salesObjectDialogForm"
+                                 process="@this"
+                                 />
+            </p:column>
+            
+            <p:column headerText="Id" width="50">
+                <h:outputText value="#{row.id}"/>
+            </p:column>
+            
+            <p:column headerText="Name">
+                <h:outputText value="#{row.salesObjectName}" />
+            </p:column>
+            
+            <p:column width="100">
+                <p:commandButton value="delete" 
+                                 action="#{SalesObjectControllerMB.deleteSalesObject(row)}" 
+                                 update="@form"
+                                 />
+            </p:column>
+            
+        </p:dataTable>
+        
+        <p:commandButton value="Create new"
+                         action="#{SalesObjectControllerMB.createNewSalesObject()}" 
+                         update="@form salesObjectDialogForm"
+                         process="@this"
+                         />
+        </h:form>
+    </ui:define>>
+        
+    <ui:define name="modalDialogs">
+        
+        <p:dialog widgetVar="newSalesObjectDialogWidget" 
+                  modal="true" 
+                  dynamic="true" 
+                  header="New sales object" 
+                  closable="true" 
+                  closeOnEscape="true"
+                  >
+            <h:form id="salesObjectDialogForm">
+                <h:panelGroup id="salesObjectDialogPanelGroup" 
+                              rendered="#{SalesObjectControllerMB.salesObject != null}"
+                              >
+                    
+                    <p:commandButton value="Save"
+                                     action="#{SalesObjectControllerMB.saveSalesObject()}"
+                                     onclick="PF('newSalesObjectDialogWidget').hide()"
+                                     update="@form salesObjectsForm"
+                                     process="@form"
+                                     />
+                    <p:commandButton value="Canel" 
+                                     onclick="PF('newSalesObjectDialogWidget').hide()"
+                                     update="@form"
+                                     process="@form"
+                                     immediate="true"
+                                     resetValues="true"
+                        >
+                        <p:resetInput target="@form" />
+                    </p:commandButton>
+                    
+                    <h:panelGrid columns="2">
+                        
+                        <p:outputLabel value="Name: " />
+                        <p:inputText value="#{SalesObjectControllerMB.salesObject.salesObjectName}" required="true" />
+                        
+                        <p:outputLabel value="Disabled: " />
+                        <p:selectBooleanCheckbox value="#{SalesObjectControllerMB.salesObject.disabled}" required="true"/>
+                        
+                    </h:panelGrid>
+                    
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:define>
+    
+</ui:composition>
