@@ -25,4 +25,6 @@ public interface OrderController {
     Boolean deleteOrder(SecurityContext sc, UserOrder so);
     
     UserOrder addProductToOrder(SecurityContext sc, UserOrder order, Product product);
+
+    UserOrder removeOrderItemFromOrder(SecurityContext sc, UserOrder order, OrderItem orderItem);
 }

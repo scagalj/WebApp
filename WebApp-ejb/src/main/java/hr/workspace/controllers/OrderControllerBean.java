@@ -66,30 +66,10 @@ public class OrderControllerBean extends MainAdminTransactionControllerBean<User
     @Override
     public Boolean deleteOrder(SecurityContext sc, UserOrder userOrder) {
         try {
-            //TODO: izbrisati sve poveznice na Order
             List<OrderItem> orderItems = userOrder.getOrderItems();
             int size = orderItems.size();
-            System.out.println("SIZE: " + size);
             for (OrderItem oi : new ArrayList<>(orderItems)) {
-                try {
-                    oi.setUserOrder(null);
-                    oi.setProduct(null);
-                    userOrder.getOrderItems().remove(oi);
-                    utx.begin();
-                    boolean result = super.remove(oi);
-                    if (result) {
-                        utx.commit();
-                    } else {
-                        utx.rollback();
-                    }
-                } catch (Exception ex) {
-                    try {
-                        utx.rollback();
-                    } catch (Exception ex1) {
-                        log(sc, Level.ALL, ex1, true);
-                    }
-                    log(sc, Level.ALL, ex, true);
-                }
+                userOrder = removeOrderItemFromOrder(sc, userOrder, oi);
             }
 
             Boolean success = super.delete(sc, userOrder);
@@ -100,14 +80,16 @@ public class OrderControllerBean extends MainAdminTransactionControllerBean<User
         return false;
     }
 
+    @Override
     public UserOrder removeOrderItemFromOrder(SecurityContext sc, UserOrder order, OrderItem orderItem) {
         try {
 
+            utx.begin();
             orderItem.setUserOrder(null);
             orderItem.setProduct(null);
             order.getOrderItems().remove(orderItem);
-            utx.begin();
             boolean result = super.remove(orderItem);
+            order = merge(order);
             if (result) {
                 utx.commit();
                 return order;
