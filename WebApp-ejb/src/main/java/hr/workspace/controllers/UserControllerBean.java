@@ -41,7 +41,9 @@ public class UserControllerBean extends MainAdminTransactionControllerBean<Conta
     public ContactUser saveUser(SecurityContext sc, ContactUser so) {
         try {
             utx.begin();
-            so.setUuid(UUID.fromString(so.getEmail()).toString());
+            String uuid = UUID.nameUUIDFromBytes(so.getEmail().getBytes()).toString();
+            so.setUuid(uuid);
+            so.setUniqueId(uuid);
             ContactUser result = super.save(sc, so);
             return result;
         } catch (Exception ex) {

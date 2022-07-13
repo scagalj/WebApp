@@ -52,14 +52,15 @@ public class UserCommonsBean extends AbstractCommonsBean<ContactUser> implements
     }
     
     @Override
-    public ContactUser fetchUserByUUID(SecurityContext sc, String uuid){
-         Query findUserByUUID = em.createQuery("Select cu from ContactUser cu where uuid like :uuid")
-                 .setParameter("uuid", uuid);
+    public ContactUser fetchUserByUUID(SecurityContext sc, String uniqueId){
+        System.out.println("TEST3");
+         Query findUserByUUID = em.createQuery("Select u from ContactUser u where u.uniqueId like :uniqueId")
+                 .setParameter("uniqueId", uniqueId);
          List<ContactUser> resultList = findUserByUUID.getResultList();
          if(resultList != null && resultList.size() > 1){
              System.out.println("IMAMO VISE KONTAKTA S ISTIM UUID-om");
          }
-         if(resultList == null ||resultList.isEmpty()){
+         if(resultList == null || resultList.isEmpty()){
              return null;
          }
          return resultList.get(0);

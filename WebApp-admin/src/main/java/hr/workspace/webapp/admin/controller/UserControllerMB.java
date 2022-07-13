@@ -8,6 +8,7 @@ package hr.workspace.webapp.admin.controller;
 import hr.workspace.controllers.interfaces.UserCommons;
 import hr.workspace.controllers.interfaces.UserController;
 import hr.workspace.models.ContactUser;
+import java.util.UUID;
 import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -27,12 +28,11 @@ public class UserControllerMB extends BaseManagedBean{
     private ContactUser user;
     
     public void createNewUser(){
-        commons.saveFileToResource();
-//        ContactUser tmpUser = controller.newUser(getSecurityContext(), "admin@webapp.com");
-//        if(tmpUser != null){
-//            setUser(tmpUser);
-//                showDialog("newUserDialogWidget");
-//        }
+        ContactUser tmpUser = controller.newUser(getSecurityContext(), "admin@webapp.com");
+        if(tmpUser != null){
+            setUser(tmpUser);
+                showDialog("newUserDialogWidget");
+        }
     }
     
     public void editUser(ContactUser tmpUser){
@@ -44,10 +44,15 @@ public class UserControllerMB extends BaseManagedBean{
 
     public void saveUser(){
         if(getUser() != null){
-            ContactUser existUser = commons.fetchUserByUUID(getSecurityContext(), getUser().getEmail());
+            System.out.println("TEST1");
+            if(getUser().getId() == null){
+                
+                String uniqueId = UUID.nameUUIDFromBytes(getUser().getEmail().getBytes()).toString();
+            ContactUser existUser = commons.fetchUserByUUID(getSecurityContext(), uniqueId);
             if(existUser != null){
                 System.out.println("USER WITH THIS EMAIL ALREADY EXIST!!!");
                 return;
+            }
             }
             ContactUser tmpUser = controller.saveUser(getSecurityContext(), getUser());
             if(tmpUser != null){

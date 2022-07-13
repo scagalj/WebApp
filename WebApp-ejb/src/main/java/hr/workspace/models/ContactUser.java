@@ -42,6 +42,7 @@ public class ContactUser implements IEntity, Serializable {
     private String email;
     
     private String uuid;
+    private String uniqueId;
 
     private Boolean disabled;
 
@@ -106,6 +107,14 @@ public class ContactUser implements IEntity, Serializable {
 
     public void setUuid(String uuid) {
         this.uuid = uuid;
+    }
+
+    public String getUniqueId() {
+        return uniqueId;
+    }
+
+    public void setUniqueId(String uniqueId) {
+        this.uniqueId = uniqueId;
     }
     
     public List<UserOrder> getOrders() {
