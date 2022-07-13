@@ -21,4 +21,8 @@ public interface UserCommons {
     
     List<ContactUser> getAll(SecurityContext sc);
     
+    ContactUser fetchUserByUUID(SecurityContext sc, String uuid);
+    
+    void saveFileToResource();
+    
 }

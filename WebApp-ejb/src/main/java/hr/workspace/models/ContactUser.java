@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -39,6 +40,8 @@ public class ContactUser implements IEntity, Serializable {
     private String firstName;
     private String lastName;
     private String email;
+    
+    private String uuid;
 
     private Boolean disabled;
 
@@ -46,11 +49,14 @@ public class ContactUser implements IEntity, Serializable {
     private List<UserOrder> orders;
 
     public ContactUser() {
-        firstName = "";
-        lastName = "";
-        email = "";
-        disabled = false;
-//        orders = new ArrayList<>();
+    }
+    
+    public ContactUser(String email) {
+        this.firstName = "";
+        this.lastName = "";
+        this.email = email;
+        this.disabled = false;
+        this.orders = new ArrayList<>();
     }
 
     @Override
@@ -94,6 +100,14 @@ public class ContactUser implements IEntity, Serializable {
         this.disabled = disabled;
     }
 
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+    
     public List<UserOrder> getOrders() {
         return orders;
     }

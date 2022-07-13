@@ -16,7 +16,7 @@ import javax.ejb.Local;
 @Local
 public interface UserController {
     
-    ContactUser newUser(SecurityContext sc);
+    ContactUser newUser(SecurityContext sc, String email);
     
     ContactUser saveUser(SecurityContext sc, ContactUser so);
     
