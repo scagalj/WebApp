@@ -63,57 +63,83 @@
                   closable="true" 
                   closeOnEscape="true"
                   >
-            <h:form id="userDialogForm">
-                <h:panelGroup id="userDialogPanelGroup" 
-                              rendered="#{UserControllerMB.user != null}"
-                              >
 
-                    <p:commandButton value="Save"
-                                     action="#{UserControllerMB.saveUser()}"
-                                     update="@form userForm"
-                                     process="@form"
-                                     />
-                    <p:commandButton value="Canel" 
-                                     onclick="PF('newUserDialogWidget').hide()"
-                                     update="@form"
-                                     process="@form"
-                                     immediate="true"
-                                     resetValues="true"
+            <p:scrollPanel>
+                <h:form id="userDialogForm">
+                    <h:panelGroup id="userDialogPanelGroup" 
+                                  rendered="#{UserControllerMB.user != null}"
+                                  >
+
+                        <p:commandButton value="Save"
+                                         action="#{UserControllerMB.saveUser()}"
+                                         update="@form userForm"
+                                         process="@form"
+                                         />
+                        <p:commandButton value="Canel" 
+                                         onclick="PF('newUserDialogWidget').hide()"
+                                         update="@form"
+                                         process="@form"
+                                         immediate="true"
+                                         resetValues="true"
+                                         >
+                            <p:resetInput target="@form" />
+                        </p:commandButton>
+
+                        <h:panelGrid columns="2">
+                            <h:panelGrid columns="2">
+
+                                <p:outputLabel value="First name " />
+                                <p:inputText value="#{UserControllerMB.user.firstName}" required="true" />
+
+                                <p:outputLabel value="Last name " />
+                                <p:inputText value="#{UserControllerMB.user.lastName}" required="true" />
+
+                                <p:outputLabel value="Email " />
+                                <p:inputText value="#{UserControllerMB.user.email}" required="true" />
+
+                                <p:outputLabel value="Disabled: " />
+                                <p:selectBooleanCheckbox value="#{UserControllerMB.user.disabled}" required="true"/>
+
+                            </h:panelGrid>
+                                
+                            <h:panelGroup>
+                                
+                                <ui:repeat value="#{UserControllerMB.user.finalAttachment}" var="att">
+                            <h:panelGrid columns="2">
+                                    <p>#{att.fileName}</p>
+                                    <p:commandButton value="Ajax Download" ajax="false" icon="pi pi-arrow-down" styleClass="ui-button-outlined">
+                                        <p:fileDownload value="#{UserControllerMB.generateStreamedContent(att)}"/>
+                                    </p:commandButton>
+                            </h:panelGrid>
+                                </ui:repeat>
+                            </h:panelGroup>
+                        </h:panelGrid>
+
+                        <p:dataTable value="#{UserControllerMB.user.orders}"
+                                     var="row" rowIndexVar="x" rowKey="y"
                                      >
-                        <p:resetInput target="@form" />
-                    </p:commandButton>
+                            <p:column headerText="Id" width="50">
+                                <h:outputText value="#{row.id}"/>
+                            </p:column>
 
-                    <h:panelGrid columns="2">
+                            <p:column headerText="Price" width="50">
+                                <h:outputText value="#{row.finalPrice}"/>
+                            </p:column>
 
-                        <p:outputLabel value="First name " />
-                        <p:inputText value="#{UserControllerMB.user.firstName}" required="true" />
+                        </p:dataTable> 
 
-                        <p:outputLabel value="Last name " />
-                        <p:inputText value="#{UserControllerMB.user.lastName}" required="true" />
+                    </h:panelGroup>
+                </h:form>
 
-                        <p:outputLabel value="Email " />
-                        <p:inputText value="#{UserControllerMB.user.email}" required="true" />
+                <div class="card">
+                    <h5>Multiple</h5>
+                    <h:form enctype="multipart/form-data">
+                        <p:fileUpload value="#{UserControllerMB.attachments}" mode="simple" dragDropSupport="true" skinSimple="true" multiple="true"/>
+                        <p:commandButton value="Submit" update="@form userDialogForm" process="@form" action="#{UserControllerMB.uploadMultiple}" styleClass="p-mt-3 ui-button-outlined p-d-block"/>
+                    </h:form>
+                </div>
 
-                        <p:outputLabel value="Disabled: " />
-                        <p:selectBooleanCheckbox value="#{UserControllerMB.user.disabled}" required="true"/>
-
-                    </h:panelGrid>
-
-                    <p:dataTable value="#{UserControllerMB.user.orders}"
-                                 var="row" rowIndexVar="x" rowKey="y"
-                                 >
-                        <p:column headerText="Id" width="50">
-                            <h:outputText value="#{row.id}"/>
-                        </p:column>
-                        
-                        <p:column headerText="Price" width="50">
-                            <h:outputText value="#{row.finalPrice}"/>
-                        </p:column>
-
-                    </p:dataTable> 
-
-                </h:panelGroup>
-            </h:form>
+            </p:scrollPanel>
         </p:dialog>
     </ui:define>
 

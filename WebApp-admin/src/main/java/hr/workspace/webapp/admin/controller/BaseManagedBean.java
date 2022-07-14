@@ -5,7 +5,10 @@
  */
 package hr.workspace.webapp.admin.controller;
 
+import hr.workspace.models.Attachment;
 import hr.workspace.security.SecurityContext;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Arrays;
 import javax.el.MethodExpression;
@@ -13,6 +16,8 @@ import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import org.primefaces.PrimeFaces;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 
 /**
  *
@@ -161,6 +166,19 @@ public abstract class BaseManagedBean implements Serializable {
         } else {
             context.getExternalContext().getRequestMap().remove(name);
         }
+    }
+    
+    public StreamedContent generateStreamedContent(Attachment att){
+        if(att == null || att.getData() == null){
+            return null;
+        }
+        InputStream stream = new ByteArrayInputStream(att.getData());
+        DefaultStreamedContent file = DefaultStreamedContent.builder()
+                .name(att.getFileName())
+                .contentType(att.getContentType())
+                .stream(() -> stream)
+                .build();
+        return file;
     }
 
 }

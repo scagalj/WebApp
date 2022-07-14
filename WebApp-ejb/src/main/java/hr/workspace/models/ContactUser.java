@@ -5,11 +5,10 @@
  */
 package hr.workspace.models;
 
+import hr.workspace.common.FileUtils;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -48,6 +47,9 @@ public class ContactUser implements IEntity, Serializable {
 
     @OneToMany(mappedBy = "contactUser", fetch = FetchType.LAZY)
     private List<UserOrder> orders;
+    
+    @OneToMany(mappedBy = "contactUser", fetch = FetchType.LAZY)
+    private List<Attachment> attachments;
 
     public ContactUser() {
     }
@@ -58,6 +60,7 @@ public class ContactUser implements IEntity, Serializable {
         this.email = email;
         this.disabled = false;
         this.orders = new ArrayList<>();
+        this.attachments = new ArrayList<>();
     }
 
     @Override
@@ -124,6 +127,26 @@ public class ContactUser implements IEntity, Serializable {
     public void setOrders(List<UserOrder> orders) {
         this.orders = orders;
     }
+
+    public List<Attachment> getAttachments() {
+        return attachments;
+    }
+    
+    public List<Attachment> getFinalAttachment(){
+        List<Attachment> result = new ArrayList<>();
+        for(Attachment att : getAttachments()){
+            Attachment tmpAtt = FileUtils.loadFileFromDisk(att);
+            if(tmpAtt != null){
+                result.add(tmpAtt);
+            }
+        }
+        return result;
+    }
+
+    public void setAttachments(List<Attachment> attachments) {
+        this.attachments = attachments;
+    }
+    
     
     public String getName(){
         String name = "";

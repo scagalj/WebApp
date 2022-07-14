@@ -8,6 +8,7 @@ package hr.workspace.controllers.interfaces;
 import hr.workspace.models.ContactUser;
 import hr.workspace.security.SecurityContext;
 import javax.ejb.Local;
+import org.primefaces.model.file.UploadedFile;
 
 /**
  *
@@ -21,5 +22,7 @@ public interface UserController {
     ContactUser saveUser(SecurityContext sc, ContactUser so);
     
     Boolean deleteUser(SecurityContext sc, ContactUser so);
+    
+    ContactUser saveAttachmen(SecurityContext sc, ContactUser user, UploadedFile file);
     
 }

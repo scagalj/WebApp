@@ -12,6 +12,8 @@ import java.util.UUID;
 import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import org.primefaces.model.file.UploadedFile;
+import org.primefaces.model.file.UploadedFiles;
 
 /**
  *
@@ -26,6 +28,7 @@ public class UserControllerMB extends BaseManagedBean{
     @EJB
     private UserCommons commons;
     private ContactUser user;
+    private UploadedFiles attachments;
     
     public void createNewUser(){
         ContactUser tmpUser = controller.newUser(getSecurityContext(), "admin@webapp.com");
@@ -67,6 +70,16 @@ public class UserControllerMB extends BaseManagedBean{
             Boolean isObjectDeleted = controller.deleteUser(getSecurityContext(), tmpUser);
         }
     }
+    
+    public void uploadMultiple() {
+        if (getAttachments() != null) {
+            for (UploadedFile f : getAttachments().getFiles()) {
+                controller.saveAttachmen(getSecurityContext(),getUser(), f);
+                System.out.println("FILE: " + f.getFileName());
+            }
+            setAttachments(null);
+        }
+    }
 
     public ContactUser getUser() {
         return user;
@@ -74,6 +87,14 @@ public class UserControllerMB extends BaseManagedBean{
 
     public void setUser(ContactUser user) {
         this.user = user;
+    }
+
+    public UploadedFiles getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(UploadedFiles attachments) {
+        this.attachments = attachments;
     }
     
 }
