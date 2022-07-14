@@ -5,6 +5,7 @@
  */
 package hr.workspace.controllers.interfaces;
 
+import hr.workspace.models.Attachment;
 import hr.workspace.models.ContactUser;
 import hr.workspace.security.SecurityContext;
 import javax.ejb.Local;
@@ -24,5 +25,7 @@ public interface UserController {
     Boolean deleteUser(SecurityContext sc, ContactUser so);
     
     ContactUser saveAttachmen(SecurityContext sc, ContactUser user, UploadedFile file);
+    
+    Boolean deleteAttachment(SecurityContext sc, ContactUser user, Attachment att);
     
 }

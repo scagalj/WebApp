@@ -23,7 +23,7 @@ public class Attachment implements IEntity, Serializable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "attachment_id_seq")
-    private Long Id;
+    private Long id;
     private String fileName;
     private String internalName;
     private String fileDescription;
@@ -36,11 +36,11 @@ public class Attachment implements IEntity, Serializable{
 
     @Override
     public Long getId() {
-        return Id;
+        return id;
     }
 
-    public void setId(Long Id) {
-        this.Id = Id;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getFileName() {
@@ -97,6 +97,28 @@ public class Attachment implements IEntity, Serializable{
 
     public void setContactUser(ContactUser contactUser) {
         this.contactUser = contactUser;
+    }
+    
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (this.id != null ? this.id.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object == null) {
+            return false;
+        }
+        Attachment other = (Attachment) object;
+        if (this.getId() == null && other.getId() == null) {
+            return super.equals(other);
+        }
+        if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) {
+            return false;
+        }
+        return true;
     }
     
 }

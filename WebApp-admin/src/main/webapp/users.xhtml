@@ -15,7 +15,7 @@
                 <p:column width="100">
                     <p:commandButton value="edit" 
                                      action="#{UserControllerMB.editUser(row)}" 
-                                     update="@form userDialogForm"
+                                     update="@form tabViewWrapper"
                                      process="@this"
                                      />
                 </p:column>
@@ -47,7 +47,7 @@
 
             <p:commandButton value="Create new"
                              action="#{UserControllerMB.createNewUser()}" 
-                             update="@form userDialogForm"
+                             update="@form tabViewWrapper"
                              process="@this"
                              />
 
@@ -62,84 +62,101 @@
                   header="New user" 
                   closable="true" 
                   closeOnEscape="true"
+                  width="780px" height="420px"
+                  draggable="false"
+                  cache="false"
+                  fitViewport="true"
+                  minimizable="true"
+                  resizable="false"
+                  responsive="true"
+                  showHeader="false"
+                  
                   >
 
-            <p:scrollPanel>
-                <h:form id="userDialogForm">
-                    <h:panelGroup id="userDialogPanelGroup" 
-                                  rendered="#{UserControllerMB.user != null}"
-                                  >
+            <p:tabView id="tabViewWrapper" dynamic="true">
+                <p:tab title="Basic info">
+                    <h:form id="userDialogForm">
+                        <h:panelGroup id="userDialogPanelGroup" 
+                                      rendered="#{UserControllerMB.user != null}"
+                                      >
 
-                        <p:commandButton value="Save"
-                                         action="#{UserControllerMB.saveUser()}"
-                                         update="@form userForm"
-                                         process="@form"
-                                         />
-                        <p:commandButton value="Canel" 
-                                         onclick="PF('newUserDialogWidget').hide()"
-                                         update="@form"
-                                         process="@form"
-                                         immediate="true"
-                                         resetValues="true"
-                                         >
-                            <p:resetInput target="@form" />
-                        </p:commandButton>
+                            <p:commandButton value="Update"
+                                             action="#{UserControllerMB.saveUser()}"
+                                             update="@form userForm tabViewWrapper"
+                                             process="@form"
+                                             />
+                            <p:commandButton value="Close dialog" 
+                                             onclick="PF('newUserDialogWidget').hide()"
+                                             update="@form"
+                                             process="@form"
+                                             immediate="true"
+                                             resetValues="true"
+                                             >
+                                <p:resetInput target="@form" />
+                            </p:commandButton>
 
-                        <h:panelGrid columns="2">
                             <h:panelGrid columns="2">
+                                <h:panelGrid columns="2">
 
-                                <p:outputLabel value="First name " />
-                                <p:inputText value="#{UserControllerMB.user.firstName}" required="true" />
+                                    <p:outputLabel value="First name " />
+                                    <p:inputText value="#{UserControllerMB.user.firstName}" required="true" />
 
-                                <p:outputLabel value="Last name " />
-                                <p:inputText value="#{UserControllerMB.user.lastName}" required="true" />
+                                    <p:outputLabel value="Last name " />
+                                    <p:inputText value="#{UserControllerMB.user.lastName}" required="true" />
 
-                                <p:outputLabel value="Email " />
-                                <p:inputText value="#{UserControllerMB.user.email}" required="true" />
+                                    <p:outputLabel value="Email " />
+                                    <p:inputText value="#{UserControllerMB.user.email}" required="true" />
 
-                                <p:outputLabel value="Disabled: " />
-                                <p:selectBooleanCheckbox value="#{UserControllerMB.user.disabled}" required="true"/>
+                                    <p:outputLabel value="Disabled: " />
+                                    <p:selectBooleanCheckbox value="#{UserControllerMB.user.disabled}" required="true"/>
 
+                                </h:panelGrid>
                             </h:panelGrid>
-                                
-                            <h:panelGroup>
-                                
-                                <ui:repeat value="#{UserControllerMB.user.finalAttachment}" var="att">
-                            <h:panelGrid columns="2">
-                                    <p>#{att.fileName}</p>
-                                    <p:commandButton value="Ajax Download" ajax="false" icon="pi pi-arrow-down" styleClass="ui-button-outlined">
-                                        <p:fileDownload value="#{UserControllerMB.generateStreamedContent(att)}"/>
-                                    </p:commandButton>
-                            </h:panelGrid>
-                                </ui:repeat>
-                            </h:panelGroup>
-                        </h:panelGrid>
-
-                        <p:dataTable value="#{UserControllerMB.user.orders}"
-                                     var="row" rowIndexVar="x" rowKey="y"
-                                     >
-                            <p:column headerText="Id" width="50">
-                                <h:outputText value="#{row.id}"/>
-                            </p:column>
-
-                            <p:column headerText="Price" width="50">
-                                <h:outputText value="#{row.finalPrice}"/>
-                            </p:column>
-
-                        </p:dataTable> 
-
-                    </h:panelGroup>
-                </h:form>
-
-                <div class="card">
-                    <h5>Multiple</h5>
-                    <h:form enctype="multipart/form-data">
-                        <p:fileUpload value="#{UserControllerMB.attachments}" mode="simple" dragDropSupport="true" skinSimple="true" multiple="true"/>
-                        <p:commandButton value="Submit" update="@form userDialogForm" process="@form" action="#{UserControllerMB.uploadMultiple}" styleClass="p-mt-3 ui-button-outlined p-d-block"/>
+                        </h:panelGroup>
                     </h:form>
-                </div>
+                </p:tab>
+                <p:tab title="Orders" rendered="#{UserControllerMB.user.id != null}">
+                    <p:dataTable value="#{UserControllerMB.user.orders}"
+                                 var="row" rowIndexVar="x" rowKey="y"
+                                 >
+                        <p:column headerText="Id" width="50">
+                            <h:outputText value="#{row.id}"/>
+                        </p:column>
 
-            </p:scrollPanel>
+                        <p:column headerText="Price" width="50">
+                            <h:outputText value="#{row.finalPrice}"/>
+                        </p:column>
+
+                    </p:dataTable> 
+                </p:tab>
+                <p:tab title="Documents" rendered="#{UserControllerMB.user.id != null}">
+                    <div class="card">
+                        <h5>Multiple</h5>
+                        <h:form id="attachmentUploadForm" enctype="multipart/form-data">
+                            <p:fileUpload value="#{UserControllerMB.attachments}" mode="simple" dragDropSupport="true" skinSimple="true" multiple="true"/>
+                            <p:commandButton value="Submit" update="@form tabViewWrapper:attachmentsForm" process="@form" action="#{UserControllerMB.uploadMultiple}" styleClass="p-mt-3 ui-button-outlined p-d-block"/>
+                        </h:form>
+                        <h:panelGroup>
+                            <h:form id="attachmentsForm">
+                                <ui:repeat value="#{UserControllerMB.user.finalAttachment}" var="att">
+                                    <h:panelGrid columns="3">
+                                        <p>#{att.fileName}</p>
+                                        <p:commandButton value="Ajax Download" ajax="false" icon="pi pi-arrow-down" styleClass="ui-button-outlined">
+                                            <p:fileDownload value="#{UserControllerMB.generateStreamedContent(att)}"/>
+                                        </p:commandButton>
+                                        <p:commandButton value="delete" 
+                                                         action="#{UserControllerMB.deleteAttachment(att)}" 
+                                                         update="@form"
+                                                         />
+
+                                    </h:panelGrid>
+                                </ui:repeat>
+                            </h:form>
+                        </h:panelGroup>
+                    </div>
+                </p:tab>
+
+            </p:tabView>
         </p:dialog>
     </ui:define>
 

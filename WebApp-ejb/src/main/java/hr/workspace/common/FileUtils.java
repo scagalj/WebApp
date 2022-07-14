@@ -19,11 +19,10 @@ import java.nio.file.Paths;
 public class FileUtils {
 
     private final static String STORAGE_PATH = "/opt/attachments/";
-    
+
     public FileUtils() {
     }
-    
-    
+
     public static Boolean saveFileToDisk(Attachment att) {
         File file = new File(STORAGE_PATH + att.getInternalName());
         try (OutputStream out = new FileOutputStream(file)) {
@@ -35,16 +34,37 @@ public class FileUtils {
         }
         return false;
     }
-    
-    public static Attachment loadFileFromDisk(Attachment att){
-        try{
-            
-        byte[] content = Files.readAllBytes(Paths.get(STORAGE_PATH + att.getInternalName()));
-        att.setData(content);
-        return att;
-        }catch(Exception e){
+
+    public static Attachment loadFileFromDisk(Attachment att) {
+        try {
+
+            byte[] content = Files.readAllBytes(Paths.get(STORAGE_PATH + att.getInternalName()));
+            att.setData(content);
+            return att;
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static File fetchFileFromDisk(Attachment att) {
+        try {
+            File file = new File(STORAGE_PATH + att.getInternalName());
+            return file;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static Boolean deleteFileFromDisk(Attachment att) {
+        try {
+            File file = fetchFileFromDisk(att);
+            boolean isDeleted = file.delete();
+            return isDeleted;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

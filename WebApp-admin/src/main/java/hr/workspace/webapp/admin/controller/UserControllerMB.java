@@ -7,6 +7,7 @@ package hr.workspace.webapp.admin.controller;
 
 import hr.workspace.controllers.interfaces.UserCommons;
 import hr.workspace.controllers.interfaces.UserController;
+import hr.workspace.models.Attachment;
 import hr.workspace.models.ContactUser;
 import java.util.UUID;
 import javax.ejb.EJB;
@@ -59,8 +60,8 @@ public class UserControllerMB extends BaseManagedBean{
             }
             ContactUser tmpUser = controller.saveUser(getSecurityContext(), getUser());
             if(tmpUser != null){
-                hideDialog("newUserDialogWidget");
-                setUser(null);
+//                hideDialog("newUserDialogWidget");
+                setUser(tmpUser);
             }
         }
     }
@@ -78,6 +79,15 @@ public class UserControllerMB extends BaseManagedBean{
                 System.out.println("FILE: " + f.getFileName());
             }
             setAttachments(null);
+        }
+    }
+    
+    public void deleteAttachment(Attachment att){
+        Boolean deleteAttachment = controller.deleteAttachment(getSecurityContext(), getUser(), att);
+        if(deleteAttachment){
+            System.out.println("Uspijesno izbrisano.");
+        }else{
+            System.out.println("NIje uspio izbrisati attachment.");
         }
     }
 

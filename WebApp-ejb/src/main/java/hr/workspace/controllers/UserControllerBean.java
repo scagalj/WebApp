@@ -8,23 +8,13 @@ package hr.workspace.controllers;
 import hr.workspace.common.FileUtils;
 import hr.workspace.controllers.interfaces.UserController;
 import hr.workspace.models.Attachment;
-import hr.workspace.models.SalesObject;
 import hr.workspace.models.ContactUser;
-import hr.workspace.models.UserOrder;
 import hr.workspace.security.SecurityContext;
-import java.io.BufferedOutputStream;
-import java.io.DataOutputStream;
-import java.io.FileOutputStream;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ejb.Stateful;
 import javax.ejb.TransactionManagement;
 import javax.ejb.TransactionManagementType;
-import javax.transaction.NotSupportedException;
-import javax.transaction.SystemException;
 import org.primefaces.model.file.UploadedFile;
 
 /**
@@ -33,9 +23,9 @@ import org.primefaces.model.file.UploadedFile;
  */
 @Stateful
 @TransactionManagement(TransactionManagementType.BEAN)
-public class UserControllerBean extends MainAdminTransactionControllerBean<ContactUser> implements UserController{
-    
-     @Override
+public class UserControllerBean extends MainAdminTransactionControllerBean<ContactUser> implements UserController {
+
+    @Override
     public ContactUser newUser(SecurityContext sc, String email) {
         try {
             ContactUser result = new ContactUser(email);
@@ -60,18 +50,17 @@ public class UserControllerBean extends MainAdminTransactionControllerBean<Conta
         }
         return so;
     }
-    
+
     @Override
     public Boolean deleteUser(SecurityContext sc, ContactUser so) {
         try {
             //TODO: izbrisati sve poveznice na User
             //TODO maknuti sve reference sa UserOrder
-            
+
 //            List<UserOrder> orderItems = so.getOrders();
 //            for (UserOrder uo : new ArrayList<>(orderItems)) {
 //                deleteOrder(sc, uo);
 //            }
-            
             Boolean success = super.delete(sc, so);
             return success;
         } catch (Exception ex) {
@@ -79,10 +68,10 @@ public class UserControllerBean extends MainAdminTransactionControllerBean<Conta
         }
         return false;
     }
-    
+
     @Override
-    public ContactUser saveAttachmen(SecurityContext sc, ContactUser user, UploadedFile file){
-        if(file.getSize() <= 0){
+    public ContactUser saveAttachmen(SecurityContext sc, ContactUser user, UploadedFile file) {
+        if (file.getSize() <= 0) {
             return null;
         }
         Attachment att = new Attachment();
@@ -93,8 +82,8 @@ public class UserControllerBean extends MainAdminTransactionControllerBean<Conta
         att.setFileDescription("Radnom tekst za sad");
         att.setData(file.getContent());
         att.setContactUser(user);
-         Boolean isFileSaved = FileUtils.saveFileToDisk(att);
-        if(isFileSaved){
+        Boolean isFileSaved = FileUtils.saveFileToDisk(att);
+        if (isFileSaved) {
             try {
                 utx.begin();
                 em.persist(att);
@@ -110,11 +99,31 @@ public class UserControllerBean extends MainAdminTransactionControllerBean<Conta
                 }
                 log(sc, Level.SEVERE, ex, true);
             }
-        }else{
+        } else {
             System.out.println("FILE nije spremljen na disk!!!");
         }
         return user;
-        
+
     }
-    
+
+    @Override
+    public Boolean deleteAttachment(SecurityContext sc, ContactUser user, Attachment att) {
+        try {
+            Boolean isDeleted = FileUtils.deleteFileFromDisk(att);
+            if (isDeleted) {
+                user.getAttachments().remove(att);
+                utx.begin();
+                if (!em.contains(att)) {
+                    att = em.merge(att);
+                }
+                em.remove(att);
+                utx.commit();
+                return true;
+            }
+        } catch (Exception e) {
+            log(sc, Level.SEVERE, e, true);
+        }
+        return false;
+    }
+
 }
