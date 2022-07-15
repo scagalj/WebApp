@@ -9,7 +9,12 @@ import hr.workspace.common.FileUtils;
 import hr.workspace.controllers.interfaces.UserController;
 import hr.workspace.models.Attachment;
 import hr.workspace.models.ContactUser;
+import hr.workspace.models.Discount;
+import hr.workspace.models.DiscountType;
 import hr.workspace.security.SecurityContext;
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.UUID;
 import java.util.logging.Level;
 import javax.ejb.Stateful;
@@ -44,6 +49,18 @@ public class UserControllerBean extends MainAdminTransactionControllerBean<Conta
             so.setUuid(uuid);
             so.setUniqueId(uuid);
             ContactUser result = super.save(sc, so);
+            
+//            Discount discount = new Discount();
+//            discount.setAmount(BigDecimal.ONE);
+//            discount.setContactUsers(Arrays.asList(result));
+//            discount.setName("Test discount");
+//            discount.setType(DiscountType.AMOUNT);
+//            discount.setValidFrom(new Date());
+//            discount.setValidTo(new Date());
+//
+//            utx.begin();
+//            persist(discount);
+//            utx.commit();
             return result;
         } catch (Exception ex) {
             log(sc, Level.ALL, ex, true);
