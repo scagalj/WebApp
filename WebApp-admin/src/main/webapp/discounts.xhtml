@@ -1,0 +1,147 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/templates/template.xhtml">
+
+    <ui:param name="module" value="discount" />
+
+    <ui:define name="content">
+        <h:form id="discountForm">
+            <p:dataTable value="#{DiscountCommonsMB.allDiscounts}"
+                         var="row">
+
+                <p:column width="100">
+                    <p:commandButton value="edit" 
+                                     action="#{DiscountControllerMB.editDiscount(row)}" 
+                                     update="@form tabViewWrapper"
+                                     process="@this"
+                                     />
+                </p:column>
+
+                <p:column headerText="Id" width="50">
+                    <h:outputText value="#{row.id}"/>
+                </p:column>
+
+                <p:column headerText="Name">
+                    <h:outputText value="#{row.name}" />
+                </p:column>
+
+                <p:column headerText="Priority">
+                    <h:outputText value="#{row.priority}" />
+                </p:column>
+
+                <p:column headerText="Valid from">
+                    <h:outputText value="#{row.validFrom}" >
+                        <f:convertDateTime pattern="dd.MM.yyyy HH:mm" />
+                    </h:outputText>
+                </p:column>
+                <p:column headerText="Valid to">
+                    <h:outputText value="#{row.validTo}" >
+                        <f:convertDateTime pattern="dd.MM.yyyy HH:mm" />
+                    </h:outputText>
+                </p:column>
+                <p:column headerText="Disabled">
+                    <h:outputText value="#{row.disabled}" />
+                </p:column>
+
+                <p:column width="100">
+                    <p:commandButton value="delete" 
+                                     action="#{DiscountControllerMB.deleteDiscount(row)}" 
+                                     update="@form"
+                                     />
+                </p:column>
+
+            </p:dataTable>
+
+            <p:commandButton value="Create new"
+                             action="#{DiscountControllerMB.createNewDiscount()}" 
+                             update="@form tabViewWrapper"
+                             process="@this"
+                             />
+
+        </h:form>
+    </ui:define>
+
+    <ui:define name="modalDialogs">
+
+        <p:dialog widgetVar="newDiscountDialogWidget" 
+                  modal="true" 
+                  dynamic="true" 
+                  header="New discount" 
+                  closable="true" 
+                  closeOnEscape="true"
+                  width="780px" height="420px"
+                  draggable="false"
+                  cache="false"
+                  fitViewport="true"
+                  minimizable="true"
+                  resizable="false"
+                  responsive="true"
+                  showHeader="false"
+
+                  >
+
+            <p:tabView id="tabViewWrapper" dynamic="true">
+                <p:tab title="Basic info">
+                    <h:form id="discountDialogForm">
+                        <h:panelGroup id="discountDialogPanelGroup" 
+                                      rendered="#{DiscountControllerMB.discount != null}"
+                                      >
+
+                            <p:commandButton value="Update"
+                                             action="#{DiscountControllerMB.saveDiscount()}"
+                                             update="@form discountForm tabViewWrapper"
+                                             process="@form"
+                                             />
+                            <p:commandButton value="Close dialog" 
+                                             action="#{DiscountControllerMB.closeDiscount()}"
+                                             update="@form"
+                                             process="@form"
+                                             immediate="true"
+                                             resetValues="true"
+                                             >
+                                <p:resetInput target="@form" />
+                            </p:commandButton>
+
+                            <h:panelGrid columns="2">
+                                <h:panelGrid columns="2">
+
+                                    <p:outputLabel value="Name " />
+                                    <p:inputText value="#{DiscountControllerMB.discount.name}" required="true" />
+
+                                    <p:outputLabel value="Priority " />
+                                    <p:inputNumber
+                                        value="#{DiscountControllerMB.discount.priority}"
+                                        decimalPlaces="0"
+                                        />
+
+
+                                    <p:outputLabel value="Valid from " />
+                                    <p:datePicker 
+                                        value="#{DiscountControllerMB.discount.validFrom}" 
+                                        pattern="dd.MM.yyyy HH:mm" 
+                                        showTime="true"
+                                        />
+
+                                    <p:outputLabel value="Valid to" />
+                                    <p:datePicker 
+                                        value="#{DiscountControllerMB.discount.validTo}" 
+                                        pattern="dd.MM.yyyy HH:mm" 
+                                        showTime="true"
+                                        />
+
+                                    <p:outputLabel value="Disabled: " />
+                                    <p:selectBooleanCheckbox value="#{DiscountControllerMB.discount.disabled}"/>
+
+                                </h:panelGrid>
+                            </h:panelGrid>
+                        </h:panelGroup>
+                    </h:form>
+                </p:tab>
+            </p:tabView>
+        </p:dialog>
+    </ui:define>
+
+</ui:composition>

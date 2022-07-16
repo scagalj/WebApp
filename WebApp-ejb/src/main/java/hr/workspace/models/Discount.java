@@ -17,6 +17,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -25,7 +27,14 @@ import javax.persistence.TemporalType;
  * @author Stjepan
  */
 @Entity
+@NamedQueries({
+    @NamedQuery(name = Discount.getAll, query = "select d from Discount d"),
+    @NamedQuery(name = Discount.getAllActive, query = "select d from Discount d where d.disabled=false")
+})
 public class Discount implements IEntity, Serializable {
+    
+    public final static String getAll = "hr.workspace.models.Discount.getAll";
+    public final static String getAllActive = "hr.workspace.models.Discount.getAllActive";
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "discount_id_seq")
@@ -41,16 +50,19 @@ public class Discount implements IEntity, Serializable {
     private Date validTo;
     private Boolean promoCode;
     private String promoCodeValue;
+    private Long priority;
     @ManyToMany()
     private List<ContactUser> contactUsers;
     @ManyToMany()
     private List<Product> products;
+    private Boolean disabled;
 
     public Discount() {
     
         contactUsers = new ArrayList<>();
         products = new ArrayList<>();
         promoCode = false;
+        disabled = false;
     }
     
     @Override
@@ -118,6 +130,22 @@ public class Discount implements IEntity, Serializable {
         this.promoCodeValue = promoCodeValue;
     }
 
+    public Long getPriority() {
+        return priority;
+    }
+
+    public void setPriority(Long priority) {
+        this.priority = priority;
+    }
+
+    public Boolean getDisabled() {
+        return disabled;
+    }
+
+    public void setDisabled(Boolean disabled) {
+        this.disabled = disabled;
+    }
+    
     public List<ContactUser> getContactUsers() {
         return contactUsers;
     }
