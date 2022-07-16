@@ -5,17 +5,20 @@
  */
 package hr.workspace.controllers.interfaces;
 
+import hr.workspace.models.Attachment;
 import hr.workspace.models.OrderItem;
 import hr.workspace.models.Product;
 import hr.workspace.models.UserOrder;
 import hr.workspace.security.SecurityContext;
+import javax.ejb.Local;
 import javax.ejb.Remote;
+import org.primefaces.model.file.UploadedFile;
 
 /**
  *
  * @author Stjepan
  */
-@Remote
+@Local
 public interface OrderController {
     
     UserOrder newOrder(SecurityContext sc);
@@ -27,4 +30,8 @@ public interface OrderController {
     UserOrder addProductToOrder(SecurityContext sc, UserOrder order, Product product);
 
     UserOrder removeOrderItemFromOrder(SecurityContext sc, UserOrder order, OrderItem orderItem);
+    
+    Boolean deleteAttachment(SecurityContext sc, UserOrder order, Attachment att);
+    
+    UserOrder saveAttachmen(SecurityContext sc, UserOrder order, UploadedFile file);
 }

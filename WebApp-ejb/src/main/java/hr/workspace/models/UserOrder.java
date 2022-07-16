@@ -46,6 +46,9 @@ public class UserOrder implements IEntity, Serializable{
     @ManyToOne
     private ContactUser contactUser;
 
+    @OneToMany(mappedBy = "userOrder", fetch = FetchType.LAZY)
+    private List<Attachment> attachments;
+    
     private Boolean disabled;
     
     public UserOrder() {
@@ -109,7 +112,14 @@ public class UserOrder implements IEntity, Serializable{
         }
         return result;
     }
-    
+
+    public List<Attachment> getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(List<Attachment> attachments) {
+        this.attachments = attachments;
+    }
     
     @Override
     public int hashCode() {

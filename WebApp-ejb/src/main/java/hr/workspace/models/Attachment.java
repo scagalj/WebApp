@@ -5,6 +5,7 @@
  */
 package hr.workspace.models;
 
+import hr.workspace.common.FileUtils;
 import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -31,6 +32,8 @@ public class Attachment implements IEntity, Serializable{
     private String contentType;
     @ManyToOne
     private ContactUser contactUser;
+    @ManyToOne
+    private UserOrder userOrder;
     @Transient
     private byte[] data;
 
@@ -97,6 +100,19 @@ public class Attachment implements IEntity, Serializable{
 
     public void setContactUser(ContactUser contactUser) {
         this.contactUser = contactUser;
+    }
+
+    public UserOrder getUserOrder() {
+        return userOrder;
+    }
+
+    public void setUserOrder(UserOrder userOrder) {
+        this.userOrder = userOrder;
+    }
+    
+    public Attachment loadContentToAttachment(){
+        Attachment loadedAttachment = FileUtils.loadFileFromDisk(this);
+        return loadedAttachment;
     }
     
     @Override

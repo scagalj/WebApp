@@ -5,8 +5,11 @@
  */
 package hr.workspace.controllers;
 
+import hr.workspace.common.FileUtils;
 import hr.workspace.controllers.interfaces.OrderCommons;
 import hr.workspace.controllers.interfaces.OrderController;
+import hr.workspace.models.Attachment;
+import hr.workspace.models.ContactUser;
 import hr.workspace.models.OrderItem;
 import hr.workspace.models.Product;
 import hr.workspace.models.UserOrder;
@@ -15,6 +18,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
@@ -24,6 +28,7 @@ import javax.ejb.TransactionManagement;
 import javax.ejb.TransactionManagementType;
 import javax.persistence.criteria.Order;
 import javax.transaction.SystemException;
+import org.primefaces.model.file.UploadedFile;
 
 /**
  *
@@ -72,6 +77,7 @@ public class OrderControllerBean extends MainAdminTransactionControllerBean<User
                 userOrder = removeOrderItemFromOrder(sc, userOrder, oi);
             }
 
+            userOrder = merge(userOrder);
             Boolean success = super.delete(sc, userOrder);
             return success;
         } catch (Exception ex) {
@@ -131,11 +137,6 @@ public class OrderControllerBean extends MainAdminTransactionControllerBean<User
                 orderItem.setPrice(product.getPrice());
                 orderItem.setDiscount(BigDecimal.ZERO);
                 order.getOrderItems().add(orderItem);
-                if (order.getId() == null) {
-                    persist(order);
-                } else {
-                    order = merge(order);
-                }
                 persist(orderItem);
             }
             utx.commit();
@@ -149,5 +150,63 @@ public class OrderControllerBean extends MainAdminTransactionControllerBean<User
             }
         }
         return null;
+    }
+    
+    
+    @Override
+    public UserOrder saveAttachmen(SecurityContext sc, UserOrder order, UploadedFile file) {
+        if (file.getSize() <= 0) {
+            return null;
+        }
+        Attachment att = new Attachment();
+        att.setContentType(file.getContentType());
+        att.setFileName(file.getFileName());
+        att.setInternalName(file.getFileName() + "_" + UUID.randomUUID().toString());
+        att.setDataSize(file.getSize());
+        att.setFileDescription("Radnom tekst za sad");
+        att.setData(file.getContent());
+        att.setUserOrder(order);
+        Boolean isFileSaved = FileUtils.saveFileToDisk(att);
+        if (isFileSaved) {
+            try {
+                utx.begin();
+                em.persist(att);
+                order.getAttachments().add(att);
+                order = merge(order);
+                utx.commit();
+                System.out.println("FILE uspjesno spremljen na disk!!!");
+            } catch (Exception ex) {
+                try {
+                    utx.rollback();
+                } catch (Exception ex1) {
+                    log(sc, Level.SEVERE, ex1, true);
+                }
+                log(sc, Level.SEVERE, ex, true);
+            }
+        } else {
+            System.out.println("FILE nije spremljen na disk!!!");
+        }
+        return order;
+
+    }
+
+    @Override
+    public Boolean deleteAttachment(SecurityContext sc, UserOrder order, Attachment att) {
+        try {
+            Boolean isDeleted = FileUtils.deleteFileFromDisk(att);
+            if (isDeleted) {
+                order.getAttachments().remove(att);
+                utx.begin();
+                if (!em.contains(att)) {
+                    att = em.merge(att);
+                }
+                em.remove(att);
+                utx.commit();
+                return true;
+            }
+        } catch (Exception e) {
+            log(sc, Level.SEVERE, e, true);
+        }
+        return false;
     }
 }

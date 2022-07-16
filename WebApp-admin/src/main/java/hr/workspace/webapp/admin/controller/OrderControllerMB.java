@@ -6,6 +6,7 @@
 package hr.workspace.webapp.admin.controller;
 
 import hr.workspace.controllers.interfaces.OrderController;
+import hr.workspace.models.Attachment;
 import hr.workspace.models.OrderItem;
 import hr.workspace.models.Product;
 import hr.workspace.models.UserOrder;
@@ -16,6 +17,8 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import org.eclipse.persistence.jpa.jpql.parser.OrderByItem;
 import org.primefaces.event.SelectEvent;
+import org.primefaces.model.file.UploadedFile;
+import org.primefaces.model.file.UploadedFiles;
 
 /**
  *
@@ -29,6 +32,7 @@ public class OrderControllerMB extends BaseManagedBean {
     private OrderController controller;
     private UserOrder userOrder;
     private Product product;
+    private UploadedFiles attachments;
 
     public void createNewOrder() {
         UserOrder tmpOrder = controller.newOrder(getSecurityContext());
@@ -86,6 +90,14 @@ public class OrderControllerMB extends BaseManagedBean {
     public void setProduct(Product product) {
         this.product = product;
     }
+
+    public UploadedFiles getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(UploadedFiles attachments) {
+        this.attachments = attachments;
+    }
     
     public Boolean getCanEditSalesObject(UserOrder order) {
         if (order == null) {
@@ -121,6 +133,25 @@ public class OrderControllerMB extends BaseManagedBean {
 
         List<Product> result = products.stream().filter(so -> so.getName().toLowerCase().contains(query.toLowerCase())).collect(Collectors.toList());
         return result;
+    }
+    
+    public void uploadMultiple() {
+        if (getAttachments() != null) {
+            for (UploadedFile f : getAttachments().getFiles()) {
+                controller.saveAttachmen(getSecurityContext(),getOrder(), f);
+                System.out.println("FILE: " + f.getFileName());
+            }
+            setAttachments(null);
+        }
+    }
+    
+    public void deleteAttachment(Attachment att){
+        Boolean deleteAttachment = controller.deleteAttachment(getSecurityContext(), getOrder(), att);
+        if(deleteAttachment){
+            System.out.println("Uspijesno izbrisano.");
+        }else{
+            System.out.println("NIje uspio izbrisati attachment.");
+        }
     }
 
 }
