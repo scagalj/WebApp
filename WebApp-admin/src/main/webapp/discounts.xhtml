@@ -131,7 +131,14 @@
                                         pattern="dd.MM.yyyy HH:mm" 
                                         showTime="true"
                                         />
+                                    
+                                    
+                                    <p:outputLabel value="Make it as promocode:" />
+                                    <p:selectBooleanCheckbox value="#{DiscountControllerMB.discount.promoCode}"/>
 
+                                    <p:outputLabel value="Promocode:" />
+                                    <p:inputText value="#{DiscountControllerMB.discount.promoCodeValue}" />
+                                    
                                     <p:outputLabel value="Disabled: " />
                                     <p:selectBooleanCheckbox value="#{DiscountControllerMB.discount.disabled}"/>
 
@@ -140,7 +147,78 @@
                         </h:panelGroup>
                     </h:form>
                 </p:tab>
+                <p:tab title="Users" rendered="#{DiscountControllerMB.discount.id != null}" >
+                    <h:form id="discountUsers">
+
+                        <p:autoComplete value="#{DiscountControllerMB.user}" 
+                                        completeMethod="#{UserCommonsMB.autoCompleteContactUser}"
+                                        queryDelay="2" minQueryLength="2"
+                                        forceSelection="true" converter="contactUserConverter"
+                                        var="contactUser"
+                                        itemLabel="#{contactUser.name}" itemValue="#{contactUser}"
+                                        >
+                            <p:ajax event="itemSelect" update="@form" process="@form" listener="#{DiscountControllerMB.onContactUserSelectAutocomplete}"/>  
+
+                        </p:autoComplete>
+
+
+                        <p:dataTable value="#{DiscountControllerMB.discount.contactUsers}"
+                                     var="row">
+
+                            <p:column width="100">
+                                <h:outputText value="#{row.id}" />
+                            </p:column>
+                            
+                            <p:column>
+                                <h:outputText value="#{row.name}" />
+                            </p:column>
+
+                            <p:column width="100">
+                                <p:commandButton value="delete" 
+                                                 action="#{DiscountControllerMB.deleteContactUserFromDiscont(row)}" 
+                                                 update="@form"
+                                                 />
+                            </p:column>
+                        </p:dataTable>
+
+                    </h:form>
+                </p:tab>
+                <p:tab title="Products" rendered="#{DiscountControllerMB.discount.id != null}" >
+                    <h:form id="discountProducts">
+
+                        <p:autoComplete value="#{DiscountControllerMB.product}" 
+                                        completeMethod="#{ProductCommonsMB.autoCompleteProduct}"
+                                        queryDelay="2" minQueryLength="2"
+                                        forceSelection="true" converter="productConverter"
+                                        var="product"
+                                        itemLabel="#{product.name}" itemValue="#{product}"
+                                        >
+                            <p:ajax event="itemSelect" update="@form" process="@form" listener="#{DiscountControllerMB.onProductSelectAutocomplete}"/>  
+
+                        </p:autoComplete>
+
+                        <p:dataTable value="#{DiscountControllerMB.discount.products}"
+                                     var="row">
+
+                            <p:column width="100">
+                                <h:outputText value="#{row.id}" />
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="#{row.name}" />
+                            </p:column>
+
+                            <p:column width="100">
+                                <p:commandButton value="delete" 
+                                                 action="#{DiscountControllerMB.deleteProductFromDiscont(row)}" 
+                                                 update="@form"
+                                                 />
+                            </p:column>
+                        </p:dataTable>
+
+                    </h:form>
+                </p:tab>
             </p:tabView>
+
         </p:dialog>
     </ui:define>
 

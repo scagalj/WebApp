@@ -9,6 +9,7 @@ import hr.workspace.controllers.interfaces.ProductCommons;
 import hr.workspace.models.Product;
 import hr.workspace.models.SalesObject;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
@@ -25,10 +26,24 @@ public class ProductCommonsMB extends BaseManagedBean{
     private ProductCommons commons;
     
     
+    public List<Product> getAll(){
+        List<Product> products = commons.getAll(getSecurityContext());
+        return products;
+    }
+    public List<Product> getAllActive(){
+        List<Product> products = commons.getAllActive(getSecurityContext());
+        return products;
+    }
     public List<Product> getAllProductsForSalesObject(SalesObject salesObject){
         List<Product> products = commons.getAllForSalesObject(getSecurityContext(), salesObject);
         return products;
     }
     
+    public List<Product> autoCompleteProduct(String query) {
+        List<Product> products = getAll();
+
+        List<Product> result = products.stream().filter(so -> so.getName().toLowerCase().contains(query.toLowerCase())).collect(Collectors.toList());
+        return result;
+    }
     
 }

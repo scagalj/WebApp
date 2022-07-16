@@ -13,6 +13,7 @@ import hr.workspace.models.Product;
 import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import org.primefaces.event.SelectEvent;
 
 /**
  *
@@ -71,14 +72,30 @@ public class DiscountControllerMB extends BaseManagedBean {
         }
     }
 
-    public void addContactUserToDiscount() {
-        Discount discount = controller.addContactUser(getSecurityContext(), getDiscount(), getUser());
+    public void onContactUserSelectAutocomplete(SelectEvent<ContactUser> event) {
+        if (event.getObject() != null) {
+            ContactUser contactUser = event.getObject();
+            System.out.println("ITEM SELECTED: " + contactUser.getName());
+            addContactUserToDiscount(contactUser);
+        }
+    }
+    
+    public void addContactUserToDiscount(ContactUser user) {
+        Discount discount = controller.addContactUser(getSecurityContext(), getDiscount(), user);
         setDiscount(discount);
         setUser(null);
     }
+    
+    public void onProductSelectAutocomplete(SelectEvent<Product> event) {
+        if (event.getObject() != null) {
+            Product product = event.getObject();
+            System.out.println("ITEM SELECTED: " + product.getName());
+            addProductToDiscount(product);
+        }
+    }
 
-    public void addProductToDiscount() {
-        Discount discount = controller.addProduct(getSecurityContext(), getDiscount(), getProduct());
+    public void addProductToDiscount(Product product) {
+        Discount discount = controller.addProduct(getSecurityContext(), getDiscount(), product);
         setDiscount(discount);
         setProduct(null);
     }
