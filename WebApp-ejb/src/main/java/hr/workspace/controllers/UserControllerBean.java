@@ -73,6 +73,12 @@ public class UserControllerBean extends MainAdminTransactionControllerBean<Conta
         try {
             //TODO: izbrisati sve poveznice na User
             //TODO maknuti sve reference sa UserOrder
+            
+//            TODO IZBRISATI ORDERE I ATTACHMENTE!!!!
+//            TODO IZBRISATI ORDERE I ATTACHMENTE!!!!
+//            TODO IZBRISATI ORDERE I ATTACHMENTE!!!!
+//            TODO IZBRISATI ORDERE I ATTACHMENTE!!!!
+//            TODO IZBRISATI ORDERE I ATTACHMENTE!!!!
 
 //            List<UserOrder> orderItems = so.getOrders();
 //            for (UserOrder uo : new ArrayList<>(orderItems)) {

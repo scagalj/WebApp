@@ -11,11 +11,13 @@ import hr.workspace.controllers.interfaces.OrderController;
 import hr.workspace.models.Attachment;
 import hr.workspace.models.ContactUser;
 import hr.workspace.models.OrderItem;
+import hr.workspace.models.Payment;
 import hr.workspace.models.Product;
 import hr.workspace.models.UserOrder;
 import hr.workspace.security.SecurityContext;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -76,6 +78,13 @@ public class OrderControllerBean extends MainAdminTransactionControllerBean<User
             for (OrderItem oi : new ArrayList<>(orderItems)) {
                 userOrder = removeOrderItemFromOrder(sc, userOrder, oi);
             }
+            
+            //TODO izbrisati Attachment i Paymente!!!!!
+            //TODO izbrisati Attachment i Paymente!!!!!
+            //TODO izbrisati Attachment i Paymente!!!!!
+            //TODO izbrisati Attachment i Paymente!!!!!
+            //TODO izbrisati Attachment i Paymente!!!!!
+            //TODO izbrisati Attachment i Paymente!!!!!
 
             userOrder = merge(userOrder);
             Boolean success = super.delete(sc, userOrder);
@@ -208,5 +217,68 @@ public class OrderControllerBean extends MainAdminTransactionControllerBean<User
             log(sc, Level.SEVERE, e, true);
         }
         return false;
+    }
+    
+    @Override
+    public Payment newPayment(SecurityContext sc, UserOrder order){
+        Payment payment = new Payment();
+        payment.setUserOrder(order);
+        payment.setPaymentDate(new Date());
+        return payment;
+    }
+    
+    @Override
+    public UserOrder removePaymentFromOrder(SecurityContext sc, UserOrder order, Payment payment) {
+        try {
+
+            utx.begin();
+            payment.setUserOrder(null);
+            if(order.getPayments().contains(payment)){
+                order.getPayments().remove(payment);
+            }
+            boolean result = super.remove(payment);
+            order = merge(order);
+            if (result) {
+                utx.commit();
+                return order;
+            } else {
+                utx.rollback();
+            }
+        } catch (Exception ex) {
+            try {
+                utx.rollback();
+            } catch (Exception ex1) {
+                log(sc, Level.ALL, ex1, true);
+            }
+            log(sc, Level.ALL, ex, true);
+        }
+        return order;
+    }
+
+    @Override
+    public UserOrder addPaymentToOrder(SecurityContext sc, UserOrder order, Payment payment) {
+        try {
+            System.out.println("TEST1");
+            utx.begin();
+            if(!order.getPayments().contains(payment)){
+                order.getPayments().add(payment);
+            }
+            if(payment.getId() == null){
+                persist(payment);
+            }else{
+                merge(payment);
+            }
+            order = merge(order);
+            utx.commit();
+            return order;
+        } catch (Exception ex) {
+            log(sc, Level.SEVERE, ex, true);
+            try {
+                utx.rollback();
+            } catch (Exception ex1) {
+                log(sc, Level.SEVERE, ex1, true);
+            }
+        }
+        return null;
     }
 }

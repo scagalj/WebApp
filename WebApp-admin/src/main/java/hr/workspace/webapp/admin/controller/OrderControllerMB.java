@@ -8,6 +8,7 @@ package hr.workspace.webapp.admin.controller;
 import hr.workspace.controllers.interfaces.OrderController;
 import hr.workspace.models.Attachment;
 import hr.workspace.models.OrderItem;
+import hr.workspace.models.Payment;
 import hr.workspace.models.Product;
 import hr.workspace.models.UserOrder;
 import java.util.List;
@@ -67,6 +68,12 @@ public class OrderControllerMB extends BaseManagedBean {
         }
     }
 
+    public void newPayment() {
+        Payment newPayment = controller.newPayment(getSecurityContext(), getOrder());
+        UserOrder order = controller.addPaymentToOrder(getSecurityContext(), getOrder(), newPayment);
+        setOrder(order);
+    }
+
     public UserOrder getOrder() {
         return userOrder;
     }
@@ -98,13 +105,13 @@ public class OrderControllerMB extends BaseManagedBean {
     public void setAttachments(UploadedFiles attachments) {
         this.attachments = attachments;
     }
-    
+
     public Boolean getCanEditSalesObject(UserOrder order) {
         if (order == null) {
             return false;
         }
 
-        if(order.getId() != null){
+        if (order.getId() != null) {
             return false;
         }
         return true;
@@ -118,12 +125,12 @@ public class OrderControllerMB extends BaseManagedBean {
             setProduct(null);
         }
     }
-    
-    public void addOrderItemToOrder(UserOrder order, Product product){
+
+    public void addOrderItemToOrder(UserOrder order, Product product) {
         setUserOrder(controller.addProductToOrder(getSecurityContext(), order, product));
     }
-    
-    public void removeOrderItemToOrder(UserOrder order, OrderItem orderItem){
+
+    public void removeOrderItemToOrder(UserOrder order, OrderItem orderItem) {
         setUserOrder(controller.removeOrderItemFromOrder(getSecurityContext(), order, orderItem));
     }
 
@@ -134,22 +141,22 @@ public class OrderControllerMB extends BaseManagedBean {
         List<Product> result = products.stream().filter(so -> so.getName().toLowerCase().contains(query.toLowerCase())).collect(Collectors.toList());
         return result;
     }
-    
+
     public void uploadMultiple() {
         if (getAttachments() != null) {
             for (UploadedFile f : getAttachments().getFiles()) {
-                controller.saveAttachmen(getSecurityContext(),getOrder(), f);
+                controller.saveAttachmen(getSecurityContext(), getOrder(), f);
                 System.out.println("FILE: " + f.getFileName());
             }
             setAttachments(null);
         }
     }
-    
-    public void deleteAttachment(Attachment att){
+
+    public void deleteAttachment(Attachment att) {
         Boolean deleteAttachment = controller.deleteAttachment(getSecurityContext(), getOrder(), att);
-        if(deleteAttachment){
+        if (deleteAttachment) {
             System.out.println("Uspijesno izbrisano.");
-        }else{
+        } else {
             System.out.println("NIje uspio izbrisati attachment.");
         }
     }

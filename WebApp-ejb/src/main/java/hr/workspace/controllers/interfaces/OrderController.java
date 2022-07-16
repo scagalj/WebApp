@@ -7,6 +7,7 @@ package hr.workspace.controllers.interfaces;
 
 import hr.workspace.models.Attachment;
 import hr.workspace.models.OrderItem;
+import hr.workspace.models.Payment;
 import hr.workspace.models.Product;
 import hr.workspace.models.UserOrder;
 import hr.workspace.security.SecurityContext;
@@ -34,4 +35,10 @@ public interface OrderController {
     Boolean deleteAttachment(SecurityContext sc, UserOrder order, Attachment att);
     
     UserOrder saveAttachmen(SecurityContext sc, UserOrder order, UploadedFile file);
+    
+    UserOrder addPaymentToOrder(SecurityContext sc, UserOrder order, Payment payment);
+    
+    UserOrder removePaymentFromOrder(SecurityContext sc, UserOrder order, Payment payment);
+    
+    Payment newPayment(SecurityContext sc, UserOrder order);
 }

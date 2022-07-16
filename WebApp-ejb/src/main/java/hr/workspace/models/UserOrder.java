@@ -49,6 +49,9 @@ public class UserOrder implements IEntity, Serializable{
     @OneToMany(mappedBy = "userOrder", fetch = FetchType.LAZY)
     private List<Attachment> attachments;
     
+    @OneToMany(mappedBy = "userOrder", fetch = FetchType.LAZY)
+    private List<Payment> payments;
+    
     private Boolean disabled;
     
     public UserOrder() {
@@ -119,6 +122,14 @@ public class UserOrder implements IEntity, Serializable{
 
     public void setAttachments(List<Attachment> attachments) {
         this.attachments = attachments;
+    }
+
+    public List<Payment> getPayments() {
+        return payments;
+    }
+
+    public void setPayments(List<Payment> payments) {
+        this.payments = payments;
     }
     
     @Override
