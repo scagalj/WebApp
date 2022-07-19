@@ -10,29 +10,14 @@
     <artifactId>WebApp-admin</artifactId>
     <packaging>war</packaging>
     <name>${project.artifactId}</name>
-    
-    <properties>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <failOnMissingWebXml>false</failOnMissingWebXml>
-        <jakartaee>8.0</jakartaee>
-    </properties>
-    
-     <dependencies>
+
+    <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>WebApp-ejb</artifactId>
             <version>${project.version}</version>
             <scope>provided</scope>
             <type>ejb</type>
-        </dependency>
-        <dependency>
-            <groupId>jakarta.platform</groupId>
-            <artifactId>jakarta.jakartaee-api</artifactId>
-            <version>8.0.0</version>
-            <type>jar</type>
         </dependency>
     </dependencies>
     
