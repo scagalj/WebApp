@@ -7,16 +7,19 @@ package hr.workspace.models;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Objects;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 
 /**
  *
@@ -49,12 +52,16 @@ public class Product implements IEntity, Serializable{
     private BigDecimal price;
     private Integer quantity;
     
+    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
+    private List<Attachment> attachments;
+            
     private Boolean disabled;
 
     public Product() {
         price = BigDecimal.ZERO;
         quantity = 0;
         disabled = false;
+        attachments = new ArrayList<>();
         
     }
     
@@ -104,6 +111,14 @@ public class Product implements IEntity, Serializable{
 
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
+    }
+
+    public List<Attachment> getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(List<Attachment> attachments) {
+        this.attachments = attachments;
     }
 
     public Boolean getDisabled() {

@@ -9,17 +9,17 @@
 
     <ui:define name="content">
         <h:form id="salesObjectSelectForm">
-            
+
 
             <p:autoComplete value="#{ProductControllerMB.salesObject}" 
                             completeMethod="#{SalesObjectCommonsMB.autoCompleteSalesObjects}"
                             forceSelection="true" minQueryLength="2"
                             converter="salesObjectConverter"
                             var="salesObject"
-                itemLabel="#{salesObject.salesObjectName}" itemValue="#{salesObject}"
+                            itemLabel="#{salesObject.salesObjectName}" itemValue="#{salesObject}"
                             >
                 <p:ajax event="itemSelect" update="@form productsForm" process="@form"/> 
-            
+
             </p:autoComplete>
 <!--            <p:selectOneMenu value="#{ProductControllerMB.salesObject}" >
                 <f:selectItem itemValue="#{null}" itemLabel="Select one" />
@@ -40,7 +40,7 @@
                         <p:column width="100">
                             <p:commandButton value="edit" 
                                              action="#{ProductControllerMB.editProduct(row)}" 
-                                             update="@form productDialogForm"
+                                             update="@form tabViewWrapper:productDialogForm"
                                              process="@this"
                                              />
                         </p:column>
@@ -72,7 +72,7 @@
 
                     <p:commandButton value="Create new"
                                      action="#{ProductControllerMB.createNewProduct()}" 
-                                     update="@form productDialogForm"
+                                     update="@form tabViewWrapper:productDialogForm"
                                      process="@this"
                                      />
 
@@ -87,52 +87,103 @@
         <p:dialog widgetVar="newProductDialogWidget" 
                   modal="true" 
                   dynamic="true" 
-                  header="New product" 
+                  header="New discount" 
                   closable="true" 
                   closeOnEscape="true"
+                  width="780px" height="420px"
+                  draggable="false"
+                  cache="false"
+                  fitViewport="true"
+                  minimizable="true"
+                  resizable="false"
+                  responsive="true"
+                  showHeader="false"
                   >
-            <h:form id="productDialogForm">
-                <h:panelGroup id="productDialogPanelGroup" 
-                              rendered="#{ProductControllerMB.product != null}"
-                              >
 
-                    <p:commandButton value="Save"
-                                     action="#{ProductControllerMB.saveProduct()}"
-                                     onclick="PF('newProductDialogWidget').hide()"
-                                     update="@form productsForm"
-                                     process="@form"
-                                     />
-                    <p:commandButton value="Canel" 
-                                     onclick="PF('newProductDialogWidget').hide()"
-                                     update="@form"
-                                     process="@form"
-                                     immediate="true"
-                                     resetValues="true"
-                                     >
-                        <p:resetInput target="@form" />
-                    </p:commandButton>
+            <h:panelGroup id="productDialogPanelGroup" 
+                          rendered="#{ProductControllerMB.product != null}"
+                          >
+                <p:tabView id="tabViewWrapper" dynamic="true">
+                    <p:tab title="Basic info">
+                        <h:form id="productDialogForm">
+                            <p:commandButton value="Update"
+                                             action="#{ProductControllerMB.saveProduct()}"
+                                             update="@form productsForm"
+                                             process="@form"
+                                             />
+                            <p:commandButton value="Canel" 
+                                             action="#{ProductControllerMB.closeProduct()}"
+                                             update="@form"
+                                             process="@form"
+                                             immediate="true"
+                                             resetValues="true"
+                                             >
+                                <p:resetInput target="@form" />
+                            </p:commandButton>
 
-                    <h:panelGrid columns="2">
+                            <h:panelGrid columns="2">
 
-                        <p:outputLabel value="Name: " />
-                        <p:inputText value="#{ProductControllerMB.product.name}" required="true" />
+                                <p:outputLabel value="Name: " />
+                                <p:inputText value="#{ProductControllerMB.product.name}" required="true" />
+
+                                <p:outputLabel value="Product type: " />
+                                <p:selectOneMenu value="#{ProductControllerMB.product.productType}">
+                                    <f:selectItems value="#{SelectMenuItemsMB.selectAllProductTypes}" 
+                                                   var="item"
+                                                   itemValue="#{item.value}"
+                                                   itemLabel="#{item.label}"
+                                                   />
+                                </p:selectOneMenu>
+
+                                <p:outputLabel value="Price:" />
+                                <p:inputNumber
+                                    value="#{ProductControllerMB.product.price}"
+                                    decimalPlaces="2"
+                                    />
+
+                                <p:outputLabel value="Quantity:" />
+                                <p:inputNumber
+                                    value="#{ProductControllerMB.product.quantity}"
+                                    decimalPlaces="0"
+                                    />
+
+                                <p:outputLabel value="Disabled: " />
+                                <p:selectBooleanCheckbox value="#{ProductControllerMB.product.disabled}" required="true"/>
+
+                            </h:panelGrid>
+
+                        </h:form>
+                    </p:tab>
+                    <p:tab title="Images" rendered="#{ProductControllerMB.product.id != null}">
                         
-                        <p:outputLabel value="Product type: " />
-                        <p:selectOneMenu value="#{ProductControllerMB.product.productType}">
-                            <f:selectItems value="#{SelectMenuItemsMB.selectAllProductTypes}" 
-                                           var="item"
-                                           itemValue="#{item.value}"
-                                           itemLabel="#{item.label}"
-                                           />
-                        </p:selectOneMenu>
-
-                        <p:outputLabel value="Disabled: " />
-                        <p:selectBooleanCheckbox value="#{ProductControllerMB.product.disabled}" required="true"/>
-
-                    </h:panelGrid>
-
-                </h:panelGroup>
-            </h:form>
+                        <div class="card">
+                            <h5>Multiple</h5>
+                            <h:form id="attachmentUploadForm" enctype="multipart/form-data">
+                                <p:fileUpload value="#{ProductControllerMB.attachments}" mode="simple" dragDropSupport="true" skinSimple="true" multiple="true"/>
+                                <p:commandButton value="Submit" update="@form tabViewWrapper:attachmentsForm" process="@form" action="#{ProductControllerMB.uploadMultiple}" styleClass="p-mt-3 ui-button-outlined p-d-block"/>
+                            </h:form>
+                            <h:panelGroup>
+                                <h:form id="attachmentsForm">
+                                    <ui:repeat value="#{ProductControllerMB.product.attachments}" var="att">
+                                        <h:panelGrid columns="3">
+                                            <p>#{att.fileName}</p>
+                                            <p:graphicImage width="250px" height="250px" value="#{ProductControllerMB.generateImageContent(att.loadImageContentToAttachment())}" stream="false" />
+                                            <p:commandButton value="Ajax Download" ajax="false" icon="pi pi-arrow-down" styleClass="ui-button-outlined">
+                                                <p:fileDownload value="#{ProductControllerMB.generateStreamedContent(att.loadImageContentToAttachment())}"/>
+                                            </p:commandButton>
+                                            <p:commandButton value="delete" 
+                                                             action="#{ProductControllerMB.deleteAttachment(att)}" 
+                                                             update="@form"
+                                                             />
+                                        </h:panelGrid>
+                                    </ui:repeat>
+                                </h:form>
+                            </h:panelGroup>
+                        </div>
+                        
+                    </p:tab>
+                </p:tabView>
+            </h:panelGroup>
         </p:dialog>
 
     </ui:define>

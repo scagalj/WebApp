@@ -34,6 +34,8 @@ public class Attachment implements IEntity, Serializable{
     private ContactUser contactUser;
     @ManyToOne
     private UserOrder userOrder;
+    @ManyToOne
+    private Product product;
     @Transient
     private byte[] data;
 
@@ -109,9 +111,21 @@ public class Attachment implements IEntity, Serializable{
     public void setUserOrder(UserOrder userOrder) {
         this.userOrder = userOrder;
     }
-    
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
     public Attachment loadContentToAttachment(){
         Attachment loadedAttachment = FileUtils.loadFileFromDisk(this);
+        return loadedAttachment;
+    }
+    public Attachment loadImageContentToAttachment(){
+        Attachment loadedAttachment = FileUtils.loadImageFromDisk(this);
         return loadedAttachment;
     }
     

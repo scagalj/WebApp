@@ -5,14 +5,19 @@
  */
 package hr.workspace.controllers;
 
+import hr.workspace.common.FileUtils;
 import hr.workspace.controllers.interfaces.ProductController;
+import hr.workspace.models.Attachment;
 import hr.workspace.models.Product;
 import hr.workspace.models.SalesObject;
+import hr.workspace.models.UserOrder;
 import hr.workspace.security.SecurityContext;
+import java.util.UUID;
 import java.util.logging.Level;
 import javax.ejb.Stateful;
 import javax.ejb.TransactionManagement;
 import javax.ejb.TransactionManagementType;
+import org.primefaces.model.file.UploadedFile;
 
 /**
  *
@@ -76,7 +81,62 @@ public class ProductControllerBean extends MainAdminTransactionControllerBean<Pr
         return super.cancel(sc, editingObject); //To change body of generated methods, choose Tools | Templates.
     }
 
-   
+   @Override
+    public Product saveAttachmen(SecurityContext sc, Product product, UploadedFile file) {
+        if (file.getSize() <= 0) {
+            return null;
+        }
+        Attachment att = new Attachment();
+        att.setContentType(file.getContentType());
+        att.setFileName(file.getFileName());
+        att.setInternalName(file.getFileName() + "_" + UUID.randomUUID().toString());
+        att.setDataSize(file.getSize());
+        att.setFileDescription("Radnom tekst za sad");
+        att.setData(file.getContent());
+        att.setProduct(product);
+        Boolean isFileSaved = FileUtils.saveImageToDisk(att);
+        if (isFileSaved) {
+            try {
+                utx.begin();
+                em.persist(att);
+                product.getAttachments().add(att);
+                product = merge(product);
+                utx.commit();
+                System.out.println("FILE uspjesno spremljen na disk!!!");
+            } catch (Exception ex) {
+                try {
+                    utx.rollback();
+                } catch (Exception ex1) {
+                    log(sc, Level.SEVERE, ex1, true);
+                }
+                log(sc, Level.SEVERE, ex, true);
+            }
+        } else {
+            System.out.println("FILE nije spremljen na disk!!!");
+        }
+        return product;
+
+    }
+
+    @Override
+    public Boolean deleteAttachment(SecurityContext sc, Product product, Attachment att) {
+        try {
+            Boolean isDeleted = FileUtils.deleteImageFromDisk(att);
+            if (isDeleted) {
+                product.getAttachments().remove(att);
+                utx.begin();
+                if (!em.contains(att)) {
+                    att = em.merge(att);
+                }
+                em.remove(att);
+                utx.commit();
+                return true;
+            }
+        } catch (Exception e) {
+            log(sc, Level.SEVERE, e, true);
+        }
+        return false;
+    }
 
    
     

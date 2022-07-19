@@ -180,5 +180,12 @@ public abstract class BaseManagedBean implements Serializable {
                 .build();
         return file;
     }
+    
+    public byte[] generateImageContent(Attachment att){
+        if(att == null || att.getData() == null){
+            return null;
+        }
+        return att.getData();
+    }
 
 }

@@ -5,10 +5,12 @@
  */
 package hr.workspace.controllers.interfaces;
 
+import hr.workspace.models.Attachment;
 import hr.workspace.models.Product;
 import hr.workspace.models.SalesObject;
 import hr.workspace.security.SecurityContext;
 import javax.ejb.Local;
+import org.primefaces.model.file.UploadedFile;
 
 /**
  *
@@ -22,4 +24,8 @@ public interface ProductController {
     Product saveProduct(SecurityContext sc, SalesObject salesObject, Product product);
     
     Boolean deleteProduct(SecurityContext sc, Product product);
+    
+    Product saveAttachmen(SecurityContext sc, Product product, UploadedFile file);
+    
+    Boolean deleteAttachment(SecurityContext sc, Product product, Attachment att);
 }

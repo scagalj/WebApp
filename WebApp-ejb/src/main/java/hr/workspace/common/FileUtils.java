@@ -18,13 +18,14 @@ import java.nio.file.Paths;
  */
 public class FileUtils {
 
-    private final static String STORAGE_PATH = "/opt/attachments/";
+    private final static String DOCUMENT_STORAGE_PATH = "/opt/attachments/documents/";
+    private final static String IMAGE_STORAGE_PATH = "/opt/attachments/images/";
 
     public FileUtils() {
     }
 
-    public static Boolean saveFileToDisk(Attachment att) {
-        File file = new File(STORAGE_PATH + att.getInternalName());
+    public static Boolean saveFileToDisk(Attachment att, String path) {
+        File file = new File(path + att.getInternalName());
         try (OutputStream out = new FileOutputStream(file)) {
             out.write(att.getData());
             out.close();
@@ -34,11 +35,16 @@ public class FileUtils {
         }
         return false;
     }
+    public static Boolean saveFileToDisk(Attachment att) {
+        return saveFileToDisk(att, DOCUMENT_STORAGE_PATH);
+    }
+    public static Boolean saveImageToDisk(Attachment att) {
+        return saveFileToDisk(att, IMAGE_STORAGE_PATH);
+    }
 
-    public static Attachment loadFileFromDisk(Attachment att) {
+    public static Attachment loadFileFromDisk(Attachment att, String path) {
         try {
-
-            byte[] content = Files.readAllBytes(Paths.get(STORAGE_PATH + att.getInternalName()));
+            byte[] content = Files.readAllBytes(Paths.get(path + att.getInternalName()));
             att.setData(content);
             return att;
         } catch (Exception e) {
@@ -46,10 +52,17 @@ public class FileUtils {
         }
         return null;
     }
+    public static Attachment loadFileFromDisk(Attachment att) {
+        return loadFileFromDisk(att, DOCUMENT_STORAGE_PATH);
+    }
+    public static Attachment loadImageFromDisk(Attachment att) {
+        return loadFileFromDisk(att, IMAGE_STORAGE_PATH);
+        
+    }
 
-    public static File fetchFileFromDisk(Attachment att) {
+    public static File fetchFileFromDisk(Attachment att, String path) {
         try {
-            File file = new File(STORAGE_PATH + att.getInternalName());
+            File file = new File(path + att.getInternalName());
             return file;
         } catch (Exception e) {
             e.printStackTrace();
@@ -57,9 +70,9 @@ public class FileUtils {
         return null;
     }
 
-    public static Boolean deleteFileFromDisk(Attachment att) {
-        try {
-            File file = fetchFileFromDisk(att);
+    public static Boolean deleteFileFromDisk(Attachment att, String path) {
+         try {
+            File file = fetchFileFromDisk(att, path);
             boolean isDeleted = file.delete();
             return isDeleted;
         } catch (Exception e) {
@@ -67,4 +80,13 @@ public class FileUtils {
         }
         return false;
     }
+    public static Boolean deleteFileFromDisk(Attachment att) {
+        return deleteFileFromDisk(att, DOCUMENT_STORAGE_PATH);
+    }
+    
+    public static Boolean deleteImageFromDisk(Attachment att) {
+        return deleteFileFromDisk(att, IMAGE_STORAGE_PATH);
+        
+    }
+
 }
