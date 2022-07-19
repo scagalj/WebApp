@@ -46,10 +46,10 @@ public class UserOrder implements IEntity, Serializable{
     @ManyToOne
     private ContactUser contactUser;
 
-    @OneToMany(mappedBy = "userOrder", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "userOrder", fetch = FetchType.EAGER)
     private List<Attachment> attachments;
     
-    @OneToMany(mappedBy = "userOrder", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "userOrder", fetch = FetchType.EAGER)
     private List<Payment> payments;
     
     private Boolean disabled;

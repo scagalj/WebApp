@@ -258,7 +258,7 @@ public class OrderControllerBean extends MainAdminTransactionControllerBean<User
     @Override
     public UserOrder addPaymentToOrder(SecurityContext sc, UserOrder order, Payment payment) {
         try {
-            System.out.println("TEST1");
+            System.out.println("TEST ADD PAYMENT START");
             utx.begin();
             if(!order.getPayments().contains(payment)){
                 order.getPayments().add(payment);
@@ -270,6 +270,7 @@ public class OrderControllerBean extends MainAdminTransactionControllerBean<User
             }
             order = merge(order);
             utx.commit();
+            System.out.println("TEST ADD PAYMENT END");
             return order;
         } catch (Exception ex) {
             log(sc, Level.SEVERE, ex, true);

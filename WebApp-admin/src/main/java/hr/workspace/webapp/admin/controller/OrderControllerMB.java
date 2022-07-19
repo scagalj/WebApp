@@ -29,18 +29,22 @@ import org.primefaces.model.file.UploadedFiles;
 @ViewScoped
 public class OrderControllerMB extends BaseManagedBean {
 
+    private final static String ORDER_DIALOG_NAME = "newOrderDialogWidget";
+    private final static String PAYMENT_DIALOG_NAME = "newPaymentDialogWidget";
+
     @EJB
     private OrderController controller;
     private UserOrder userOrder;
     private Product product;
     private UploadedFiles attachments;
+    private Payment payment;
 
     public void createNewOrder() {
         UserOrder tmpOrder = controller.newOrder(getSecurityContext());
         setProduct(null);
         if (tmpOrder != null) {
             setOrder(tmpOrder);
-            showDialog("newOrderDialogWidget");
+            showDialog(ORDER_DIALOG_NAME);
         }
     }
 
@@ -48,7 +52,7 @@ public class OrderControllerMB extends BaseManagedBean {
         if (tmpOrder != null) {
             setProduct(null);
             setOrder(tmpOrder);
-            showDialog("newOrderDialogWidget");
+            showDialog(ORDER_DIALOG_NAME);
         }
     }
 
@@ -57,9 +61,15 @@ public class OrderControllerMB extends BaseManagedBean {
             UserOrder tmpOrder = controller.save(getSecurityContext(), getOrder());
             if (tmpOrder != null) {
                 setProduct(null);
-                setOrder(null);
             }
         }
+    }
+
+    public void closeOrder() {
+        hideDialog(ORDER_DIALOG_NAME);
+        setProduct(null);
+        setOrder(null);
+
     }
 
     public void deleteOrder(UserOrder tmpOrder) {
@@ -70,8 +80,34 @@ public class OrderControllerMB extends BaseManagedBean {
 
     public void newPayment() {
         Payment newPayment = controller.newPayment(getSecurityContext(), getOrder());
-        UserOrder order = controller.addPaymentToOrder(getSecurityContext(), getOrder(), newPayment);
-        setOrder(order);
+        setPayment(newPayment);
+        showDialog(PAYMENT_DIALOG_NAME);
+    }
+
+    public void savePayment() {
+        if (getPayment() != null) {
+            UserOrder order = controller.addPaymentToOrder(getSecurityContext(), getOrder(), getPayment());
+            setOrder(order);
+        }
+    }
+
+    public void removePayment(Payment payment) {
+        if (payment != null) {
+            UserOrder order = controller.removePaymentFromOrder(getSecurityContext(), getOrder(), payment);
+            setOrder(order);
+        }
+    }
+
+    public void editPayment(Payment payment) {
+        if (payment != null) {
+            setPayment(payment);
+            showDialog(PAYMENT_DIALOG_NAME);
+        }
+    }
+
+    public void closePayment() {
+        setPayment(null);
+        hideDialog(PAYMENT_DIALOG_NAME);
     }
 
     public UserOrder getOrder() {
@@ -104,6 +140,14 @@ public class OrderControllerMB extends BaseManagedBean {
 
     public void setAttachments(UploadedFiles attachments) {
         this.attachments = attachments;
+    }
+
+    public Payment getPayment() {
+        return payment;
+    }
+
+    public void setPayment(Payment payment) {
+        this.payment = payment;
     }
 
     public Boolean getCanEditSalesObject(UserOrder order) {

@@ -75,7 +75,7 @@
                                              process="@form"
                                              />
                             <p:commandButton value="Canel" 
-                                             onclick="PF('newOrderDialogWidget').hide()"
+                                             action="#{OrderControllerMB.closeOrder()}"
                                              update="@form"
                                              process="@form"
                                              immediate="true"
@@ -163,23 +163,48 @@
                     </p:tab>
                     <p:tab title="Payments" rendered="#{OrderControllerMB.order.id != null}">
                         <h:form id="paymentsForm">
-                            
-                        <p:dataTable value="#{OrderControllerMB.order.payments}"
-                                     var="row" rowIndexVar="x" rowKey="y"
-                                     >
 
-                            <p:column headerText="Id" width="50">
-                                <h:outputText value="#{row.id}"/>
-                            </p:column>
-                        </p:dataTable>
-                            
+                            <p:dataTable value="#{OrderControllerMB.order.payments}"
+                                         var="row" rowIndexVar="x" rowKey="y"
+                                         >
+
+                                <p:column width="100">
+                                    <p:commandButton value="edit" 
+                                                     action="#{OrderControllerMB.editPayment(row)}" 
+                                                     update="@form paymentDialogForm"
+                                                     process="@this"
+                                                     />
+                                </p:column>
+
+                                <p:column headerText="Id" width="50">
+                                    <h:outputText value="#{row.id}"/>
+                                </p:column>
+
+                                <p:column headerText="Amount">
+                                    <h:outputText value="#{row.amount}" />
+                                </p:column>
+
+                                <p:column headerText="Payment date">
+                                    <h:outputText value="#{row.paymentDate}" >
+                                        <f:convertDateTime pattern="dd.MM.yyyy HH:mm" />
+                                    </h:outputText>
+                                </p:column>
+
+                                <p:column width="100">
+                                    <p:commandButton value="delete" 
+                                                     action="#{OrderControllerMB.removePayment(row)}" 
+                                                     update="@form"
+                                                     />
+                                </p:column>
+                            </p:dataTable>
+
                             <p:commandButton value="add paynent" 
-                                                         action="#{OrderControllerMB.newPayment()}" 
-                                                         update="@form"
-                                                         />
-                            
+                                             action="#{OrderControllerMB.newPayment()}" 
+                                             update="@form paymentDialogForm"
+                                             />
+
                         </h:form>
-                        
+
 
                     </p:tab>
                     <p:tab title="Documents" rendered="#{OrderControllerMB.order.id != null}">
@@ -210,6 +235,68 @@
                 </p:tabView>
             </h:panelGroup>
         </p:dialog>
+
+        <p:dialog widgetVar="newPaymentDialogWidget" 
+                  modal="true" 
+                  dynamic="true" 
+                  header="New payment" 
+                  closable="true" 
+                  closeOnEscape="true"
+                  width="780px" height="420px"
+                  draggable="false"
+                  cache="false"
+                  fitViewport="true"
+                  minimizable="true"
+                  resizable="false"
+                  responsive="true"
+                  showHeader="false"
+
+                  >
+
+            <h:form id="paymentDialogForm">
+
+                <h:panelGroup id="paymentDialogPanelGroup" 
+                              rendered="#{OrderControllerMB.payment != null}"
+                              >
+
+                    <p:commandButton value="Update"
+                                     action="#{OrderControllerMB.savePayment()}"
+                                     update="@form tabViewWrapper:paymentsForm"
+                                     process="@form"
+                                     />
+                    <p:commandButton value="Canel" 
+                                     action="#{OrderControllerMB.closePayment()}"
+                                     update="@form"
+                                     process="@form"
+                                     immediate="true"
+                                     resetValues="true"
+                                     >
+                        <p:resetInput target="@form" />
+                    </p:commandButton>
+
+
+                    <h:panelGrid columns="2">
+
+                        <p:outputLabel value="Amount:" />
+                        <p:inputNumber
+                            value="#{OrderControllerMB.payment.amount}"
+                            decimalPlaces="2"
+                            />
+
+                        <p:outputLabel value="Payment date:" />
+                        <p:datePicker 
+                            value="#{OrderControllerMB.payment.paymentDate}" 
+                            pattern="dd.MM.yyyy HH:mm" 
+                            showTime="true"
+                            />
+
+
+                    </h:panelGrid>
+
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
 
     </ui:define>
 
