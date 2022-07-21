@@ -7,6 +7,7 @@ package hr.workspace.controllers.interfaces;
 
 import hr.workspace.models.Attachment;
 import hr.workspace.models.ContactUser;
+import hr.workspace.models.Representative;
 import hr.workspace.security.SecurityContext;
 import javax.ejb.Local;
 import org.primefaces.model.file.UploadedFile;
@@ -27,5 +28,11 @@ public interface UserController {
     ContactUser saveAttachmen(SecurityContext sc, ContactUser user, UploadedFile file);
     
     Boolean deleteAttachment(SecurityContext sc, ContactUser user, Attachment att);
+ 
+    Representative newRepresentative(SecurityContext sc, ContactUser contactUser);
+    
+    ContactUser removeRepresentativeFromContactUser(SecurityContext sc, ContactUser contactUser, Representative representative);
+    
+    ContactUser addRepresentativeToContactUser(SecurityContext sc, ContactUser contactUser, Representative representative);
     
 }

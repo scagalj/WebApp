@@ -11,6 +11,9 @@ import hr.workspace.models.Attachment;
 import hr.workspace.models.ContactUser;
 import hr.workspace.models.Discount;
 import hr.workspace.models.DiscountType;
+import hr.workspace.models.Payment;
+import hr.workspace.models.Representative;
+import hr.workspace.models.UserOrder;
 import hr.workspace.security.SecurityContext;
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -149,4 +152,67 @@ public class UserControllerBean extends MainAdminTransactionControllerBean<Conta
         return false;
     }
 
+    @Override
+    public Representative newRepresentative(SecurityContext sc, ContactUser contactUser){
+        Representative representative = new Representative();
+        representative.setContactUser(contactUser);
+        return representative;
+    }
+    
+    @Override
+    public ContactUser removeRepresentativeFromContactUser(SecurityContext sc, ContactUser contactUser, Representative representative) {
+        try {
+
+            utx.begin();
+            representative.setContactUser(null);
+            if(contactUser.getRepresentatives().contains(representative)){
+                contactUser.getRepresentatives().remove(representative);
+            }
+            boolean result = super.remove(representative);
+            contactUser = merge(contactUser);
+            if (result) {
+                utx.commit();
+                return contactUser;
+            } else {
+                utx.rollback();
+            }
+        } catch (Exception ex) {
+            try {
+                utx.rollback();
+            } catch (Exception ex1) {
+                log(sc, Level.ALL, ex1, true);
+            }
+            log(sc, Level.ALL, ex, true);
+        }
+        return contactUser;
+    }
+
+    @Override
+    public ContactUser addRepresentativeToContactUser(SecurityContext sc, ContactUser contactUser, Representative representative) {
+        try {
+            System.out.println("TEST ADD representative START");
+            utx.begin();
+            if(!contactUser.getRepresentatives().contains(representative)){
+                contactUser.getRepresentatives().add(representative);
+            }
+            if(representative.getId() == null){
+                persist(representative);
+            }else{
+                merge(representative);
+            }
+            contactUser = merge(contactUser);
+            utx.commit();
+            System.out.println("TEST ADD representative END");
+            return contactUser;
+        } catch (Exception ex) {
+            log(sc, Level.SEVERE, ex, true);
+            try {
+                utx.rollback();
+            } catch (Exception ex1) {
+                log(sc, Level.SEVERE, ex1, true);
+            }
+        }
+        return null;
+    }
+    
 }

@@ -40,7 +40,7 @@
                         <p:column width="100">
                             <p:commandButton value="edit" 
                                              action="#{ProductControllerMB.editProduct(row)}" 
-                                             update="@form tabViewWrapper:productDialogForm"
+                                             update="@form tabViewWrapper"
                                              process="@this"
                                              />
                         </p:column>
@@ -155,32 +155,58 @@
                         </h:form>
                     </p:tab>
                     <p:tab title="Images" rendered="#{ProductControllerMB.product.id != null}">
-                        
+
                         <div class="card">
                             <h5>Multiple</h5>
                             <h:form id="attachmentUploadForm" enctype="multipart/form-data">
-                                <p:fileUpload value="#{ProductControllerMB.attachments}" mode="simple" dragDropSupport="true" skinSimple="true" multiple="true"/>
-                                <p:commandButton value="Submit" update="@form tabViewWrapper:attachmentsForm" process="@form" action="#{ProductControllerMB.uploadMultiple}" styleClass="p-mt-3 ui-button-outlined p-d-block"/>
+                                <p:fileUpload value="#{ProductControllerMB.attachments}" 
+                                              mode="simple" 
+                                              dragDropSupport="true" 
+                                              skinSimple="true" 
+                                              multiple="true"
+                                              allowTypes="/(\.|\/)(gif|jpe?g|png)$/"
+                                              validateContentType="true" 
+                                              accept=".gif,.jpg,.jpeg,.png"
+
+                                              />
+                                <p:commandButton value="Submit" 
+                                                 update="@form tabViewWrapper:attachmentsForm" 
+                                                 process="@form" 
+                                                 action="#{ProductControllerMB.uploadMultiple}" 
+                                                 styleClass="p-mt-3 ui-button-outlined p-d-block"
+                                                 />
                             </h:form>
                             <h:panelGroup>
                                 <h:form id="attachmentsForm">
-                                    <ui:repeat value="#{ProductControllerMB.product.attachments}" var="att">
-                                        <h:panelGrid columns="3">
-                                            <p>#{att.fileName}</p>
-                                            <p:graphicImage width="250px" height="250px" value="#{ProductControllerMB.generateImageContent(att.loadImageContentToAttachment())}" stream="false" />
-                                            <p:commandButton value="Ajax Download" ajax="false" icon="pi pi-arrow-down" styleClass="ui-button-outlined">
-                                                <p:fileDownload value="#{ProductControllerMB.generateStreamedContent(att.loadImageContentToAttachment())}"/>
-                                            </p:commandButton>
-                                            <p:commandButton value="delete" 
-                                                             action="#{ProductControllerMB.deleteAttachment(att)}" 
-                                                             update="@form"
-                                                             />
-                                        </h:panelGrid>
-                                    </ui:repeat>
+                                    <div class="p-grid">
+                                        
+                                    <p:repeat value="#{ProductControllerMB.product.attachments}" var="att">   
+                                        <div class="p-col-1">
+                                        <p:graphicImage width="250px" 
+                                                        height="250px" 
+                                                        value="#{ProductControllerMB.generateImageContent(att.loadImageContentToAttachment())}" 
+                                                        stream="false" 
+                                                        />
+                                        <p>#{att.fileName}</p>
+
+                                        <p:commandButton value="Ajax Download" 
+                                                         ajax="false" 
+                                                         icon="pi pi-arrow-down" 
+                                                         styleClass="ui-button-outlined"
+                                                         >
+                                            <p:fileDownload value="#{ProductControllerMB.generateStreamedContent(att.loadImageContentToAttachment())}"/>
+                                        </p:commandButton>
+                                        <p:commandButton value="delete" 
+                                                         action="#{ProductControllerMB.deleteAttachment(att)}" 
+                                                         update="@form"
+                                                         />
+                                        </div>
+                                    </p:repeat>
+                                    </div>
                                 </h:form>
                             </h:panelGroup>
                         </div>
-                        
+
                     </p:tab>
                 </p:tabView>
             </h:panelGroup>

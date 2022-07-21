@@ -70,7 +70,7 @@
                   resizable="false"
                   responsive="true"
                   showHeader="false"
-                  
+
                   >
 
             <p:tabView id="tabViewWrapper" dynamic="true">
@@ -129,6 +129,48 @@
 
                     </p:dataTable> 
                 </p:tab>
+                <p:tab title="Representative" rendered="#{UserControllerMB.user.id != null}">
+                    <h:form id="representativeForm">
+
+                        <p:dataTable value="#{UserControllerMB.user.representatives}"
+                                     var="row" rowIndexVar="x" rowKey="y"
+                                     >
+                            
+                            <p:column width="100">
+                                    <p:commandButton value="edit" 
+                                                     action="#{UserControllerMB.editRepresentative(row)}" 
+                                                     update="@form representativeDialogForm"
+                                                     process="@this"
+                                                     />
+                                </p:column>
+                            
+                            
+                            <p:column headerText="Id" width="80">
+                                <h:outputText value="#{row.id}"/>
+                            </p:column>
+
+                            <p:column headerText="First name">
+                                <h:outputText value="#{row.firstName}"/>
+                            </p:column>
+                            <p:column headerText="Last name">
+                                <h:outputText value="#{row.lastName}"/>
+                            </p:column>
+                            <p:column headerText="CEO" width="100">
+                                <p:selectBooleanCheckbox value="#{row.ceo}" disabled="true" />
+                            </p:column>
+                            <p:column width="100">
+                                <p:commandButton value="delete" 
+                                                 action="#{UserControllerMB.removeRepresentative(row)}" 
+                                                 update="@form"
+                                                 />
+                            </p:column>
+                        </p:dataTable>
+                        <p:commandButton value="add representative" 
+                                         action="#{UserControllerMB.newRepresentative()}" 
+                                         update="@form representativeDialogForm"
+                                         />
+                    </h:form>
+                </p:tab>
                 <p:tab title="Documents" rendered="#{UserControllerMB.user.id != null}">
                     <div class="card">
                         <h5>Multiple</h5>
@@ -158,6 +200,71 @@
 
             </p:tabView>
         </p:dialog>
+
+        <p:dialog widgetVar="newRepresentativeDialogWidget" 
+                  modal="true" 
+                  dynamic="true" 
+                  header="New Representative" 
+                  closable="true" 
+                  closeOnEscape="true"
+                  width="780px" height="420px"
+                  draggable="false"
+                  cache="false"
+                  fitViewport="true"
+                  minimizable="true"
+                  resizable="false"
+                  responsive="true"
+                  showHeader="false"
+
+                  >
+
+            <h:form id="representativeDialogForm">
+
+                <h:panelGroup id="representativeDialogPanelGroup" 
+                              rendered="#{UserControllerMB.representative != null}"
+                              >
+
+                    <p:commandButton value="Update"
+                                     action="#{UserControllerMB.saveRepresentative()}"
+                                     update="@form tabViewWrapper:representativeForm"
+                                     process="@form"
+                                     />
+                    <p:commandButton value="Canel" 
+                                     action="#{UserControllerMB.closeRepresentative()}"
+                                     update="@form"
+                                     process="@form"
+                                     immediate="true"
+                                     resetValues="true"
+                                     >
+                        <p:resetInput target="@form" />
+                    </p:commandButton>
+
+
+                    <h:panelGrid columns="2">
+
+                        <p:outputLabel value="First name:" />
+                        <p:inputText
+                            value="#{UserControllerMB.representative.firstName}"
+                            required="true"
+                            />
+
+                        <p:outputLabel value="Last name:" />
+                        <p:inputText 
+                            value="#{UserControllerMB.representative.lastName}" 
+                            required="true"
+                            />
+
+                        <p:outputLabel value="Is CEO:" />
+                        <p:selectBooleanCheckbox value="#{UserControllerMB.representative.ceo}" 
+                                                 required="true"
+                                                 />
+
+                    </h:panelGrid>
+
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
     </ui:define>
 
 </ui:composition>

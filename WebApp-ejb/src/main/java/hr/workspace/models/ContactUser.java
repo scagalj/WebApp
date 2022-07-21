@@ -5,6 +5,7 @@
  */
 package hr.workspace.models;
 
+import com.sun.javafx.scene.control.skin.VirtualFlow;
 import hr.workspace.common.FileUtils;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -45,22 +46,27 @@ public class ContactUser implements IEntity, Serializable {
 
     private Boolean disabled;
 
-    @OneToMany(mappedBy = "contactUser", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "contactUser", fetch = FetchType.EAGER)
     private List<UserOrder> orders;
     
-    @OneToMany(mappedBy = "contactUser", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "contactUser", fetch = FetchType.EAGER)
     private List<Attachment> attachments;
+    
+    @OneToMany(mappedBy = "contactUser", fetch = FetchType.EAGER)
+    private List<Representative> representatives;
 
     public ContactUser() {
-    }
-    
-    public ContactUser(String email) {
         this.firstName = "";
         this.lastName = "";
-        this.email = email;
         this.disabled = false;
         this.orders = new ArrayList<>();
         this.attachments = new ArrayList<>();
+        this.representatives = new VirtualFlow.ArrayLinkedList<>();
+    }
+    
+    public ContactUser(String email) {
+        super();
+        this.email = email;
     }
 
     @Override
@@ -146,7 +152,14 @@ public class ContactUser implements IEntity, Serializable {
     public void setAttachments(List<Attachment> attachments) {
         this.attachments = attachments;
     }
-    
+
+    public List<Representative> getRepresentatives() {
+        return representatives;
+    }
+
+    public void setRepresentatives(List<Representative> representatives) {
+        this.representatives = representatives;
+    }
     
     public String getName(){
         String name = "";

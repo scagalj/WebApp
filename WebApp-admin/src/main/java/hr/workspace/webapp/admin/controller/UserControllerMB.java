@@ -9,6 +9,9 @@ import hr.workspace.controllers.interfaces.UserCommons;
 import hr.workspace.controllers.interfaces.UserController;
 import hr.workspace.models.Attachment;
 import hr.workspace.models.ContactUser;
+import hr.workspace.models.Payment;
+import hr.workspace.models.Representative;
+import hr.workspace.models.UserOrder;
 import java.util.UUID;
 import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
@@ -24,12 +27,15 @@ import org.primefaces.model.file.UploadedFiles;
 @ViewScoped
 public class UserControllerMB extends BaseManagedBean{
     
+    private final static String REPRESENTATIVE_DIALOG_NAME = "newRepresentativeDialogWidget";
+    
     @EJB
     private UserController controller;
     @EJB
     private UserCommons commons;
     private ContactUser user;
     private UploadedFiles attachments;
+    private Representative representative;
     
     public void createNewUser(){
         ContactUser tmpUser = controller.newUser(getSecurityContext(), "admin@webapp.com");
@@ -90,6 +96,38 @@ public class UserControllerMB extends BaseManagedBean{
             System.out.println("NIje uspio izbrisati attachment.");
         }
     }
+    
+    public void newRepresentative() {
+        Representative newRepresentative = controller.newRepresentative(getSecurityContext(), getUser());
+        setRepresentative(newRepresentative);
+        showDialog(REPRESENTATIVE_DIALOG_NAME);
+    }
+
+    public void saveRepresentative() {
+        if (getRepresentative()!= null) {
+            ContactUser contactUser = controller.addRepresentativeToContactUser(getSecurityContext(), getUser(), getRepresentative());
+            setUser(contactUser);
+        }
+    }
+
+    public void removeRepresentative(Representative representative) {
+        if (representative != null) {
+            ContactUser order = controller.removeRepresentativeFromContactUser(getSecurityContext(), getUser(), representative);
+            setUser(order);
+        }
+    }
+
+    public void editRepresentative(Representative representative) {
+        if (representative != null) {
+            setRepresentative(representative);
+            showDialog(REPRESENTATIVE_DIALOG_NAME);
+        }
+    }
+
+    public void closeRepresentative() {
+        setRepresentative(null);
+        hideDialog(REPRESENTATIVE_DIALOG_NAME);
+    }
 
     public ContactUser getUser() {
         return user;
@@ -105,6 +143,14 @@ public class UserControllerMB extends BaseManagedBean{
 
     public void setAttachments(UploadedFiles attachments) {
         this.attachments = attachments;
+    }
+
+    public Representative getRepresentative() {
+        return representative;
+    }
+
+    public void setRepresentative(Representative representative) {
+        this.representative = representative;
     }
     
 }

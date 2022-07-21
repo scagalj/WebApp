@@ -14,13 +14,12 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
-
 /**
  *
  * @author Stjepan
  */
 @Entity
-public class Attachment implements IEntity, Serializable{
+public class Attachment implements IEntity, Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "attachment_id_seq")
@@ -120,15 +119,22 @@ public class Attachment implements IEntity, Serializable{
         this.product = product;
     }
 
-    public Attachment loadContentToAttachment(){
-        Attachment loadedAttachment = FileUtils.loadFileFromDisk(this);
-        return loadedAttachment;
+    public Attachment loadContentToAttachment() {
+        if (getData() == null) {
+            Attachment loadedAttachment = FileUtils.loadFileFromDisk(this);
+            this.setData(loadedAttachment.getData());
+        }
+        return this;
     }
-    public Attachment loadImageContentToAttachment(){
-        Attachment loadedAttachment = FileUtils.loadImageFromDisk(this);
-        return loadedAttachment;
+
+    public Attachment loadImageContentToAttachment() {
+        if (getData() == null) {
+            Attachment loadedAttachment = FileUtils.loadImageFromDisk(this);
+            this.setData(loadedAttachment.getData());
+        }
+        return this;
     }
-    
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -150,5 +156,5 @@ public class Attachment implements IEntity, Serializable{
         }
         return true;
     }
-    
+
 }
