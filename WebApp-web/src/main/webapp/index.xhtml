@@ -10,6 +10,8 @@
         Hello from Facelets2
         <h:form>
             
+            <p:commandButton value="Log out" action="#{SecurityMB.logout()}" process="@this" />
+            
             
             <p:dataTable value="#{MainAdministrationControllerMB.allSalesObject}"
                      var="row" rowIndexVar="x" rowKey="y"

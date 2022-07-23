@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package hr.workspace.managebeans;
+package hr.workspace.app.controllers;
 
 import hr.workspace.controllers.interfaces.SalesObjectCommons;
 import hr.workspace.controllers.interfaces.SalesObjectController;

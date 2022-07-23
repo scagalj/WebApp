@@ -66,6 +66,21 @@ public class UserCommonsBean extends AbstractCommonsBean<ContactUser> implements
          return resultList.get(0);
     }
     
+    @Override
+    public ContactUser fetchUserByEMail(SecurityContext sc, String email){
+        System.out.println("TEST3");
+         Query findUserByUUID = em.createQuery("Select u from ContactUser u where u.email like :email")
+                 .setParameter("email", email);
+         List<ContactUser> resultList = findUserByUUID.getResultList();
+         if(resultList != null && resultList.size() > 1){
+             System.out.println("IMAMO VISE KONTAKTA S ISTIM email-om");
+         }
+         if(resultList == null || resultList.isEmpty()){
+             return null;
+         }
+         return resultList.get(0);
+    }
+    
     
     @Override
     public void saveFileToResource(){

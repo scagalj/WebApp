@@ -25,4 +25,6 @@ public interface UserCommons {
     
     void saveFileToResource();
     
+    ContactUser fetchUserByEMail(SecurityContext sc, String email);
+    
 }
