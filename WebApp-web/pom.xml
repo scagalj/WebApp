@@ -20,7 +20,7 @@
         <jakartaee>8.0</jakartaee>
     </properties>
     
-<!--    <dependencies>
+    <!--    <dependencies>
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>
@@ -42,6 +42,11 @@
             <artifactId>jakarta.jakartaee-api</artifactId>
             <version>8.0.0</version>
             <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.webjars.npm</groupId>
+            <artifactId>primeflex</artifactId>
+            <version>3.2.0</version>
         </dependency>
     </dependencies>
     
@@ -78,7 +83,7 @@
         <finalName>${project.artifactId}</finalName>
     </build>
     
-<!--    <build>
+    <!--    <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

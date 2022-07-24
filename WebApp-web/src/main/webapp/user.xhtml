@@ -1,0 +1,114 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/templates/template.xhtml">
+
+    <ui:param name="module" value="orders" />
+
+    <ui:define name="content">
+
+        <h:form id="userForm">
+            <div class="container">
+
+                <div class="ui-fluid">
+
+                    <div class="card">
+
+                        <p:tabView id="userTabView" dynamic="true" cache="true">
+
+                            <p:tab title="Company information">
+
+
+                                <h:panelGrid columns="2" 
+                                             columnClasses="p-3">
+
+                                    <p:outputLabel value="First name: "/>
+                                    <p:inputText value="#{UserControllerMB.user.firstName}" />
+
+                                    <p:outputLabel value="Last name: "/>
+                                    <p:inputText value="#{UserControllerMB.user.lastName}" />
+
+                                    <p:outputLabel value="E-mail:"/>
+                                    <p:inputText value="#{UserControllerMB.user.email}" readonly="true" />
+
+                                </h:panelGrid>
+
+                                <p:commandButton class="m-3 mt-4" value="Update data" action="#{UserControllerMB.saveUser()}" update="@form" process="@form" style="width: 160px;" />
+
+
+
+                            </p:tab>
+                            <p:tab title="Representives">
+                                <p:dataTable id="representatives" var="row" value="#{UserControllerMB.user.representatives}" editable="true"
+                                             style="margin-bottom:20px">
+
+                                    <p:ajax event="rowEdit" listener="#{UserControllerMB.onRowEdit}" update="@form:userTabView:representatives"/>
+                                    <p:ajax event="rowEditCancel" listener="#{UserControllerMB.onRowCancel}" update="@form"/>
+
+                                    <p:column headerText="First name">
+                                        <p:cellEditor>
+                                            <f:facet name="output">
+                                                <h:outputText value="#{row.firstName}"/>
+                                            </f:facet>
+                                            <f:facet name="input">
+                                                <p:inputText value="#{row.firstName}" style="width:100%" label="First name"/>
+                                            </f:facet>
+                                        </p:cellEditor>
+                                    </p:column>
+
+                                    <p:column headerText="Last name">
+                                        <p:cellEditor>
+                                            <f:facet name="output">
+                                                <h:outputText value="#{row.lastName}"/>
+                                            </f:facet>
+                                            <f:facet name="input">
+                                                <p:inputText value="#{row.lastName}" style="width:100%" label="Last name"/>
+                                            </f:facet>
+                                        </p:cellEditor>
+                                    </p:column>
+                                    
+                                    <p:column headerText="CEO">
+                                        <p:cellEditor>
+                                            <f:facet name="output">
+                                                <p:selectBooleanCheckbox value="#{row.ceo}" disabled="true" style="width:100%" label="CEO" />
+                                            </f:facet>
+                                            <f:facet name="input">
+                                                <p:selectBooleanCheckbox value="#{row.ceo}" style="width:100%" label="CEO" />
+                                            </f:facet>
+                                        </p:cellEditor>
+                                    </p:column>
+
+                                    <p:column style="width:6rem">
+                                        <p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row" />
+                                    </p:column>
+
+                                </p:dataTable>
+
+
+<!--                                <p:repeat value="#{UserControllerMB.user.representatives}" var="row" >
+                                    <h:panelGrid columns="6" 
+                                                 columnClasses="p-3">
+                                        <h:outputText value="#{row.firstName}" />
+                                        <p:outputLabel value="#{row.lastName}" />
+                                        <p:outputLabel value="#{row.ceo}" />
+                                    </h:panelGrid>
+                                </p:repeat>
+                                <h:panelGroup layout="block" rendered="#{UserControllerMB.representative != null}">
+                                    <p:inputText value="#{UserControllerMB.representative.firstName}" required="true"/>
+                                    <p:inputText value="#{UserControllerMB.representative.lastName}" required="true" />
+                                    <p:commandButton value="Save" action="#{UserControllerMB.saveRepresentative}" update="@form" process="@form" />
+                                </h:panelGroup>-->
+
+                                <!--<p:commandButton value="AddNew" action="#{UserControllerMB.addNewRepresentative}" process="@this" update="@form" />-->
+
+                            </p:tab>
+                        </p:tabView>
+                    </div>
+                </div>
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>
+
