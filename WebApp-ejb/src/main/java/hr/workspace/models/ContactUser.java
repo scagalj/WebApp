@@ -10,11 +10,13 @@ import hr.workspace.common.FileUtils;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -25,8 +27,8 @@ import javax.persistence.OneToMany;
  */
 @Entity
 @NamedQueries({
-    @NamedQuery(name = ContactUser.getAll, query = "select u from ContactUser u order by u.firstName"),
-    @NamedQuery(name = ContactUser.getAllActive, query = "select u from ContactUser u where u.disabled=false order by u.firstName")
+    @NamedQuery(name = ContactUser.getAll, query = "select u from ContactUser u where u.parentContact is null order by u.firstName"),
+    @NamedQuery(name = ContactUser.getAllActive, query = "select u from ContactUser u where u.disabled=false and u.parentContact is null order by u.firstName")
 })
 public class ContactUser implements IEntity, Serializable {
 
@@ -43,6 +45,11 @@ public class ContactUser implements IEntity, Serializable {
     
     private String uuid;
     private String uniqueId;
+    
+    @OneToMany(mappedBy = "parentContact", cascade = {CascadeType.REMOVE})
+    private List<ContactUser> contacts;
+    @ManyToOne()
+    private ContactUser parentContact;
 
     private Boolean disabled;
 
@@ -159,6 +166,22 @@ public class ContactUser implements IEntity, Serializable {
 
     public void setRepresentatives(List<Representative> representatives) {
         this.representatives = representatives;
+    }
+
+    public List<ContactUser> getContacts() {
+        return contacts;
+    }
+
+    public void setContacts(List<ContactUser> contacts) {
+        this.contacts = contacts;
+    }
+
+    public ContactUser getParentContact() {
+        return parentContact;
+    }
+
+    public void setParentContact(ContactUser parentContact) {
+        this.parentContact = parentContact;
     }
     
     public String getName(){

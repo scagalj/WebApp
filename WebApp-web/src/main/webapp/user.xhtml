@@ -40,6 +40,45 @@
 
 
                             </p:tab>
+                            <p:tab title="Contacts">
+                                <p:commandButton value="Add new" action="#{UserControllerMB.addNewContact}" update="@parent" />
+
+                                <h:panelGroup rendered="#{UserControllerMB.contact != null}">
+                                    <h:panelGrid columns="2">
+
+                                        <p:outputLabel value="First name:" />
+                                        <p:inputText value="#{UserControllerMB.contact.firstName}" />
+
+                                        <p:outputLabel value="Last name:" />
+                                        <p:inputText value="#{UserControllerMB.contact.lastName}" />
+
+                                        <p:outputLabel value="Email:" />
+                                        <p:inputText value="#{UserControllerMB.contact.email}" />
+
+                                    </h:panelGrid>
+                                    <p:commandButton value="Save contact" action="#{UserControllerMB.saveContact()}" update="@namingcontainer" />
+                                </h:panelGroup>
+
+                                <p:accordionPanel value="#{UserControllerMB.user.contacts}" var="row" activeIndex="-1" multiple="true">
+                                    <p:tab title="#{row.name}">
+                                        <h:panelGrid columns="4">
+                                            <p:outputLabel value="First name:" />
+                                            <p:inputText value="#{row.firstName}" />
+
+                                            <p:outputLabel value="Last name:" />
+                                            <p:inputText value="#{row.lastName}" />
+
+                                            <p:outputLabel value="Email:" />
+                                            <p:inputText value="#{row.email}" />
+                                        </h:panelGrid>
+
+                                        <p:commandButton value="Update" action="#{UserControllerMB.saveContact(row)}" update="@namingcontainer" />
+
+                                    </p:tab>
+                                </p:accordionPanel>
+
+
+                            </p:tab>
                             <p:tab title="Representives">
                                 <p:dataTable id="representatives" var="row" value="#{UserControllerMB.user.representatives}" editable="true"
                                              style="margin-bottom:20px">
@@ -68,7 +107,7 @@
                                             </f:facet>
                                         </p:cellEditor>
                                     </p:column>
-                                    
+
                                     <p:column headerText="CEO">
                                         <p:cellEditor>
                                             <f:facet name="output">
@@ -86,23 +125,17 @@
 
                                 </p:dataTable>
 
-
-<!--                                <p:repeat value="#{UserControllerMB.user.representatives}" var="row" >
-                                    <h:panelGrid columns="6" 
-                                                 columnClasses="p-3">
-                                        <h:outputText value="#{row.firstName}" />
-                                        <p:outputLabel value="#{row.lastName}" />
-                                        <p:outputLabel value="#{row.ceo}" />
-                                    </h:panelGrid>
-                                </p:repeat>
                                 <h:panelGroup layout="block" rendered="#{UserControllerMB.representative != null}">
+                                    <h:panelGrid columns="4">
+                                        <p:outputLabel value="First name:" />
                                     <p:inputText value="#{UserControllerMB.representative.firstName}" required="true"/>
+                                        <p:outputLabel value="Last name:" />
                                     <p:inputText value="#{UserControllerMB.representative.lastName}" required="true" />
+                                    </h:panelGrid>
                                     <p:commandButton value="Save" action="#{UserControllerMB.saveRepresentative}" update="@form" process="@form" />
-                                </h:panelGroup>-->
+                                </h:panelGroup>
 
-                                <!--<p:commandButton value="AddNew" action="#{UserControllerMB.addNewRepresentative}" process="@this" update="@form" />-->
-
+                                <p:commandButton value="AddNew" action="#{UserControllerMB.addNewRepresentative}" process="@this" update="@form" />
                             </p:tab>
                         </p:tabView>
                     </div>

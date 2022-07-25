@@ -188,6 +188,34 @@ public class UserControllerBean extends MainAdminTransactionControllerBean<Conta
     }
 
     @Override
+    public ContactUser addContactToContactUser(SecurityContext sc, ContactUser contactUser, ContactUser contact) {
+        try {
+            System.out.println("TEST ADD representative START");
+            utx.begin();
+            if(!contactUser.getContacts().contains(contact)){
+                contactUser.getContacts().add(contact);
+            }
+            if(contact.getId() == null){
+                persist(contact);
+            }else{
+                merge(contact);
+            }
+            contactUser = merge(contactUser);
+            utx.commit();
+            System.out.println("TEST ADD contact END");
+            return contactUser;
+        } catch (Exception ex) {
+            log(sc, Level.SEVERE, ex, true);
+            try {
+                utx.rollback();
+            } catch (Exception ex1) {
+                log(sc, Level.SEVERE, ex1, true);
+            }
+        }
+        return null;
+    }
+    
+    @Override
     public ContactUser addRepresentativeToContactUser(SecurityContext sc, ContactUser contactUser, Representative representative) {
         try {
             System.out.println("TEST ADD representative START");
@@ -215,4 +243,39 @@ public class UserControllerBean extends MainAdminTransactionControllerBean<Conta
         return null;
     }
     
+    @Override
+    public ContactUser newContact(SecurityContext sc, ContactUser contactUser){
+        ContactUser contact = new ContactUser();
+        contact.setParentContact(contactUser);
+        return contact;
+    }
+    
+    @Override
+    public ContactUser removeContactFromContactUser(SecurityContext sc, ContactUser contactUser, ContactUser contact) {
+        try {
+
+            utx.begin();
+            contact.setParentContact(null);
+            if(contactUser.getContacts().contains(contact)){
+                contactUser.getContacts().remove(contact);
+            }
+            boolean result = super.remove(contact);
+            contactUser = merge(contactUser);
+            if (result) {
+                utx.commit();
+                return contactUser;
+            } else {
+                utx.rollback();
+            }
+        } catch (Exception ex) {
+            try {
+                utx.rollback();
+            } catch (Exception ex1) {
+                log(sc, Level.ALL, ex1, true);
+            }
+            log(sc, Level.ALL, ex, true);
+        }
+        return contactUser;
+    }
+
 }

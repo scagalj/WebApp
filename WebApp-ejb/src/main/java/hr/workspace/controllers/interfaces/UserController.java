@@ -35,4 +35,9 @@ public interface UserController {
     
     ContactUser addRepresentativeToContactUser(SecurityContext sc, ContactUser contactUser, Representative representative);
     
+    ContactUser newContact(SecurityContext sc, ContactUser contactUser);
+    
+    ContactUser addContactToContactUser(SecurityContext sc, ContactUser contactUser, ContactUser contact);
+    
+    ContactUser removeContactFromContactUser(SecurityContext sc, ContactUser contactUser, ContactUser contact);
 }

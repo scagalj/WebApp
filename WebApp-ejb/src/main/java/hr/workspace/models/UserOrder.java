@@ -10,6 +10,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -45,6 +47,9 @@ public class UserOrder implements IEntity, Serializable{
     
     @ManyToOne
     private ContactUser contactUser;
+    
+    @Enumerated(EnumType.ORDINAL)
+    private UserOrderStatus userOrderStatus;
 
     @OneToMany(mappedBy = "userOrder", fetch = FetchType.EAGER)
     private List<Attachment> attachments;
@@ -57,6 +62,7 @@ public class UserOrder implements IEntity, Serializable{
     public UserOrder() {
         orderItems = new ArrayList<>();
         disabled = false;
+        userOrderStatus = UserOrderStatus.INIT;
     }
     
     @Override
@@ -130,6 +136,14 @@ public class UserOrder implements IEntity, Serializable{
 
     public void setPayments(List<Payment> payments) {
         this.payments = payments;
+    }
+
+    public UserOrderStatus getUserOrderStatus() {
+        return userOrderStatus;
+    }
+
+    public void setUserOrderStatus(UserOrderStatus userOrderStatus) {
+        this.userOrderStatus = userOrderStatus;
     }
     
     @Override

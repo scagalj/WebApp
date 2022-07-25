@@ -27,6 +27,7 @@ public class UserControllerMB extends BaseManagedBean{
     @EJB
     private UserController controller;
     private Representative representative;
+    private ContactUser contact;
 
     public void saveUser(){
         setUser(controller.saveUser(getSecurityContext(), getUser()));
@@ -62,6 +63,21 @@ public class UserControllerMB extends BaseManagedBean{
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
     
+    public void addNewContact(){
+        setContact(controller.newContact(getSecurityContext(), getUser()));
+    }
+    
+    public void saveContact(){
+        saveContact(getContact());
+    }
+    public void saveContact(ContactUser contact){
+        setUser(controller.addContactToContactUser(getSecurityContext(), getUser(), contact));
+        setContact(null);
+    }
+    
+    public void deleteContact(){
+        setUser(controller.removeContactFromContactUser(getSecurityContext(), getUser(), getContact()));
+    }
     
     public ContactUser getUser() {
         return getSecurityContext().getLogedUser();
@@ -78,9 +94,13 @@ public class UserControllerMB extends BaseManagedBean{
     public void setRepresentative(Representative representative) {
         this.representative = representative;
     }
-    
-    
-    
-    
+
+    public ContactUser getContact() {
+        return contact;
+    }
+
+    public void setContact(ContactUser contact) {
+        this.contact = contact;
+    }
     
 }
