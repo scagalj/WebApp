@@ -22,6 +22,13 @@
                     </div>
                     <div class="col p-4">
                         <i class="pi pi-shopping-cart" style="font-size: 3rem"></i>
+                        <h:panelGroup rendered="#{OrderControllerMB.order != null}">
+                            <p:commandLink value="Go to shopping" action="order.xhtml?faces-redirect=true" />
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{OrderControllerMB.order == null}">
+                            <p:commandLink value="Make new order" action="#{OrderControllerMB.createNewOrder()}" update="@form" />
+                        </h:panelGroup>
+                        
                         <h3>Make new order</h3>
                     </div>
                 </div>

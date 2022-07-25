@@ -6,6 +6,7 @@
 package hr.workspace.app.controllers;
 
 import hr.workspace.models.Attachment;
+import hr.workspace.models.ContactUser;
 import hr.workspace.security.SecurityContext;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -186,6 +187,14 @@ public abstract class BaseManagedBean implements Serializable {
             return null;
         }
         return att.getData();
+    }
+    
+        public ContactUser getUser() {
+        return getSecurityContext().getLogedUser();
+    }
+
+    public void setUser(ContactUser user) {
+        getSecurityContext().setLogedUser(user);
     }
 
 }

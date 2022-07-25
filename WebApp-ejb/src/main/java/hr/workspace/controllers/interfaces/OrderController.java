@@ -6,6 +6,7 @@
 package hr.workspace.controllers.interfaces;
 
 import hr.workspace.models.Attachment;
+import hr.workspace.models.ContactUser;
 import hr.workspace.models.OrderItem;
 import hr.workspace.models.Payment;
 import hr.workspace.models.Product;
@@ -23,6 +24,8 @@ import org.primefaces.model.file.UploadedFile;
 public interface OrderController {
     
     UserOrder newOrder(SecurityContext sc);
+    
+    UserOrder newOrder(SecurityContext sc, ContactUser user);
     
     UserOrder save(SecurityContext sc, UserOrder so);
     

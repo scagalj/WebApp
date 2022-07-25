@@ -79,14 +79,6 @@ public class UserControllerMB extends BaseManagedBean{
         setUser(controller.removeContactFromContactUser(getSecurityContext(), getUser(), getContact()));
     }
     
-    public ContactUser getUser() {
-        return getSecurityContext().getLogedUser();
-    }
-
-    public void setUser(ContactUser user) {
-        getSecurityContext().setLogedUser(user);
-    }
-
     public Representative getRepresentative() {
         return representative;
     }

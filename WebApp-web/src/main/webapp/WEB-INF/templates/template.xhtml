@@ -40,7 +40,7 @@
                     <p:menuitem value="Home" ajax="false" url="index.xhtml" />
                     <f:facet name="options">
 
-                        <p:badge value="8" severity="danger" styleClass="ml-3">
+                        <p:badge value="#{OrderControllerMB.getNumberOrItemsInOrder()}" severity="danger" styleClass="ml-3">
                             <h:commandLink value="">
                                 <i class="pi pi-shopping-cart" style="font-size: 1.5rem" ></i>
                             </h:commandLink>
