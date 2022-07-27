@@ -10,6 +10,7 @@ import hr.workspace.models.ContactUser;
 import hr.workspace.models.OrderItem;
 import hr.workspace.models.Payment;
 import hr.workspace.models.Product;
+import hr.workspace.models.SalesObject;
 import hr.workspace.models.UserOrder;
 import hr.workspace.security.SecurityContext;
 import javax.ejb.Local;
@@ -25,7 +26,7 @@ public interface OrderController {
     
     UserOrder newOrder(SecurityContext sc);
     
-    UserOrder newOrder(SecurityContext sc, ContactUser user);
+    UserOrder newOrder(SecurityContext sc, ContactUser user, SalesObject salesObject);
     
     UserOrder save(SecurityContext sc, UserOrder so);
     

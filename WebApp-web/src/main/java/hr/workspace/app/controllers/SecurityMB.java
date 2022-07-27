@@ -6,13 +6,16 @@
 package hr.workspace.app.controllers;
 
 import hr.workspace.app.commons.Navigation;
+import hr.workspace.controllers.interfaces.SalesObjectCommons;
 import hr.workspace.controllers.interfaces.UserCommons;
 import hr.workspace.controllers.interfaces.UserController;
 import hr.workspace.models.ContactUser;
+import hr.workspace.models.SalesObject;
 import hr.workspace.security.SecurityContext;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
 import javax.ejb.EJB;
@@ -35,7 +38,10 @@ public class SecurityMB extends BaseManagedBean {
     private UserController userController;
     @EJB
     private UserCommons userCommons;
+    @EJB
+    private SalesObjectCommons salesObjectCommons;
     private String email;
+    
 
     public String login() {
         try {
@@ -45,6 +51,8 @@ public class SecurityMB extends BaseManagedBean {
             ContactUser user = userCommons.fetchUserByEMail(sc, getEmail());
             if (user != null) {
                 sc.setLogedUser(user);
+                List<SalesObject> salesObjects = salesObjectCommons.getAllActive(getSecurityContext());
+                sc.setSalesObject(salesObjects != null && !salesObjects.isEmpty() ? salesObjects.get(0) : null);
                 setSecurityContext(sc);
                 System.out.println("LOGIN IN: " + user.getName());
 

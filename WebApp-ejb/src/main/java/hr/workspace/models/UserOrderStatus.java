@@ -13,6 +13,7 @@ public enum UserOrderStatus {
     
     INIT,
     PROGRESS,
+    CANCELLED,
     COMPLETED,
     AUTHORIZED
 }

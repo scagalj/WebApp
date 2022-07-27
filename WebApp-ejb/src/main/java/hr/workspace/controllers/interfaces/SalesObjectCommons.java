@@ -20,5 +20,5 @@ public interface SalesObjectCommons {
     List<SalesObject> getAll(SecurityContext sc);
     
     List<SalesObject> getAllActive(SecurityContext sc);
-    
+
 }

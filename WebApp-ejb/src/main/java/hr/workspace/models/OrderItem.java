@@ -90,6 +90,10 @@ public class OrderItem implements IEntity, Serializable{
         this.price = price;
     }
     
+    public BigDecimal getFinalPrice(){
+        return getPrice().multiply(new BigDecimal(getQuantity()));
+    }
+    
     @Override
     public int hashCode() {
         int hash = 0;

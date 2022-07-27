@@ -7,6 +7,8 @@ package hr.workspace.security;
 
 import hr.workspace.models.ACLUser;
 import hr.workspace.models.ContactUser;
+import hr.workspace.models.SalesObject;
+import hr.workspace.models.UserOrder;
 import java.io.Serializable;
 
 /**
@@ -17,6 +19,8 @@ public class SecurityContext implements Serializable{
     
     private ContactUser logedUser;
     private ACLUser loggedACLUser;
+    private SalesObject salesObject;
+    private UserOrder order;
 
     public ContactUser getLogedUser() {
         return logedUser;
@@ -33,8 +37,21 @@ public class SecurityContext implements Serializable{
     public void setLoggedACLUser(ACLUser loggedACLUser) {
         this.loggedACLUser = loggedACLUser;
     }
-    
-    
-    
+
+    public SalesObject getSalesObject() {
+        return salesObject;
+    }
+
+    public void setSalesObject(SalesObject salesObject) {
+        this.salesObject = salesObject;
+    }
+
+    public UserOrder getOrder() {
+        return order;
+    }
+
+    public void setOrder(UserOrder order) {
+        this.order = order;
+    }
     
 }

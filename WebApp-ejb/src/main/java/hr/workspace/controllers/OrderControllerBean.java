@@ -13,6 +13,7 @@ import hr.workspace.models.ContactUser;
 import hr.workspace.models.OrderItem;
 import hr.workspace.models.Payment;
 import hr.workspace.models.Product;
+import hr.workspace.models.SalesObject;
 import hr.workspace.models.UserOrder;
 import hr.workspace.security.SecurityContext;
 import java.math.BigDecimal;
@@ -56,9 +57,10 @@ public class OrderControllerBean extends MainAdminTransactionControllerBean<User
     }
     
     @Override
-    public UserOrder newOrder(SecurityContext sc, ContactUser user) {
+    public UserOrder newOrder(SecurityContext sc, ContactUser user, SalesObject salesObject) {
         try {
             UserOrder result = new UserOrder();
+            result.setSalesObject(salesObject);
             result.setContactUser(user);
             return result;
         } catch (Exception ex) {
@@ -75,8 +77,8 @@ public class OrderControllerBean extends MainAdminTransactionControllerBean<User
                 merge(oi);
             }
             
-            UserOrder salesObject = super.save(sc, so);
-            return salesObject;
+            UserOrder userOrder = super.save(sc, so);
+            return userOrder;
         } catch (Exception ex) {
             log(sc, Level.ALL, ex, true);
         }

@@ -60,6 +60,8 @@
                     <source>${java.version}</source>
                     <target>${java.version}</target>                 
                     <encoding>${project.build.sourceEncoding}</encoding>
+                    <debug>false</debug>
+                    <showDeprecation>false</showDeprecation>
                 </configuration>
             </plugin>  
             <plugin>

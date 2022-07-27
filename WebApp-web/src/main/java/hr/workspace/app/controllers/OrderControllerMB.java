@@ -6,10 +6,14 @@
 package hr.workspace.app.controllers;
 
 import hr.workspace.controllers.interfaces.OrderController;
+import hr.workspace.controllers.interfaces.ProductCommons;
+import hr.workspace.models.OrderItem;
+import hr.workspace.models.Product;
 import hr.workspace.models.UserOrder;
 import hr.workspace.models.UserOrderStatus;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -24,8 +28,10 @@ public class OrderControllerMB extends BaseManagedBean{
     
     @EJB
     OrderController orderController;
+    @EJB
+    ProductCommons productCommons;
     
-    private UserOrder order;
+//    private UserOrder order;
     
     public UserOrder getOpenOrder(){
         List<UserOrder> orders = getUser().getOrders();
@@ -42,10 +48,27 @@ public class OrderControllerMB extends BaseManagedBean{
         return null;
     }
     
-    public void createNewOrder(){
-        UserOrder newOrder = orderController.newOrder(getSecurityContext(), getUser());
+    public void removeOrderItemFromOrder(OrderItem orderItem){
+        UserOrder order = orderController.removeOrderItemFromOrder(getSecurityContext(), getOrder(), orderItem);
+        setOrder(order);
+    }
+    
+    public void addOrderItemToOrder(Product product){
+        UserOrder order = orderController.addProductToOrder(getSecurityContext(), getOrder(), product);
+        setOrder(order);
+        addSuccessMessage(product.getName(), "Sucessfuly added to cart!");
+    }
+
+    
+    protected void createNewOrderInternal() {
+        UserOrder newOrder = orderController.newOrder(getSecurityContext(), getUser(), getSalesObject());
         newOrder = orderController.save(getSecurityContext(), newOrder);
         setOrder(newOrder);
+    }
+
+    public void createNewOrder() {
+        createNewOrderInternal();
+        navigate("order.xhtml?faces-redirect=true");
     }
     
     public String getNumberOrItemsInOrder(){
@@ -56,15 +79,21 @@ public class OrderControllerMB extends BaseManagedBean{
         return "0";
     }
     
+    public List<Product> getAllActiveProducts(){
+        List<Product> products = productCommons.getAllForSalesObject(getSecurityContext(), getSalesObject());
+        products = products.stream().filter(p -> !p.getDisabled()).collect(Collectors.toList());
+        return products;
+    }
+    
     public UserOrder getOrder(){
-        if(order == null){
-            order = getOpenOrder();
+        if(getSecurityContext().getOrder() == null){
+            getSecurityContext().setOrder(getOpenOrder());
         }
-        return order;
+        return getSecurityContext().getOrder();
     }
 
     public void setOrder(UserOrder order) {
-        this.order = order;
+        getSecurityContext().setOrder(order);
     }
     
     

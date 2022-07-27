@@ -65,6 +65,26 @@ public class Product implements IEntity, Serializable{
         
     }
     
+    public Attachment getFeaturedImage(){
+        List<Attachment> att = getAttachments();
+        if(att != null && !att.isEmpty()){
+            return att.get(0);
+        }
+        return null;
+    }
+
+    public List<Attachment> getContentImages(){
+        List<Attachment> att = getAttachments();
+        if(att != null && !att.isEmpty()){
+            Attachment featuredImage = getFeaturedImage();
+            if(featuredImage != null){
+                att.remove(featuredImage);
+            }
+           return att;
+        }
+        return null;
+    }
+    
     @Override
     public Long getId() {
         return id;

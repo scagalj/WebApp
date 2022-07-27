@@ -36,15 +36,50 @@
     <h:body id="bodyComponent">
         <div class="card">
             <h:form id="menuform">
-                <p:menubar>
+                <p:menubar style="position: fixed; width: 100%; z-index: 999999;">
                     <p:menuitem value="Home" ajax="false" url="index.xhtml" />
                     <f:facet name="options">
 
-                        <p:badge value="#{OrderControllerMB.getNumberOrItemsInOrder()}" severity="danger" styleClass="ml-3">
-                            <h:commandLink value="">
+                        <p:badge id="shoppingCartBadge" value="#{OrderControllerMB.getNumberOrItemsInOrder()}" severity="danger" styleClass="ml-3">
+                            <p:commandLink value="" 
+                                           update=":menuform:shoppingCartDetails"
+                                           oncomplete="PF('shoppingCartDetailsOP').show('#{component.clientId}')"
+                                           >
                                 <i class="pi pi-shopping-cart" style="font-size: 1.5rem" ></i>
-                            </h:commandLink>
+                            </p:commandLink>
+                                <p:effect type="bounce" event="load"/>
                         </p:badge>
+                        <p:overlayPanel  dismissable="true" widgetVar="shoppingCartDetailsOP" my="right bottom"  style="width:250px" >
+                                <p:outputPanel id="shoppingCartDetails" style="text-align:center;">
+                                    <h:panelGroup rendered="#{OrderControllerMB.order != null}">
+                                        
+                                        <p:outputLabel value="#{OrderControllerMB.order.id}" />
+                                        
+                                        <p:dataList value="#{OrderControllerMB.order.orderItems}"
+                                                    var="row"
+                                                    type="definition">
+                                            <h:panelGrid columns="5">
+                                                
+                                            <p:outputLabel value="#{row.product.name} "/>
+                                            <p:outputLabel value="#{row.quantity}" />
+                                            <p:outputLabel value="#{row.price}" />
+                                            <p:outputLabel value=" = #{row.finalPrice}" />
+                                            
+                                            <p:commandButton icon="pi pi-multiple" value="X" 
+                                                             action="#{OrderControllerMB.removeOrderItemFromOrder(row)}" 
+                                                             process="@this" 
+                                                             update="menuform:shoppingCartDetails menuform:shoppingCartBadge" 
+                                                             />
+                                            </h:panelGrid>
+                                        
+                                        </p:dataList>
+                                        
+                                        <p:outputLabel value="Sum: "/>
+                                        <p:outputLabel value="#{OrderControllerMB.order.finalPrice} €" />
+                                        
+                                    </h:panelGroup>
+                                </p:outputPanel>
+                            </p:overlayPanel>
                         <p:spacer width="30" />
                         <p:commandButton value="Logout" icon="pi pi-fw pi-sign-out" styleClass="ui-button-info" action="#{SecurityMB.logout()}" process="@this"/>
                     </f:facet>
