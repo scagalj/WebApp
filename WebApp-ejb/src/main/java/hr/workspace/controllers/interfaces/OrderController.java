@@ -45,4 +45,6 @@ public interface OrderController {
     UserOrder removePaymentFromOrder(SecurityContext sc, UserOrder order, Payment payment);
     
     Payment newPayment(SecurityContext sc, UserOrder order);
+    
+    UserOrder reload(SecurityContext sc, UserOrder editingObject);
 }

@@ -53,7 +53,7 @@ public class ContactUser implements IEntity, Serializable {
 
     private Boolean disabled;
 
-    @OneToMany(mappedBy = "contactUser", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "contactUser", fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     private List<UserOrder> orders;
     
     @OneToMany(mappedBy = "contactUser", fetch = FetchType.EAGER)

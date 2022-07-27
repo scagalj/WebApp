@@ -37,6 +37,7 @@ public class OrderControllerMB extends BaseManagedBean{
         List<UserOrder> orders = getUser().getOrders();
         for(UserOrder order : orders){
             if(UserOrderStatus.INIT.equals(order.getUserOrderStatus())){
+                order = orderController.reload(getSecurityContext(), order);
                 return order;
             }
         }
