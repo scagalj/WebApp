@@ -47,4 +47,8 @@ public interface OrderController {
     Payment newPayment(SecurityContext sc, UserOrder order);
     
     UserOrder reload(SecurityContext sc, UserOrder editingObject);
+    
+    UserOrder makeOrderAsCompleted(SecurityContext sc, UserOrder order);
+    
+    UserOrder makeOrderAsCancelled(SecurityContext sc, UserOrder order);
 }

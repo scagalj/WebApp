@@ -33,6 +33,22 @@
                     </div>
                 </div>
             </div>
+            
+
+            <h:panelGroup rendered="#{OrderControllerMB.order != null}">
+                <p:commandLink value="Make order" action="#{OrderControllerMB.makeOrderAsCompleted()}" update="@form menuform" />
+            </h:panelGroup>
+            
+            <br/>
+            <br/>
+            <br/>
+            
+            <h:panelGroup rendered="#{OrderControllerMB.order != null}">
+                <p:commandLink value="Cancel order" action="#{OrderControllerMB.makeOrderAsCancelled()}" update="@form menuform" />
+            </h:panelGroup>
+            <br/>
+            <br/>
+            <br/>
 
 
 

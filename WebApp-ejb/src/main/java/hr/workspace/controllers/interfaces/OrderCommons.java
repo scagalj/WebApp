@@ -5,6 +5,7 @@
  */
 package hr.workspace.controllers.interfaces;
 
+import hr.workspace.models.ContactUser;
 import hr.workspace.models.UserOrder;
 import hr.workspace.security.SecurityContext;
 import java.util.List;
@@ -21,4 +22,5 @@ public interface OrderCommons {
     
     List<UserOrder> getAllActive(SecurityContext sc);
     
+    List<UserOrder> getCurrentlyActiveOrderForUser(SecurityContext sc, ContactUser user);
 }

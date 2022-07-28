@@ -12,7 +12,7 @@ package hr.workspace.models;
 public enum UserOrderStatus {
     
     INIT,
-    PROGRESS,
+    IN_PROGRESS,
     CANCELLED,
     COMPLETED,
     AUTHORIZED

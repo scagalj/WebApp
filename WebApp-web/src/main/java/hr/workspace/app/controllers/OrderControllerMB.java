@@ -5,6 +5,7 @@
  */
 package hr.workspace.app.controllers;
 
+import hr.workspace.controllers.interfaces.OrderCommons;
 import hr.workspace.controllers.interfaces.OrderController;
 import hr.workspace.controllers.interfaces.ProductCommons;
 import hr.workspace.models.OrderItem;
@@ -30,11 +31,13 @@ public class OrderControllerMB extends BaseManagedBean{
     OrderController orderController;
     @EJB
     ProductCommons productCommons;
+    @EJB
+    OrderCommons orderCommons;
     
 //    private UserOrder order;
     
     public UserOrder getOpenOrder(){
-        List<UserOrder> orders = getUser().getOrders();
+        List<UserOrder> orders = orderCommons.getCurrentlyActiveOrderForUser(getSecurityContext(), getUser());
         for(UserOrder order : orders){
             if(UserOrderStatus.INIT.equals(order.getUserOrderStatus())){
                 order = orderController.reload(getSecurityContext(), order);
@@ -60,13 +63,30 @@ public class OrderControllerMB extends BaseManagedBean{
         addSuccessMessage(product.getName(), "Sucessfuly added to cart!");
     }
 
+    public void makeOrderAsCompleted(){
+        UserOrder order = orderController.makeOrderAsCompleted(getSecurityContext(), getOrder());
+        if(order != null){
+            setOrder(null);
+            addSuccessMessage("Order completed");
+        }
+    }
+    
+    
+    
+    public void makeOrderAsCancelled(){
+        UserOrder order = orderController.makeOrderAsCancelled(getSecurityContext(), getOrder());
+        if(order != null){
+            setOrder(null);
+            addSuccessMessage("Order canceled");
+        }
+    }
     
     protected void createNewOrderInternal() {
         UserOrder newOrder = orderController.newOrder(getSecurityContext(), getUser(), getSalesObject());
         newOrder = orderController.save(getSecurityContext(), newOrder);
         setOrder(newOrder);
     }
-
+    
     public void createNewOrder() {
         createNewOrderInternal();
         navigate("order.xhtml?faces-redirect=true");

@@ -15,6 +15,7 @@ import hr.workspace.models.Payment;
 import hr.workspace.models.Product;
 import hr.workspace.models.SalesObject;
 import hr.workspace.models.UserOrder;
+import hr.workspace.models.UserOrderStatus;
 import hr.workspace.security.SecurityContext;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -83,6 +84,44 @@ public class OrderControllerBean extends MainAdminTransactionControllerBean<User
             log(sc, Level.ALL, ex, true);
         }
         return so;
+    }
+    
+    @Override
+    public UserOrder makeOrderAsCompleted(SecurityContext sc, UserOrder order){
+        try{
+            utx.begin();
+            order.setUserOrderStatus(UserOrderStatus.COMPLETED);
+            order = merge(order);
+            utx.commit();
+            return order;
+        }catch(Exception ex){
+            try {
+                utx.rollback();
+            } catch (Exception ex1) {
+                log(sc, Level.ALL, ex1, true);
+            }
+            log(sc, Level.ALL, ex, true);
+        }
+        return order;
+    }
+    
+    @Override
+    public UserOrder makeOrderAsCancelled(SecurityContext sc, UserOrder order){
+        try{
+            utx.begin();
+            order.setUserOrderStatus(UserOrderStatus.CANCELLED);
+            order = merge(order);
+            utx.commit();
+            return order;
+        }catch(Exception ex){
+            try {
+                utx.rollback();
+            } catch (Exception ex1) {
+                log(sc, Level.ALL, ex1, true);
+            }
+            log(sc, Level.ALL, ex, true);
+        }
+        return order;
     }
 
     @Override
@@ -163,6 +202,10 @@ public class OrderControllerBean extends MainAdminTransactionControllerBean<User
                 order.getOrderItems().add(orderItem);
                 persist(orderItem);
             }
+            
+            order.setUserOrderStatus(UserOrderStatus.IN_PROGRESS);
+            order = merge(order);
+            
             utx.commit();
             return order;
         } catch (Exception ex) {

@@ -7,6 +7,7 @@ package hr.workspace.controllers;
 
 import hr.workspace.controllers.interfaces.OrderCommons;
 import hr.workspace.controllers.interfaces.SalesObjectCommons;
+import hr.workspace.models.ContactUser;
 import hr.workspace.models.SalesObject;
 import hr.workspace.models.UserOrder;
 import hr.workspace.security.SecurityContext;
@@ -15,6 +16,7 @@ import java.util.logging.Level;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.persistence.Query;
 
 /**
  *
@@ -44,6 +46,15 @@ public class OrderCommonsBean extends AbstractCommonsBean<UserOrder> implements 
             log(sc, Level.ALL, e, true);
         }
         return null;
+    }
+    
+    @Override
+    public List<UserOrder> getCurrentlyActiveOrderForUser(SecurityContext sc, ContactUser user){
+        Query q = em.createNativeQuery("Select u From UserOrder u where u.contactuser_id = #id and (userorderstatus = 0 or userorderstatus = 1)");
+        q.setParameter("id", user.getId());
+        List<UserOrder> orders = (List<UserOrder>)q.getResultList();
+        return orders;
+        
     }
     
 }
