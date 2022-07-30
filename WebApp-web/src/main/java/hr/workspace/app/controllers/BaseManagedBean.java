@@ -30,7 +30,7 @@ public abstract class BaseManagedBean implements Serializable {
     protected void executeScript(String script) {
         PrimeFaces.current().executeScript(script);
     }
-    
+
     protected void showDialog(String widgetVar) {
         executeScript("PF('" + widgetVar + "').show();");
     }
@@ -43,14 +43,14 @@ public abstract class BaseManagedBean implements Serializable {
         executeScript("navigator.clipboard.writeText('" + text + "');");
         addSuccessMessage("Text added to clipboard", text);
     }
-    
+
     public void navigate(String navigation) {
         if (navigation != null) {
             FacesContext context = FacesContext.getCurrentInstance();
             context.getApplication().getNavigationHandler().handleNavigation(context, null, navigation);
         }
     }
-    
+
     public SecurityContext getSecurityContext() {
         return getSessionScopeValue("securityContext", SecurityContext.class);
     }
@@ -70,7 +70,7 @@ public abstract class BaseManagedBean implements Serializable {
         FacesContext fc = FacesContext.getCurrentInstance();
         fc.addMessage(null, facesMsg);
     }
-    
+
     public void addWarningMessage(String msg, String detail) {
         FacesMessage facesMsg = new FacesMessage(FacesMessage.SEVERITY_WARN, msg, detail);
         FacesContext fc = FacesContext.getCurrentInstance();
@@ -114,7 +114,7 @@ public abstract class BaseManagedBean implements Serializable {
                 = ctx.getApplication().getExpressionFactory().createMethodExpression(ctx.getELContext(), expression, Void.class, expectedParamTypes);
         return methodExpression.invoke(ctx.getELContext(), params);
     }
-    
+
     protected Object invokeELExpressionMethodWithParams(String expression, Object... params) {
         Object[] localParams = (params == null) ? new Object[]{} : params;
         Class[] types = Arrays.asList(localParams).stream().map(p -> p.getClass()).toArray(Class[]::new);
@@ -169,9 +169,9 @@ public abstract class BaseManagedBean implements Serializable {
             context.getExternalContext().getRequestMap().remove(name);
         }
     }
-    
-    public StreamedContent generateStreamedContent(Attachment att){
-        if(att == null || att.getData() == null){
+
+    public StreamedContent generateStreamedContent(Attachment att) {
+        if (att == null || att.getData() == null) {
             return null;
         }
         InputStream stream = new ByteArrayInputStream(att.getData());
@@ -182,28 +182,28 @@ public abstract class BaseManagedBean implements Serializable {
                 .build();
         return file;
     }
-    
-    public byte[] generateImageContent(Attachment att){
-        if(att == null || att.getData() == null){
+
+    public byte[] generateImageContent(Attachment att) {
+        if (att == null || att.getData() == null) {
             return null;
         }
         return att.getData();
     }
-    
-        public ContactUser getUser() {
+
+    public ContactUser getUser() {
         return getSecurityContext().getLogedUser();
     }
 
     public void setUser(ContactUser user) {
         getSecurityContext().setLogedUser(user);
     }
-    
-    public SalesObject getSalesObject(){
+
+    public SalesObject getSalesObject() {
         return getSecurityContext().getSalesObject();
     }
-    
+
     public void setSalesObject(SalesObject salesObject) {
         getSecurityContext().setSalesObject(salesObject);
     }
-    
+
 }

@@ -340,4 +340,9 @@ public class OrderControllerBean extends MainAdminTransactionControllerBean<User
         }
         return null;
     }
+    
+    public Boolean canCreateNewOrder(SecurityContext sc, ContactUser user, SalesObject salesObject){
+        //TODO: Provjera postoji li vec kreirana narduzba koja je u initu ili progresu!
+        return true;
+    }
 }

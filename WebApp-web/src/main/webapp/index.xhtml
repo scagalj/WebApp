@@ -10,49 +10,126 @@
     <ui:define name="content">
 
         <h:form>
-            <div class="card-container mx-8">
-                <div class="grid justify-content-center">
-                    <div class="col p-4 align-items-center justify-content-center">
-                        <i class="pi pi-user-edit justify-content-center align-items-center" style="font-size: 3rem"></i>
-                        <p:commandLink value="Fill your data" action="user.xhtml?faces-redirect=true" />
+            <div class="container">
+                <h:panelGroup class="ui-g">
+                    <div class="ui-datagrid-column ui-g-12 ui-md-4">
+                        <div class="product-grid-item card" style="margin: 10px">
+                            <div class="midlecenter">
+                                <div style="text-align: center;">
+                                    <i class="pi pi-tag product-category-icon" style="font-size: 3em"></i>
+                                    <div>
+                                        <p:commandLink value="Fill your data" action="user.xhtml?faces-redirect=true" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col p-4">
-                        <i class="pi pi-user-plus" style="font-size: 3rem"></i>
-                        <h3>Add representatives</h3>
+                    <div class="ui-datagrid-column ui-g-12 ui-md-4">
+                        <div class="product-grid-item card" style="margin: 10px; border-color: #{UserControllerMB.user.getBalance() > 0 ? 'green' : 'red'};">
+                            <div class="midlecenter">
+                                <div style="text-align: center;">
+                                    <i class="pi pi-tag product-category-icon" style="font-size: 3em"></i>
+                                    <div style="color: #{UserControllerMB.user.getBalance() > 0 ? 'green' : 'red'}">
+                                        <h5> Yor account balance is : </h5>
+                                        <h3><b>#{UserControllerMB.user.getBalance()}  €</b></h3>
+                                    </div>
+                                    <br/>
+                                    <div>
+                                        <p:commandLink value="Your orders" action="orderhistory.xhtml?faces-redirect=true" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col p-4">
-                        <i class="pi pi-shopping-cart" style="font-size: 3rem"></i>
-                        <h:panelGroup rendered="#{OrderControllerMB.order != null}">
-                            <p:commandLink value="Go to shopping" action="order.xhtml?faces-redirect=true" />
-                        </h:panelGroup>
-                        <h:panelGroup rendered="#{OrderControllerMB.order == null}">
-                            <p:commandLink value="Make new order" action="#{OrderControllerMB.createNewOrder()}" update="@form" />
-                        </h:panelGroup>
-                        
-                        <h3>Make new order</h3>
+                    <div class="ui-datagrid-column ui-g-12 ui-md-4">
+                        <div class="product-grid-item card" style="margin: 10px">
+                            <div class="midlecenter">
+                                <div style="text-align: center;">
+                                    <i class="pi pi-tag product-category-icon" style="font-size: 3em"></i>
+                                    <div>
+                                        <h5>Your booth location:</h5>
+                                        <h4><b>Not defined yet!</b></h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                </h:panelGroup>
+
+                <style>
+                    .midlecenter{
+                        height: 300px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                    }
+                </style>
+
+                <h:panelGroup>
+                    <h:panelGroup class="ui-g" rendered="#{OrderControllerMB.order != null}">
+                        <div class="ui-datagrid-column ui-g-12 ui-md-4">
+                            <div class="product-grid-item card" style="margin: 10px">
+                                <div class="midlecenter">
+                                    <div style="text-align: center;">
+                                        <i class="pi pi-tag product-category-icon" style="font-size: 3em"></i>
+                                        <div>
+                                            <p:commandLink value="Go to shopping" action="order.xhtml?faces-redirect=true" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="ui-datagrid-column ui-g-12 ui-md-4">
+                            <div class="product-grid-item card" style="margin: 10px">
+                                <div class="midlecenter">
+                                    <div style="text-align: center;">
+                                        <i class="pi pi-tag product-category-icon" style="font-size: 3em"></i>
+                                        <div><h4>Add representives</h4></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="ui-datagrid-column ui-g-12 ui-md-4">
+                            <div class="product-grid-item card" style="margin: 10px">
+                                <div class="midlecenter">
+                                    <div style="text-align: center;">
+                                        <i class="pi pi-tag product-category-icon" style="font-size: 3em"></i>
+                                        <div style="width: 100%; display: inline-block;">
+                                            <div class="ui-g">
+                                                <div class="ui-g-6">
+                                                    <p:commandButton value="Cancel order" action="#{OrderControllerMB.makeOrderAsCancelled()}" update="@form menuform" >
+                                                        <p:confirm type="popup" header="Confirmation" message="Are you sure you want to proceed?" icon="pi pi-exclamation-triangle"/>
+                                                    </p:commandButton>
+                                                </div>
+                                                <div class="ui-g-6">
+                                                    <p:commandButton value="Go to check out" action="#{OrderControllerMB.makeOrderAsCompleted()}" update="@form menuform" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </h:panelGroup>
+                    <h:panelGroup class="ui-g" rendered="#{OrderControllerMB.order == null}">
+                        <div class="ui-g-12 ui-md-12 ui-lg-12">
+                            <div class="product-grid-item card" style="margin: 10px">
+                                <div class="midlecenter">
+                                    <div style="text-align: center;">
+                                        <i class="pi pi-tag product-category-icon" style="font-size: 3em"></i>
+                                        <div>
+                                            <p:commandLink value="Make new order" action="#{OrderControllerMB.createNewOrder()}" update="@form" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </h:panelGroup>
+                </h:panelGroup>
+
             </div>
-            
-
-            <h:panelGroup rendered="#{OrderControllerMB.order != null}">
-                <p:commandLink value="Make order" action="#{OrderControllerMB.makeOrderAsCompleted()}" update="@form menuform" />
-            </h:panelGroup>
-            
-            <br/>
-            <br/>
-            <br/>
-            
-            <h:panelGroup rendered="#{OrderControllerMB.order != null}">
-                <p:commandLink value="Cancel order" action="#{OrderControllerMB.makeOrderAsCancelled()}" update="@form menuform" />
-            </h:panelGroup>
-            <br/>
-            <br/>
-            <br/>
-
-
-
-
         </h:form>
     </ui:define>
 </ui:composition>

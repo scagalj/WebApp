@@ -9,6 +9,8 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -114,6 +116,8 @@ public class UserOrder implements IEntity, Serializable{
         this.disabled = disabled;
     }
     
+    //Dodat discount!
+    //Dodat promo code!
     public BigDecimal getFinalPrice(){
         BigDecimal result = BigDecimal.ZERO;
         for(OrderItem orderItem : getOrderItems()){

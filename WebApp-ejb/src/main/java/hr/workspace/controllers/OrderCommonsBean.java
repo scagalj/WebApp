@@ -10,7 +10,9 @@ import hr.workspace.controllers.interfaces.SalesObjectCommons;
 import hr.workspace.models.ContactUser;
 import hr.workspace.models.SalesObject;
 import hr.workspace.models.UserOrder;
+import hr.workspace.models.UserOrderStatus;
 import hr.workspace.security.SecurityContext;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import javax.ejb.Stateless;
@@ -48,11 +50,20 @@ public class OrderCommonsBean extends AbstractCommonsBean<UserOrder> implements 
         return null;
     }
     
+    
     @Override
-    public List<UserOrder> getCurrentlyActiveOrderForUser(SecurityContext sc, ContactUser user){
-        Query q = em.createNativeQuery("Select u From UserOrder u where u.contactuser_id = #id and (userorderstatus = 0 or userorderstatus = 1)");
-        q.setParameter("id", user.getId());
-        List<UserOrder> orders = (List<UserOrder>)q.getResultList();
+    public List<UserOrder> getCurrentlyActiveOrderForUser(SecurityContext sc, ContactUser user, SalesObject salesObject){
+        System.out.println("TEST1");
+        Query query = em.createQuery("Select u from UserOrder u "
+                + "where u.contactUser = :contactUser "
+                + "and u.salesObject = :salesObject "
+                + "and (u.userOrderStatus = :init or u.userOrderStatus = :progress)");
+        query.setParameter("contactUser", user);
+        query.setParameter("salesObject", salesObject);
+        query.setParameter("init", UserOrderStatus.INIT);
+        query.setParameter("progress", UserOrderStatus.IN_PROGRESS);
+//        Query q = em.createNativeQuery("Select u From UserOrder u where u.contactuser_id = #id and u.salesobject_id = #salesObjectId and (userorderstatus = 0 or userorderstatus = 1)");
+        List<UserOrder> orders = new ArrayList<>(query.getResultList());
         return orders;
         
     }

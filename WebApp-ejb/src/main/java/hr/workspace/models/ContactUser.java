@@ -8,8 +8,10 @@ package hr.workspace.models;
 import com.sun.javafx.scene.control.skin.VirtualFlow;
 import hr.workspace.common.FileUtils;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -218,6 +220,24 @@ public class ContactUser implements IEntity, Serializable {
         return true;
     }
 
+    public List<UserOrder> getUserOrdersByStatus(UserOrderStatus status){
+        return getOrders().stream().filter(o -> status.equals(o.getUserOrderStatus())).collect(Collectors.toList());
+    }
     
+    public BigDecimal getBalance(){
+        BigDecimal result = BigDecimal.ZERO;
+        List<UserOrder> orders = getUserOrdersByStatus(UserOrderStatus.COMPLETED);
+        for(UserOrder tmpOrder : orders){
+            for(Payment orderPayment : tmpOrder.getPayments()){
+                result = result.add(orderPayment.getAmount());
+            }
+            result = result.subtract(tmpOrder.getFinalPrice());
+        }
+        return result;
+    }
     
+//    public BigDecimal getOrdersAmount(){
+//        BigDecimal
+//    }
+//    
 }

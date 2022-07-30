@@ -15,6 +15,7 @@ import hr.workspace.models.UserOrderStatus;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -36,19 +37,29 @@ public class OrderControllerMB extends BaseManagedBean{
     
 //    private UserOrder order;
     
-    public UserOrder getOpenOrder(){
-        List<UserOrder> orders = orderCommons.getCurrentlyActiveOrderForUser(getSecurityContext(), getUser());
-        for(UserOrder order : orders){
-            if(UserOrderStatus.INIT.equals(order.getUserOrderStatus())){
-                order = orderController.reload(getSecurityContext(), order);
-                return order;
+    @PostConstruct
+    public void init() {
+            System.out.println("TEST MAKE ORDER INIT");
+        if (getOrder() == null) {
+            List<UserOrder> orders = orderCommons.getCurrentlyActiveOrderForUser(getSecurityContext(), getUser(), getSalesObject());
+            if (orders != null && !orders.isEmpty()) {
+                setOrder(orders.get(0));
             }
         }
-        Optional<UserOrder> activeOrder = orders.stream().filter(o -> UserOrderStatus.INIT.equals(o.getUserOrderStatus())).findFirst();
-        if(activeOrder.isPresent()){
-            UserOrder order = activeOrder.get();
-            return order;
-        }
+    }
+    
+    private UserOrder getOpenOrder(){
+        
+//       
+//for (UserOrder order : orders) {
+//            order = orderController.reload(getSecurityContext(), order);
+//            return (UserOrder) order;
+//        }
+//        List<UserOrder> activeOrder = getUser().getUserOrdersByStatus(UserOrderStatus.INIT);
+//        if(activeOrder != null && !activeOrder.isEmpty()){
+//            UserOrder order = activeOrder.get(0);
+//            return order;
+//        }
         return null;
     }
     
@@ -107,9 +118,9 @@ public class OrderControllerMB extends BaseManagedBean{
     }
     
     public UserOrder getOrder(){
-        if(getSecurityContext().getOrder() == null){
-            getSecurityContext().setOrder(getOpenOrder());
-        }
+//        if(getSecurityContext().getOrder() == null){
+//            getSecurityContext().setOrder(getOpenOrder());
+//        }
         return getSecurityContext().getOrder();
     }
 
