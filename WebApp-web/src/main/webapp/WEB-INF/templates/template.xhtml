@@ -34,6 +34,22 @@
     </h:head>
 
     <h:body id="bodyComponent">
+
+        <style>
+            body .ui-datalist .ui-datalist-content{
+                border: 0px;
+                padding: 0px;
+                font-weight: normal;
+            }
+            .dt.ui-datalist-item{
+                font-weight: normal;
+            }
+            dt{
+                font-weight: 600 !important;
+                
+            }
+        </style>
+
         <div class="card">
             <h:form id="menuform">
                 <p:menubar style="position: fixed; width: 100%; z-index: 999999;">
@@ -49,38 +65,62 @@
                             </p:commandLink>
                             <p:effect type="bounce" event="load"/>
                         </p:badge>
-                        <p:overlayPanel  dismissable="true" widgetVar="shoppingCartDetailsOP" my="right bottom"  >
-                            <h:panelGroup id="shoppingCartDetails" style="text-align:center;">
+                        <p:overlayPanel  dismissable="true" widgetVar="shoppingCartDetailsOP" my="right bottom" style="width: 480px;" >
+                            <h:panelGroup id="shoppingCartDetails" >
                                 <h:panelGroup rendered="#{OrderControllerMB.order != null}">
                                     <p:outputLabel value="#{OrderControllerMB.order.id}" />
 
                                     <p:dataList value="#{OrderControllerMB.order.orderItems}"
                                                 var="row"
-                                                type="definition">
-                                        <h:panelGrid columns="5">
+                                                type="definition"
+                                                style="border: 0px; margin: 0px; padding: 0px;">
 
+
+
+                                        <div class="ui-g">
+                                            <div class="ui-g-5">
+                                                <h:outputText value="#{row.product.name} "/>
+                                            </div>
+                                            <div class="ui-g-6" style="text-align: right;">
+                                                <h:outputText value="#{row.price}" >
+                                                    <f:convertNumber pattern="#,##0.00"  type="number" />
+                                                </h:outputText>
+                                                <h:outputText value="€ " />
+                                                <h:outputText value=" x " />
+                                                <h:outputText value="#{row.quantity}" />
+                                                <h:outputText value=" =" />
+                                                <h:outputText value="#{row.finalPrice}" >
+                                                    <f:convertNumber pattern="#,##0.00"  type="currency" currencySymbol="€" maxFractionDigits="2"  />
+                                                </h:outputText>
+                                                <h:outputText value="€" />
+                                            </div>
+                                            <div class="ui-g-1">
+                                                <p:commandLink value="X" 
+                                                               action="#{OrderControllerMB.removeOrderItemFromOrder(row)}" 
+                                                               process="@this" 
+                                                               update="menuform:shoppingCartDetails menuform:shoppingCartBadge" 
+                                                               />
+                                            </div>
+                                        </div>
+                                        <hr style="margin: 5px;"/>
+                                    </p:dataList>
+                                    <div class="ui-g" style="margin-top: -20px;">
+                                        <div class="ui-g-5">
                                             <h:outputText value="#{row.product.name} "/>
-                                            <h:outputText value="#{row.quantity}" />
-                                            <h:outputText value="#{row.price}" >
-                                                <f:convertNumber pattern="#,##0.00"  type="number" />
-                                            </h:outputText>
-                                            <h:outputText value="#{row.finalPrice}" >
+                                        </div>
+                                        <div class="ui-g-6" style="text-align: right; font-weight: 700;">
+                                            <h:outputText value="Total amount: "/>
+                                            <h:outputText value="#{OrderControllerMB.order.finalPrice}" >
                                                 <f:convertNumber pattern="#,##0.00"  type="currency" currencySymbol="€" maxFractionDigits="2"  />
                                             </h:outputText>
+                                            <h:outputText value="€"/>
+                                        </div>
+                                        <div class="ui-g-1">
+                                        </div>
+                                    </div>
 
-                                            <p:commandButton icon="pi pi-multiple" value="X" 
-                                                             action="#{OrderControllerMB.removeOrderItemFromOrder(row)}" 
-                                                             process="@this" 
-                                                             update="menuform:shoppingCartDetails menuform:shoppingCartBadge" 
-                                                             />
-                                        </h:panelGrid>
 
-                                    </p:dataList>
 
-                                    <h:outputText value="Sum: "/>
-                                    <h:outputText value="#{OrderControllerMB.order.finalPrice}" >
-                                        <f:convertNumber pattern="#,##0.00"  type="currency" currencySymbol="€" maxFractionDigits="2"  />
-                                    </h:outputText>
 
 
                                 </h:panelGroup>
