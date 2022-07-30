@@ -70,6 +70,7 @@ public class OrderControllerBean extends MainAdminTransactionControllerBean<User
         return null;
     }
 
+    @Deprecated
     @Override
     public UserOrder save(SecurityContext sc, UserOrder so) {
         try {
@@ -81,17 +82,62 @@ public class OrderControllerBean extends MainAdminTransactionControllerBean<User
             UserOrder userOrder = super.save(sc, so);
             return userOrder;
         } catch (Exception ex) {
+                        try {
+                utx.rollback();
+            } catch (Exception ex1) {
+                log(sc, Level.ALL, ex1, true);
+            }
             log(sc, Level.ALL, ex, true);
         }
         return so;
     }
     
     @Override
-    public UserOrder makeOrderAsCompleted(SecurityContext sc, UserOrder order){
+    public UserOrder save(SecurityContext sc, UserOrder userOrder, ContactUser user) {
+        try {
+            utx.begin();
+            for(OrderItem oi : userOrder.getOrderItems()){
+                merge(oi);
+            }
+            userOrder = super.save(sc, userOrder);
+            
+            utx.begin();
+            if(user != null){
+                if(!user.getOrders().contains(userOrder)){
+                    user.getOrders().add(userOrder);
+                }
+                merge(user);
+            }
+            
+            utx.commit();
+            
+            return userOrder;
+        } catch (Exception ex) {
+                        try {
+                utx.rollback();
+            } catch (Exception ex1) {
+                log(sc, Level.ALL, ex1, true);
+            }
+            log(sc, Level.ALL, ex, true);
+        }
+        return userOrder;
+    }
+    
+    @Override
+    public UserOrder makeOrderAsCompleted(SecurityContext sc, UserOrder order, ContactUser user){
         try{
             utx.begin();
             order.setUserOrderStatus(UserOrderStatus.COMPLETED);
             order = merge(order);
+            
+            if(user != null && order != null){
+                if(user.getOrders().contains(order)){
+                    user.getOrders().remove(order);
+                }
+                user.getOrders().add(order);
+                merge(user);
+            }
+            
             utx.commit();
             return order;
         }catch(Exception ex){
@@ -106,11 +152,20 @@ public class OrderControllerBean extends MainAdminTransactionControllerBean<User
     }
     
     @Override
-    public UserOrder makeOrderAsCancelled(SecurityContext sc, UserOrder order){
+    public UserOrder makeOrderAsCancelled(SecurityContext sc, UserOrder order, ContactUser user){
         try{
             utx.begin();
             order.setUserOrderStatus(UserOrderStatus.CANCELLED);
             order = merge(order);
+            
+            if(user != null && order != null){
+                if(user.getOrders().contains(order)){
+                    user.getOrders().remove(order);
+                }
+                user.getOrders().add(order);
+                merge(user);
+            }
+            
             utx.commit();
             return order;
         }catch(Exception ex){

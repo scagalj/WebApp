@@ -227,6 +227,7 @@ public class ContactUser implements IEntity, Serializable {
     public BigDecimal getBalance(){
         BigDecimal result = BigDecimal.ZERO;
         List<UserOrder> orders = getUserOrdersByStatus(UserOrderStatus.COMPLETED);
+        orders.addAll(getUserOrdersByStatus(UserOrderStatus.AUTHORIZED));
         for(UserOrder tmpOrder : orders){
             for(Payment orderPayment : tmpOrder.getPayments()){
                 result = result.add(orderPayment.getAmount());

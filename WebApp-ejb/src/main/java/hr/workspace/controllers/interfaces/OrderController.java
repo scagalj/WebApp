@@ -28,7 +28,10 @@ public interface OrderController {
     
     UserOrder newOrder(SecurityContext sc, ContactUser user, SalesObject salesObject);
     
+    @Deprecated
     UserOrder save(SecurityContext sc, UserOrder so);
+    
+    UserOrder save(SecurityContext sc, UserOrder so, ContactUser user);
     
     Boolean deleteOrder(SecurityContext sc, UserOrder so);
     
@@ -48,7 +51,7 @@ public interface OrderController {
     
     UserOrder reload(SecurityContext sc, UserOrder editingObject);
     
-    UserOrder makeOrderAsCompleted(SecurityContext sc, UserOrder order);
+    UserOrder makeOrderAsCompleted(SecurityContext sc, UserOrder order, ContactUser user);
     
-    UserOrder makeOrderAsCancelled(SecurityContext sc, UserOrder order);
+    UserOrder makeOrderAsCancelled(SecurityContext sc, UserOrder order, ContactUser user);
 }

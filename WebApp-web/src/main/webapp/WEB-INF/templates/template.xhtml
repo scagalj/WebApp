@@ -49,10 +49,9 @@
                             </p:commandLink>
                             <p:effect type="bounce" event="load"/>
                         </p:badge>
-                        <p:overlayPanel  dismissable="true" widgetVar="shoppingCartDetailsOP" my="right bottom"  style="width:250px" >
-                            <p:outputPanel id="shoppingCartDetails" style="text-align:center;">
+                        <p:overlayPanel  dismissable="true" widgetVar="shoppingCartDetailsOP" my="right bottom"  >
+                            <h:panelGroup id="shoppingCartDetails" style="text-align:center;">
                                 <h:panelGroup rendered="#{OrderControllerMB.order != null}">
-
                                     <p:outputLabel value="#{OrderControllerMB.order.id}" />
 
                                     <p:dataList value="#{OrderControllerMB.order.orderItems}"
@@ -60,10 +59,14 @@
                                                 type="definition">
                                         <h:panelGrid columns="5">
 
-                                            <p:outputLabel value="#{row.product.name} "/>
-                                            <p:outputLabel value="#{row.quantity}" />
-                                            <p:outputLabel value="#{row.price}" />
-                                            <p:outputLabel value=" = #{row.finalPrice}" />
+                                            <h:outputText value="#{row.product.name} "/>
+                                            <h:outputText value="#{row.quantity}" />
+                                            <h:outputText value="#{row.price}" >
+                                                <f:convertNumber pattern="#,##0.00"  type="number" />
+                                            </h:outputText>
+                                            <h:outputText value="#{row.finalPrice}" >
+                                                <f:convertNumber pattern="#,##0.00"  type="currency" currencySymbol="€" maxFractionDigits="2"  />
+                                            </h:outputText>
 
                                             <p:commandButton icon="pi pi-multiple" value="X" 
                                                              action="#{OrderControllerMB.removeOrderItemFromOrder(row)}" 
@@ -74,11 +77,14 @@
 
                                     </p:dataList>
 
-                                    <p:outputLabel value="Sum: "/>
-                                    <p:outputLabel value="#{OrderControllerMB.order.finalPrice} €" />
+                                    <h:outputText value="Sum: "/>
+                                    <h:outputText value="#{OrderControllerMB.order.finalPrice}" >
+                                        <f:convertNumber pattern="#,##0.00"  type="currency" currencySymbol="€" maxFractionDigits="2"  />
+                                    </h:outputText>
+
 
                                 </h:panelGroup>
-                            </p:outputPanel>
+                            </h:panelGroup>
                         </p:overlayPanel>
                         <p:spacer width="30" />
                         <p:commandButton value="Logout" icon="pi pi-fw pi-sign-out" styleClass="ui-button-info" action="#{SecurityMB.logout()}" process="@this"/>

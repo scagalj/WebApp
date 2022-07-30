@@ -10,6 +10,9 @@
     <ui:define name="content">
 
         <h:form>
+            
+            number oforders: #{OrderControllerMB.user.orders.size()}
+            
             <div class="container">
                 <h:panelGroup class="ui-g">
                     <div class="ui-datagrid-column ui-g-12 ui-md-4">
@@ -31,7 +34,12 @@
                                     <i class="pi pi-tag product-category-icon" style="font-size: 3em"></i>
                                     <div style="color: #{UserControllerMB.user.getBalance() > 0 ? 'green' : 'red'}">
                                         <h5> Yor account balance is : </h5>
-                                        <h3><b>#{UserControllerMB.user.getBalance()}  €</b></h3>
+                                        <h3><b>
+                                                <h:outputText value="#{UserControllerMB.user.getBalance()}">
+                                                    <f:convertNumber pattern="#,##0.00"  type="currency" currencySymbol="€" maxFractionDigits="2"  />
+                                                </h:outputText>
+                                                  €
+                                            </b></h3>
                                     </div>
                                     <br/>
                                     <div>
