@@ -35,9 +35,9 @@ public interface OrderController {
     
     Boolean deleteOrder(SecurityContext sc, UserOrder so);
     
-    UserOrder addProductToOrder(SecurityContext sc, UserOrder order, Product product);
+    UserOrder addProductToOrder(SecurityContext sc, UserOrder order, Product product, ContactUser user);
 
-    UserOrder removeOrderItemFromOrder(SecurityContext sc, UserOrder order, OrderItem orderItem);
+    UserOrder removeOrderItemFromOrder(SecurityContext sc, UserOrder order, OrderItem orderItem, ContactUser user);
     
     Boolean deleteAttachment(SecurityContext sc, UserOrder order, Attachment att);
     

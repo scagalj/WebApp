@@ -171,11 +171,11 @@ public class OrderControllerMB extends BaseManagedBean {
     }
 
     public void addOrderItemToOrder(UserOrder order, Product product) {
-        setUserOrder(controller.addProductToOrder(getSecurityContext(), order, product));
+        setUserOrder(controller.addProductToOrder(getSecurityContext(), order, product, order.getUser()));
     }
 
     public void removeOrderItemToOrder(UserOrder order, OrderItem orderItem) {
-        setUserOrder(controller.removeOrderItemFromOrder(getSecurityContext(), order, orderItem));
+        setUserOrder(controller.removeOrderItemFromOrder(getSecurityContext(), order, orderItem, order.getUser()));
     }
 
     public List<Product> autoCompleteProduct(String query) {

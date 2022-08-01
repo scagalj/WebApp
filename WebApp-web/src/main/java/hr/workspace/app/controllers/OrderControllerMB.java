@@ -11,9 +11,10 @@ import hr.workspace.controllers.interfaces.ProductCommons;
 import hr.workspace.models.OrderItem;
 import hr.workspace.models.Product;
 import hr.workspace.models.UserOrder;
-import hr.workspace.models.UserOrderStatus;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -34,6 +35,8 @@ public class OrderControllerMB extends BaseManagedBean{
     ProductCommons productCommons;
     @EJB
     OrderCommons orderCommons;
+    private List<UserOrder> orders;
+    List<OrderItem> orderItems;
     
 //    private UserOrder order;
     
@@ -46,30 +49,31 @@ public class OrderControllerMB extends BaseManagedBean{
                 setOrder(orders.get(0));
             }
         }
-    }
-    
-    private UserOrder getOpenOrder(){
         
-//       
-//for (UserOrder order : orders) {
-//            order = orderController.reload(getSecurityContext(), order);
-//            return (UserOrder) order;
-//        }
-//        List<UserOrder> activeOrder = getUser().getUserOrdersByStatus(UserOrderStatus.INIT);
-//        if(activeOrder != null && !activeOrder.isEmpty()){
-//            UserOrder order = activeOrder.get(0);
-//            return order;
-//        }
-        return null;
+        if (orderItems == null) {
+            orderItems = new ArrayList<>();
+            for (UserOrder order : getSortedUserOrders()) {
+                orderItems.addAll(order.getOrderItems());
+            }
+            Collections.sort(orderItems, new Comparator<OrderItem>() {
+                @Override
+                public int compare(OrderItem o1, OrderItem o2) {
+                    return o2.getUserOrder().getId().compareTo(o1.getUserOrder().getId());
+                }
+            } );
+        System.out.println("ORDERS:");
+        orderItems.forEach(o1 -> System.out.println(o1.getUserOrder().getId()));
+        }
+        
     }
     
     public void removeOrderItemFromOrder(OrderItem orderItem){
-        UserOrder order = orderController.removeOrderItemFromOrder(getSecurityContext(), getOrder(), orderItem);
+        UserOrder order = orderController.removeOrderItemFromOrder(getSecurityContext(), getOrder(), orderItem, getUser());
         setOrder(order);
     }
     
     public void addOrderItemToOrder(Product product){
-        UserOrder order = orderController.addProductToOrder(getSecurityContext(), getOrder(), product);
+        UserOrder order = orderController.addProductToOrder(getSecurityContext(), getOrder(), product, getUser());
         setOrder(order);
         addSuccessMessage(product.getName(), "Sucessfuly added to cart!");
     }
@@ -117,10 +121,20 @@ public class OrderControllerMB extends BaseManagedBean{
         return products;
     }
     
+    public List<UserOrder> getSortedUserOrders() {
+        if(orders == null){
+            orders = getUser().getOrders();
+            Collections.sort(orders);
+        }
+        return orders; 
+    }
+    
+    public List<OrderItem> getUserOrderItems() {
+        
+        return orderItems;
+    }
+    
     public UserOrder getOrder(){
-//        if(getSecurityContext().getOrder() == null){
-//            getSecurityContext().setOrder(getOpenOrder());
-//        }
         return getSecurityContext().getOrder();
     }
 

@@ -185,7 +185,7 @@ public class OrderControllerBean extends MainAdminTransactionControllerBean<User
             List<OrderItem> orderItems = userOrder.getOrderItems();
             int size = orderItems.size();
             for (OrderItem oi : new ArrayList<>(orderItems)) {
-                userOrder = removeOrderItemFromOrder(sc, userOrder, oi);
+                userOrder = removeOrderItemFromOrder(sc, userOrder, oi, userOrder.getUser());
             }
             
             //TODO izbrisati Attachment i Paymente!!!!!
@@ -205,7 +205,7 @@ public class OrderControllerBean extends MainAdminTransactionControllerBean<User
     }
 
     @Override
-    public UserOrder removeOrderItemFromOrder(SecurityContext sc, UserOrder order, OrderItem orderItem) {
+    public UserOrder removeOrderItemFromOrder(SecurityContext sc, UserOrder order, OrderItem orderItem, ContactUser user) {
         try {
 
             utx.begin();
@@ -214,6 +214,15 @@ public class OrderControllerBean extends MainAdminTransactionControllerBean<User
             order.getOrderItems().remove(orderItem);
             boolean result = super.remove(orderItem);
             order = merge(order);
+            
+            if (user != null) {
+                if (user.getOrders().contains(order)) {
+                    user.getOrders().remove(order);
+                }
+                user.getOrders().add(order);
+                merge(user);
+            }
+            
             if (result) {
                 utx.commit();
                 return order;
@@ -232,7 +241,7 @@ public class OrderControllerBean extends MainAdminTransactionControllerBean<User
     }
 
     @Override
-    public UserOrder addProductToOrder(SecurityContext sc, UserOrder order, Product product) {
+    public UserOrder addProductToOrder(SecurityContext sc, UserOrder order, Product product, ContactUser user) {
         try {
             System.out.println("TEST1");
             utx.begin();
@@ -260,6 +269,14 @@ public class OrderControllerBean extends MainAdminTransactionControllerBean<User
             
             order.setUserOrderStatus(UserOrderStatus.IN_PROGRESS);
             order = merge(order);
+            
+            if (user != null) {
+                if (user.getOrders().contains(order)) {
+                    user.getOrders().remove(order);
+                }
+                user.getOrders().add(order);
+                merge(user);
+            }
             
             utx.commit();
             return order;

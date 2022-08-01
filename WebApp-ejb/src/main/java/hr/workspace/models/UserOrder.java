@@ -32,7 +32,7 @@ import javax.persistence.OneToMany;
     @NamedQuery(name = UserOrder.getAll, query = "select so from UserOrder so"),
     @NamedQuery(name = UserOrder.getAllActive, query = "select so from UserOrder so where so.disabled=false")
 })
-public class UserOrder implements IEntity, Serializable{
+public class UserOrder implements IEntity, Serializable, Comparable<UserOrder>{
     
     public final static String getAll = "hr.workspace.models.UserOrder.getAll";
     public final static String getAllActive = "hr.workspace.models.UserOrder.getAllActive";
@@ -65,6 +65,13 @@ public class UserOrder implements IEntity, Serializable{
         orderItems = new ArrayList<>();
         disabled = false;
         userOrderStatus = UserOrderStatus.INIT;
+    }
+    
+    public String getAllProductsNameByComma(){
+        StringBuilder result = new StringBuilder();
+        getOrderItems().forEach(i -> result.append(i.getProduct().getName()).append(","));
+        
+        return result.toString();
     }
     
     @Override
@@ -170,6 +177,11 @@ public class UserOrder implements IEntity, Serializable{
             return false;
         }
         return true;
+    }
+
+    @Override
+    public int compareTo(UserOrder o) {
+        return o.getId().compareTo(this.getId());
     }
 
     
