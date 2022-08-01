@@ -1,0 +1,64 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/templates/template.xhtml">
+
+    <ui:param name="module" value="orders" />
+
+    <ui:define name="content">
+
+        <h:form>
+
+            <p:dataTable value="#{CheckOutControllerMB.orderItems}"
+                         var="row"
+                         >
+
+                <p:headerRow field="product.productType"
+                             expandable="false"
+                             expanded="true">
+
+                    <p:column colspan="4">
+                        <div class="inline-flex align-items-center" style="vertical-align: middle">
+                            <h:outputText styleClass="ml-2" value="#{row.product.productType}"/>
+                        </div>
+                    </p:column>
+                </p:headerRow>
+
+                <p:column headerText="ID" >
+                    <h:outputText value="#{row.id}" />
+                </p:column>
+                <p:column headerText="Name" >
+                    <h:outputText value="#{row.product.name}" />
+                </p:column>
+                <p:column headerText="Category" >
+                    <h:outputText value="#{row.product.productType}" />
+                </p:column>
+                <p:column headerText="Price" >
+                    <h:outputText value="#{row.finalPrice}" >
+                        <f:convertNumber type="currency" currencySymbol="€ "/>
+                    </h:outputText>
+                </p:column>
+
+                <p:columnGroup type="footer">
+                <p:row>
+                    <p:column colspan="3" style="text-align:right" footerText="Totals:"/>
+                    <p:column>
+                        <f:facet name="footer">
+                            <h:outputText value="#{CheckOutControllerMB.order.finalPrice}">
+                                <f:convertNumber type="currency" currencySymbol="€ " />
+                            </h:outputText>
+                        </f:facet>
+                    </p:column>
+                </p:row>
+            </p:columnGroup>
+
+            </p:dataTable>
+
+
+            <p:commandButton value="Make order" action="#{OrderControllerMB.makeOrderAsCompleted()}" update="@form menuform" />
+        </h:form>
+    </ui:define>
+</ui:composition>
+

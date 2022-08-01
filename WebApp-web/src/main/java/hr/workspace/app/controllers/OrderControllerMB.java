@@ -134,13 +134,4 @@ public class OrderControllerMB extends BaseManagedBean{
         return orderItems;
     }
     
-    public UserOrder getOrder(){
-        return getSecurityContext().getOrder();
-    }
-
-    public void setOrder(UserOrder order) {
-        getSecurityContext().setOrder(order);
-    }
-    
-    
 }

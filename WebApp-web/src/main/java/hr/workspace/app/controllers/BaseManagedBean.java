@@ -8,6 +8,7 @@ package hr.workspace.app.controllers;
 import hr.workspace.models.Attachment;
 import hr.workspace.models.ContactUser;
 import hr.workspace.models.SalesObject;
+import hr.workspace.models.UserOrder;
 import hr.workspace.security.SecurityContext;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -196,6 +197,14 @@ public abstract class BaseManagedBean implements Serializable {
 
     public void setUser(ContactUser user) {
         getSecurityContext().setLogedUser(user);
+    }
+    
+        public UserOrder getOrder(){
+        return getSecurityContext().getOrder();
+    }
+
+    public void setOrder(UserOrder order) {
+        getSecurityContext().setOrder(order);
     }
 
     public SalesObject getSalesObject() {
