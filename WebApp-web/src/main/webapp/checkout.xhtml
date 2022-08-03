@@ -9,6 +9,16 @@
 
     <ui:define name="content">
 
+        <style>
+            tr.ui-rowgroup-header.ui-datatable-headerrow.ui-widget-header td{
+                padding: 0.5rem;
+            }
+            body .ui-datatable .ui-datatable-data > tr > td{
+                padding: 0.5rem;
+            }
+            
+            </style>
+        
         <h:form>
 
             <p:dataTable value="#{CheckOutControllerMB.orderItems}"
@@ -17,42 +27,59 @@
 
                 <p:headerRow field="product.productType"
                              expandable="false"
-                             expanded="true">
+                             expanded="true"
+                             style="padding: 0px; margin: 0px;">
 
-                    <p:column colspan="4">
+                    <p:column colspan="6">
                         <div class="inline-flex align-items-center" style="vertical-align: middle">
                             <h:outputText styleClass="ml-2" value="#{row.product.productType}"/>
                         </div>
                     </p:column>
                 </p:headerRow>
 
-                <p:column headerText="ID" >
-                    <h:outputText value="#{row.id}" />
+                <p:column width="50">
+                    <p:outputLabel value="#{row.id}" />
                 </p:column>
+                <p:column width="120">
+                    <p:graphicImage
+                        style="width: 50px; height: 50px; margin-left: 15px;"
+                        value="#{CheckOutControllerMB.generateImageContent(row.product.getFeaturedImage().loadImageContentToAttachment())}" 
+                        stream="false" 
+                        />
+                </p:column>
+               
                 <p:column headerText="Name" >
                     <h:outputText value="#{row.product.name}" />
                 </p:column>
-                <p:column headerText="Category" >
-                    <h:outputText value="#{row.product.productType}" />
+                <p:column headerText="Unit price" width="100">
+                    <h:outputText value="#{row.price}" >
+                        <f:convertNumber type="currency" currencySymbol="€ "/>
+                    </h:outputText>
                 </p:column>
-                <p:column headerText="Price" >
+                <p:column width="100">
+                    <p:spinner value="#{row.quantity}" stepFactor="1" min="1">
+                        <p:ajax event="valueChange" delay="500" update="@form" listener="#{CheckOutControllerMB.updateOrderItemQuantity}" />
+                        <f:attribute value="#{row}" name="selectedRow" />
+                    </p:spinner>
+                </p:column>
+                <p:column headerText="Final price" width="140">
                     <h:outputText value="#{row.finalPrice}" >
                         <f:convertNumber type="currency" currencySymbol="€ "/>
                     </h:outputText>
                 </p:column>
 
                 <p:columnGroup type="footer">
-                <p:row>
-                    <p:column colspan="3" style="text-align:right" footerText="Totals:"/>
-                    <p:column>
-                        <f:facet name="footer">
-                            <h:outputText value="#{CheckOutControllerMB.order.finalPrice}">
-                                <f:convertNumber type="currency" currencySymbol="€ " />
-                            </h:outputText>
-                        </f:facet>
-                    </p:column>
-                </p:row>
-            </p:columnGroup>
+                    <p:row>
+                        <p:column colspan="5" style="text-align:right" footerText="Totals:"/>
+                        <p:column>
+                            <f:facet name="footer">
+                                <h:outputText value="#{CheckOutControllerMB.order.finalPrice}">
+                                    <f:convertNumber type="currency" currencySymbol="€ " />
+                                </h:outputText>
+                            </f:facet>
+                        </p:column>
+                    </p:row>
+                </p:columnGroup>
 
             </p:dataTable>
 

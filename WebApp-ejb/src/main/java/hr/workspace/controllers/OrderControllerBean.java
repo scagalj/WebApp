@@ -38,7 +38,7 @@ import org.primefaces.model.file.UploadedFile;
  *
  * @author Stjepan
  */
-@Stateful
+ @Stateful
 @TransactionManagement(TransactionManagementType.BEAN)
 public class OrderControllerBean extends MainAdminTransactionControllerBean<UserOrder> implements OrderController {
 
@@ -291,6 +291,40 @@ public class OrderControllerBean extends MainAdminTransactionControllerBean<User
         return null;
     }
     
+    @Override
+    public UserOrder updateOrderItemQuantity(SecurityContext sc, UserOrder order, ContactUser user, OrderItem orderItem, Integer newQuantity){
+        try{
+            utx.begin();
+            orderItem.setQuantity(newQuantity);
+            orderItem =  merge(orderItem);
+            
+            if (order != null) {
+                if (order.getOrderItems().contains(orderItem)) {
+                    order.getOrderItems().remove(orderItem);
+                }
+                order.getOrderItems().add(orderItem);
+                order = merge(order);
+            }
+            if (user != null) {
+                if (user.getOrders().contains(order)) {
+                    user.getOrders().remove(order);
+                }
+                user.getOrders().add(order);
+                merge(user);
+            }
+            utx.commit();
+            return order;
+        }catch(Exception ex){
+           log(sc, Level.SEVERE, ex, true);
+            try {
+                utx.rollback();
+            } catch (Exception ex1) {
+                log(sc, Level.SEVERE, ex1, true);
+            } 
+        }
+        
+        return null;
+    }
     
     @Override
     public UserOrder saveAttachmen(SecurityContext sc, UserOrder order, UploadedFile file) {

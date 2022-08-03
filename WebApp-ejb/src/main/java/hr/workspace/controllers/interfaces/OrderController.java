@@ -54,4 +54,6 @@ public interface OrderController {
     UserOrder makeOrderAsCompleted(SecurityContext sc, UserOrder order, ContactUser user);
     
     UserOrder makeOrderAsCancelled(SecurityContext sc, UserOrder order, ContactUser user);
+    
+    UserOrder updateOrderItemQuantity(SecurityContext sc, UserOrder order, ContactUser user, OrderItem orderItem, Integer newQuantity);
 }
