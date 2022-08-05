@@ -32,14 +32,14 @@ import javax.persistence.TemporalType;
     @NamedQuery(name = Discount.getAllActive, query = "select d from Discount d where d.disabled=false")
 })
 public class Discount implements IEntity, Serializable {
-    
+
     public final static String getAll = "hr.workspace.models.Discount.getAll";
     public final static String getAllActive = "hr.workspace.models.Discount.getAllActive";
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "discount_id_seq")
     private Long id;
-    
+
     private String name;
     private BigDecimal amount;
     @Enumerated(EnumType.ORDINAL)
@@ -58,13 +58,29 @@ public class Discount implements IEntity, Serializable {
     private Boolean disabled;
 
     public Discount() {
-    
+
         contactUsers = new ArrayList<>();
         products = new ArrayList<>();
         promoCode = false;
         disabled = false;
     }
-    
+
+    public Boolean isValid(UserOrder order, ContactUser contactUser, OrderItem orderItem, Date validOnDate) {
+        if (validOnDate != null && !(validOnDate.after(getValidFrom()) && validOnDate.before(getValidTo()))) {
+            return false;
+        }
+
+        if (contactUser != null && !getContactUsers().isEmpty() && !getContactUsers().contains(contactUser)) {
+            return false;
+        }
+        if (!getPromoCode()) {
+            if(orderItem != null && !getProducts().isEmpty() && !getProducts().contains(orderItem.getProduct())){
+                return false;
+            }
+        }
+        return true;
+    }
+
     @Override
     public Long getId() {
         return id;
@@ -145,7 +161,7 @@ public class Discount implements IEntity, Serializable {
     public void setDisabled(Boolean disabled) {
         this.disabled = disabled;
     }
-    
+
     public List<ContactUser> getContactUsers() {
         return contactUsers;
     }
@@ -161,9 +177,8 @@ public class Discount implements IEntity, Serializable {
     public void setProducts(List<Product> products) {
         this.products = products;
     }
- 
-    
-        @Override
+
+    @Override
     public int hashCode() {
         int hash = 0;
         hash += (this.id != null ? this.id.hashCode() : 0);
@@ -184,5 +199,5 @@ public class Discount implements IEntity, Serializable {
         }
         return true;
     }
-    
+
 }

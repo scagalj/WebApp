@@ -7,6 +7,8 @@ package hr.workspace.controllers.interfaces;
 
 import hr.workspace.models.Attachment;
 import hr.workspace.models.ContactUser;
+import hr.workspace.models.Discount;
+import hr.workspace.models.OrderDiscount;
 import hr.workspace.models.OrderItem;
 import hr.workspace.models.Payment;
 import hr.workspace.models.Product;
@@ -56,4 +58,8 @@ public interface OrderController {
     UserOrder makeOrderAsCancelled(SecurityContext sc, UserOrder order, ContactUser user);
     
     UserOrder updateOrderItemQuantity(SecurityContext sc, UserOrder order, ContactUser user, OrderItem orderItem, Integer newQuantity);
+    
+    UserOrder addDiscountToOrder(SecurityContext sc, UserOrder order, Discount product, ContactUser user);
+    
+    UserOrder removeOrderDiscountFromOrder(SecurityContext sc, UserOrder order, OrderDiscount orderDiscount, ContactUser user);
 }

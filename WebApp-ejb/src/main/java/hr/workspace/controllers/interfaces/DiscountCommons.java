@@ -5,7 +5,9 @@
  */
 package hr.workspace.controllers.interfaces;
 
+import hr.workspace.models.ContactUser;
 import hr.workspace.models.Discount;
+import hr.workspace.models.UserOrder;
 import hr.workspace.security.SecurityContext;
 import java.util.List;
 import javax.ejb.Local;
@@ -20,5 +22,7 @@ public interface DiscountCommons {
     List<Discount> getAllActive(SecurityContext sc);
     
     List<Discount> getAll(SecurityContext sc);
+    
+    Discount getPromoCodeForUser(SecurityContext sc, ContactUser user, UserOrder order, String promoCode);
     
 }

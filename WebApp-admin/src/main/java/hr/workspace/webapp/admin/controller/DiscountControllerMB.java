@@ -9,8 +9,12 @@ import hr.workspace.controllers.interfaces.DiscountCommons;
 import hr.workspace.controllers.interfaces.DiscountController;
 import hr.workspace.models.ContactUser;
 import hr.workspace.models.Discount;
+import hr.workspace.models.DiscountType;
 import hr.workspace.models.Product;
+import java.util.ArrayList;
+import java.util.List;
 import javax.ejb.EJB;
+import javax.faces.model.SelectItem;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import org.primefaces.event.SelectEvent;
@@ -108,6 +112,17 @@ public class DiscountControllerMB extends BaseManagedBean {
     public void deleteProductFromDiscont(Product product) {
         Discount discount = controller.removeProduct(getSecurityContext(), getDiscount(), product);
         setDiscount(discount);
+    }
+    
+    public List<SelectItem> getAllDiscountTypes(){
+        List<SelectItem> result = new ArrayList<>();
+        
+        for(DiscountType type : DiscountType.values()){
+            result.add(new SelectItem(type, type.name()));
+        }
+        
+        return result;
+        
     }
 
     public Discount getDiscount() {

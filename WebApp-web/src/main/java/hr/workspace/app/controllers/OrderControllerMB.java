@@ -78,24 +78,6 @@ public class OrderControllerMB extends BaseManagedBean{
         addSuccessMessage(product.getName(), "Sucessfuly added to cart!");
     }
 
-    public void makeOrderAsCompleted(){
-        UserOrder order = orderController.makeOrderAsCompleted(getSecurityContext(), getOrder(), getUser());
-        if(order != null){
-            setOrder(null);
-            addSuccessMessage("Order completed");
-        }
-    }
-    
-    
-    
-    public void makeOrderAsCancelled(){
-        UserOrder order = orderController.makeOrderAsCancelled(getSecurityContext(), getOrder(), getUser());
-        if(order != null){
-            setOrder(null);
-            addSuccessMessage("Order canceled");
-        }
-    }
-    
     protected void createNewOrderInternal() {
         UserOrder newOrder = orderController.newOrder(getSecurityContext(), getUser(), getSalesObject());
         newOrder = orderController.save(getSecurityContext(), newOrder, getUser());

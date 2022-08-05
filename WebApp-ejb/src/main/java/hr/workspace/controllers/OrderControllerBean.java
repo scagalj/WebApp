@@ -10,6 +10,8 @@ import hr.workspace.controllers.interfaces.OrderCommons;
 import hr.workspace.controllers.interfaces.OrderController;
 import hr.workspace.models.Attachment;
 import hr.workspace.models.ContactUser;
+import hr.workspace.models.Discount;
+import hr.workspace.models.OrderDiscount;
 import hr.workspace.models.OrderItem;
 import hr.workspace.models.Payment;
 import hr.workspace.models.Product;
@@ -24,21 +26,17 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.stream.Stream;
 import javax.ejb.EJB;
 import javax.ejb.Stateful;
 import javax.ejb.TransactionManagement;
 import javax.ejb.TransactionManagementType;
-import javax.persistence.criteria.Order;
-import javax.transaction.SystemException;
 import org.primefaces.model.file.UploadedFile;
 
 /**
  *
  * @author Stjepan
  */
- @Stateful
+@Stateful
 @TransactionManagement(TransactionManagementType.BEAN)
 public class OrderControllerBean extends MainAdminTransactionControllerBean<UserOrder> implements OrderController {
 
@@ -56,7 +54,7 @@ public class OrderControllerBean extends MainAdminTransactionControllerBean<User
         }
         return null;
     }
-    
+
     @Override
     public UserOrder newOrder(SecurityContext sc, ContactUser user, SalesObject salesObject) {
         try {
@@ -75,106 +73,73 @@ public class OrderControllerBean extends MainAdminTransactionControllerBean<User
     public UserOrder save(SecurityContext sc, UserOrder so) {
         try {
             utx.begin();
-            for(OrderItem oi : so.getOrderItems()){
+            for (OrderItem oi : so.getOrderItems()) {
                 merge(oi);
             }
-            
+
             UserOrder userOrder = super.save(sc, so);
             return userOrder;
         } catch (Exception ex) {
-                        try {
-                utx.rollback();
-            } catch (Exception ex1) {
-                log(sc, Level.ALL, ex1, true);
-            }
             log(sc, Level.ALL, ex, true);
+            makeTransactionRollBack(sc);
         }
         return so;
     }
-    
+
     @Override
     public UserOrder save(SecurityContext sc, UserOrder userOrder, ContactUser user) {
         try {
             utx.begin();
-            for(OrderItem oi : userOrder.getOrderItems()){
+            for (OrderItem oi : userOrder.getOrderItems()) {
                 merge(oi);
             }
             userOrder = super.save(sc, userOrder);
-            
+
             utx.begin();
-            if(user != null){
-                if(!user.getOrders().contains(userOrder)){
-                    user.getOrders().add(userOrder);
-                }
-                merge(user);
-            }
-            
+            user = updateUserWithOrder(user, userOrder);
+
             utx.commit();
-            
+
             return userOrder;
         } catch (Exception ex) {
-                        try {
-                utx.rollback();
-            } catch (Exception ex1) {
-                log(sc, Level.ALL, ex1, true);
-            }
             log(sc, Level.ALL, ex, true);
+            makeTransactionRollBack(sc);
         }
         return userOrder;
     }
-    
+
     @Override
-    public UserOrder makeOrderAsCompleted(SecurityContext sc, UserOrder order, ContactUser user){
-        try{
+    public UserOrder makeOrderAsCompleted(SecurityContext sc, UserOrder order, ContactUser user) {
+        try {
             utx.begin();
             order.setUserOrderStatus(UserOrderStatus.COMPLETED);
             order = merge(order);
-            
-            if(user != null && order != null){
-                if(user.getOrders().contains(order)){
-                    user.getOrders().remove(order);
-                }
-                user.getOrders().add(order);
-                merge(user);
-            }
-            
+
+            user = updateUserWithOrder(user, order);
+
             utx.commit();
             return order;
-        }catch(Exception ex){
-            try {
-                utx.rollback();
-            } catch (Exception ex1) {
-                log(sc, Level.ALL, ex1, true);
-            }
+        } catch (Exception ex) {
             log(sc, Level.ALL, ex, true);
+            makeTransactionRollBack(sc);
         }
         return order;
     }
-    
+
     @Override
-    public UserOrder makeOrderAsCancelled(SecurityContext sc, UserOrder order, ContactUser user){
-        try{
+    public UserOrder makeOrderAsCancelled(SecurityContext sc, UserOrder order, ContactUser user) {
+        try {
             utx.begin();
             order.setUserOrderStatus(UserOrderStatus.CANCELLED);
             order = merge(order);
-            
-            if(user != null && order != null){
-                if(user.getOrders().contains(order)){
-                    user.getOrders().remove(order);
-                }
-                user.getOrders().add(order);
-                merge(user);
-            }
-            
+
+            user = updateUserWithOrder(user, order);
+
             utx.commit();
             return order;
-        }catch(Exception ex){
-            try {
-                utx.rollback();
-            } catch (Exception ex1) {
-                log(sc, Level.ALL, ex1, true);
-            }
+        } catch (Exception ex) {
             log(sc, Level.ALL, ex, true);
+            makeTransactionRollBack(sc);
         }
         return order;
     }
@@ -187,14 +152,13 @@ public class OrderControllerBean extends MainAdminTransactionControllerBean<User
             for (OrderItem oi : new ArrayList<>(orderItems)) {
                 userOrder = removeOrderItemFromOrder(sc, userOrder, oi, userOrder.getUser());
             }
-            
-            //TODO izbrisati Attachment i Paymente!!!!!
-            //TODO izbrisati Attachment i Paymente!!!!!
-            //TODO izbrisati Attachment i Paymente!!!!!
-            //TODO izbrisati Attachment i Paymente!!!!!
-            //TODO izbrisati Attachment i Paymente!!!!!
-            //TODO izbrisati Attachment i Paymente!!!!!
 
+            //TODO izbrisati Attachment i Paymente!!!!!
+            //TODO izbrisati Attachment i Paymente!!!!!
+            //TODO izbrisati Attachment i Paymente!!!!!
+            //TODO izbrisati Attachment i Paymente!!!!!
+            //TODO izbrisati Attachment i Paymente!!!!!
+            //TODO izbrisati Attachment i Paymente!!!!!
             userOrder = merge(userOrder);
             Boolean success = super.delete(sc, userOrder);
             return success;
@@ -214,15 +178,9 @@ public class OrderControllerBean extends MainAdminTransactionControllerBean<User
             order.getOrderItems().remove(orderItem);
             boolean result = super.remove(orderItem);
             order = merge(order);
-            
-            if (user != null) {
-                if (user.getOrders().contains(order)) {
-                    user.getOrders().remove(order);
-                }
-                user.getOrders().add(order);
-                merge(user);
-            }
-            
+
+            user = updateUserWithOrder(user, order);
+
             if (result) {
                 utx.commit();
                 return order;
@@ -230,12 +188,8 @@ public class OrderControllerBean extends MainAdminTransactionControllerBean<User
                 utx.rollback();
             }
         } catch (Exception ex) {
-            try {
-                utx.rollback();
-            } catch (Exception ex1) {
-                log(sc, Level.ALL, ex1, true);
-            }
             log(sc, Level.ALL, ex, true);
+            makeTransactionRollBack(sc);
         }
         return order;
     }
@@ -266,66 +220,70 @@ public class OrderControllerBean extends MainAdminTransactionControllerBean<User
                 order.getOrderItems().add(orderItem);
                 persist(orderItem);
             }
-            
+
             order.setUserOrderStatus(UserOrderStatus.IN_PROGRESS);
             order = merge(order);
-            
-            if (user != null) {
-                if (user.getOrders().contains(order)) {
-                    user.getOrders().remove(order);
-                }
-                user.getOrders().add(order);
-                merge(user);
-            }
-            
+
+            user = updateUserWithOrder(user, order);
+
             utx.commit();
             return order;
         } catch (Exception ex) {
             log(sc, Level.SEVERE, ex, true);
-            try {
-                utx.rollback();
-            } catch (Exception ex1) {
-                log(sc, Level.SEVERE, ex1, true);
-            }
+            makeTransactionRollBack(sc);
         }
         return null;
     }
-    
+
     @Override
-    public UserOrder updateOrderItemQuantity(SecurityContext sc, UserOrder order, ContactUser user, OrderItem orderItem, Integer newQuantity){
-        try{
+    public UserOrder updateOrderItemQuantity(SecurityContext sc, UserOrder order, ContactUser user, OrderItem orderItem, Integer newQuantity) {
+        try {
             utx.begin();
             orderItem.setQuantity(newQuantity);
-            orderItem =  merge(orderItem);
-            
-            if (order != null) {
-                if (order.getOrderItems().contains(orderItem)) {
-                    order.getOrderItems().remove(orderItem);
-                }
-                order.getOrderItems().add(orderItem);
-                order = merge(order);
-            }
-            if (user != null) {
-                if (user.getOrders().contains(order)) {
-                    user.getOrders().remove(order);
-                }
-                user.getOrders().add(order);
-                merge(user);
-            }
+            orderItem = merge(orderItem);
+
+            order = updateOrderWithOrderIterm(order, orderItem);
+            user = updateUserWithOrder(user, order);
             utx.commit();
             return order;
-        }catch(Exception ex){
-           log(sc, Level.SEVERE, ex, true);
-            try {
-                utx.rollback();
-            } catch (Exception ex1) {
-                log(sc, Level.SEVERE, ex1, true);
-            } 
+        } catch (Exception ex) {
+            log(sc, Level.SEVERE, ex, true);
+            makeTransactionRollBack(sc);
         }
-        
+
         return null;
     }
-    
+
+    private UserOrder updateOrderWithOrderIterm(UserOrder order, OrderItem orderItem) {
+        if (order != null) {
+            if (order.getOrderItems().contains(orderItem)) {
+                order.getOrderItems().remove(orderItem);
+            }
+            order.getOrderItems().add(orderItem);
+            order = merge(order);
+        }
+        return order;
+    }
+
+    private ContactUser updateUserWithOrder(ContactUser user, UserOrder order) {
+        if (user != null) {
+            if (user.getOrders().contains(order)) {
+                user.getOrders().remove(order);
+            }
+            user.getOrders().add(order);
+            user = merge(user);
+        }
+        return user;
+    }
+
+    private void makeTransactionRollBack(SecurityContext sc) {
+        try {
+            utx.rollback();
+        } catch (Exception ex1) {
+            log(sc, Level.SEVERE, ex1, true);
+        }
+    }
+
     @Override
     public UserOrder saveAttachmen(SecurityContext sc, UserOrder order, UploadedFile file) {
         if (file.getSize() <= 0) {
@@ -349,12 +307,8 @@ public class OrderControllerBean extends MainAdminTransactionControllerBean<User
                 utx.commit();
                 System.out.println("FILE uspjesno spremljen na disk!!!");
             } catch (Exception ex) {
-                try {
-                    utx.rollback();
-                } catch (Exception ex1) {
-                    log(sc, Level.SEVERE, ex1, true);
-                }
                 log(sc, Level.SEVERE, ex, true);
+                makeTransactionRollBack(sc);
             }
         } else {
             System.out.println("FILE nije spremljen na disk!!!");
@@ -379,25 +333,26 @@ public class OrderControllerBean extends MainAdminTransactionControllerBean<User
             }
         } catch (Exception e) {
             log(sc, Level.SEVERE, e, true);
+            makeTransactionRollBack(sc);
         }
         return false;
     }
-    
+
     @Override
-    public Payment newPayment(SecurityContext sc, UserOrder order){
+    public Payment newPayment(SecurityContext sc, UserOrder order) {
         Payment payment = new Payment();
         payment.setUserOrder(order);
         payment.setPaymentDate(new Date());
         return payment;
     }
-    
+
     @Override
     public UserOrder removePaymentFromOrder(SecurityContext sc, UserOrder order, Payment payment) {
         try {
 
             utx.begin();
             payment.setUserOrder(null);
-            if(order.getPayments().contains(payment)){
+            if (order.getPayments().contains(payment)) {
                 order.getPayments().remove(payment);
             }
             boolean result = super.remove(payment);
@@ -409,12 +364,8 @@ public class OrderControllerBean extends MainAdminTransactionControllerBean<User
                 utx.rollback();
             }
         } catch (Exception ex) {
-            try {
-                utx.rollback();
-            } catch (Exception ex1) {
-                log(sc, Level.ALL, ex1, true);
-            }
             log(sc, Level.ALL, ex, true);
+            makeTransactionRollBack(sc);
         }
         return order;
     }
@@ -424,12 +375,12 @@ public class OrderControllerBean extends MainAdminTransactionControllerBean<User
         try {
             System.out.println("TEST ADD PAYMENT START");
             utx.begin();
-            if(!order.getPayments().contains(payment)){
+            if (!order.getPayments().contains(payment)) {
                 order.getPayments().add(payment);
             }
-            if(payment.getId() == null){
+            if (payment.getId() == null) {
                 persist(payment);
-            }else{
+            } else {
                 merge(payment);
             }
             order = merge(order);
@@ -438,16 +389,69 @@ public class OrderControllerBean extends MainAdminTransactionControllerBean<User
             return order;
         } catch (Exception ex) {
             log(sc, Level.SEVERE, ex, true);
-            try {
-                utx.rollback();
-            } catch (Exception ex1) {
-                log(sc, Level.SEVERE, ex1, true);
-            }
+            makeTransactionRollBack(sc);
+        }
+        return null;
+    }
+
+    @Override
+    public UserOrder addDiscountToOrder(SecurityContext sc, UserOrder order, Discount discount, ContactUser user) {
+        try {
+            System.out.println("Add discount to Order");
+            utx.begin();
+
+            OrderDiscount orderDiscount = new OrderDiscount();
+            orderDiscount.setDiscount(discount);
+            orderDiscount.setUserOrder(order);
+            orderDiscount.setName(discount.getName());
+            orderDiscount.setAmount(discount.getAmount());
+            orderDiscount.setPromoCode(discount.getPromoCode());
+            orderDiscount.setPromoCodeValue(discount.getPromoCodeValue());
+            orderDiscount.setType(discount.getType());
+                    
+            order.getOrderDiscounts().add(orderDiscount);
+            persist(orderDiscount);
+
+            order = merge(order);
+
+            user = updateUserWithOrder(user, order);
+
+            utx.commit();
+            return order;
+        } catch (Exception ex) {
+            log(sc, Level.SEVERE, ex, true);
+            makeTransactionRollBack(sc);
         }
         return null;
     }
     
-    public Boolean canCreateNewOrder(SecurityContext sc, ContactUser user, SalesObject salesObject){
+    @Override
+    public UserOrder removeOrderDiscountFromOrder(SecurityContext sc, UserOrder order, OrderDiscount orderDiscount, ContactUser user) {
+        try {
+
+            utx.begin();
+            orderDiscount.setUserOrder(null);
+            orderDiscount.setDiscount(null);
+            order.getOrderDiscounts().remove(orderDiscount);
+            boolean result = super.remove(orderDiscount);
+            order = merge(order);
+
+            user = updateUserWithOrder(user, order);
+
+            if (result) {
+                utx.commit();
+                return order;
+            } else {
+                utx.rollback();
+            }
+        } catch (Exception ex) {
+            log(sc, Level.ALL, ex, true);
+            makeTransactionRollBack(sc);
+        }
+        return order;
+    }
+
+    public Boolean canCreateNewOrder(SecurityContext sc, ContactUser user, SalesObject salesObject) {
         //TODO: Provjera postoji li vec kreirana narduzba koja je u initu ili progresu!
         return true;
     }

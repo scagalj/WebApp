@@ -116,9 +116,19 @@
                                         value="#{DiscountControllerMB.discount.priority}"
                                         decimalPlaces="0"
                                         />
+                                    
+                                    <p:outputLabel value="Amount: " />
+                                    <p:inputNumber
+                                        value="#{DiscountControllerMB.discount.amount}"
+                                        />
+                                    <p:outputLabel value="Type: " />
+                                    <p:selectOneMenu
+                                        value="#{DiscountControllerMB.discount.type}"
+                                        >
+                                        <f:selectItems value="#{DiscountControllerMB.allDiscountTypes}" />
+                                    </p:selectOneMenu>
 
-
-                                    <p:outputLabel value="Valid from " />
+                                    <p:outputLabel value="Valid from: " />
                                     <p:datePicker 
                                         value="#{DiscountControllerMB.discount.validFrom}" 
                                         pattern="dd.MM.yyyy HH:mm" 
@@ -131,14 +141,14 @@
                                         pattern="dd.MM.yyyy HH:mm" 
                                         showTime="true"
                                         />
-                                    
-                                    
+
+
                                     <p:outputLabel value="Make it as promocode:" />
                                     <p:selectBooleanCheckbox value="#{DiscountControllerMB.discount.promoCode}"/>
 
                                     <p:outputLabel value="Promocode:" />
                                     <p:inputText value="#{DiscountControllerMB.discount.promoCodeValue}" />
-                                    
+
                                     <p:outputLabel value="Disabled: " />
                                     <p:selectBooleanCheckbox value="#{DiscountControllerMB.discount.disabled}"/>
 
@@ -168,7 +178,7 @@
                             <p:column width="100">
                                 <h:outputText value="#{row.id}" />
                             </p:column>
-                            
+
                             <p:column>
                                 <h:outputText value="#{row.name}" />
                             </p:column>

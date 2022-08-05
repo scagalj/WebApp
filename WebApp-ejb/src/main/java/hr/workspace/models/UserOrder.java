@@ -7,6 +7,7 @@ package hr.workspace.models;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -44,6 +45,9 @@ public class UserOrder implements IEntity, Serializable, Comparable<UserOrder>{
     @OneToMany(mappedBy = "userOrder", fetch = FetchType.EAGER)
     private List<OrderItem> orderItems;
     
+    @OneToMany(mappedBy = "userOrder", fetch = FetchType.EAGER)
+    private List<OrderDiscount> orderDiscounts;
+    
     @ManyToOne
     private SalesObject salesObject;
     
@@ -63,6 +67,7 @@ public class UserOrder implements IEntity, Serializable, Comparable<UserOrder>{
     
     public UserOrder() {
         orderItems = new ArrayList<>();
+        orderDiscounts = new ArrayList<>();
         disabled = false;
         userOrderStatus = UserOrderStatus.INIT;
     }
@@ -72,6 +77,18 @@ public class UserOrder implements IEntity, Serializable, Comparable<UserOrder>{
         getOrderItems().forEach(i -> result.append(i.getProduct().getName()).append(","));
         
         return result.toString();
+    }
+    
+    public Boolean hasPromoCode(){
+        return fetchPromoCode() != null;
+    }
+    
+    public OrderDiscount fetchPromoCode() {
+        Optional<OrderDiscount> discount = getOrderDiscounts().stream().filter(d -> d.getPromoCode()).findFirst();
+        if (discount.isPresent()) {
+            return discount.get();
+        }
+        return null;
     }
     
     @Override
@@ -125,12 +142,31 @@ public class UserOrder implements IEntity, Serializable, Comparable<UserOrder>{
     
     //Dodat discount!
     //Dodat promo code!
-    public BigDecimal getFinalPrice(){
+    public BigDecimal getFinalPriceWithOutDiscount(){
         BigDecimal result = BigDecimal.ZERO;
         for(OrderItem orderItem : getOrderItems()){
             result = result.add(orderItem.getPrice().multiply(new BigDecimal(orderItem.getQuantity())));
         }
         return result;
+    }
+    public BigDecimal getFinalPrice(){
+        BigDecimal finalPrice = getFinalPriceWithOutDiscount();
+        BigDecimal promoCodeDiscountAmount = getPromoCodeDiscountAmount();
+        if(promoCodeDiscountAmount.compareTo(BigDecimal.ZERO) > 0){
+            finalPrice = finalPrice.subtract(promoCodeDiscountAmount).setScale(2, RoundingMode.HALF_UP);
+        }
+ 
+        
+        return finalPrice;
+    }
+        
+    public BigDecimal getPromoCodeDiscountAmount(){
+        BigDecimal finalPriceWithOutDiscount = getFinalPriceWithOutDiscount();
+        OrderDiscount promoCode = fetchPromoCode();
+        if(promoCode != null){
+            return promoCode.getAbsoluteAmountDiscount(finalPriceWithOutDiscount);
+        }
+        return BigDecimal.ZERO;
     }
 
     public List<Attachment> getAttachments() {
@@ -155,6 +191,14 @@ public class UserOrder implements IEntity, Serializable, Comparable<UserOrder>{
 
     public void setUserOrderStatus(UserOrderStatus userOrderStatus) {
         this.userOrderStatus = userOrderStatus;
+    }
+
+    public List<OrderDiscount> getOrderDiscounts() {
+        return orderDiscounts;
+    }
+
+    public void setOrderDiscounts(List<OrderDiscount> orderDiscounts) {
+        this.orderDiscounts = orderDiscounts;
     }
     
     @Override
