@@ -6,9 +6,13 @@
 package hr.workspace.controllers;
 
 import hr.workspace.controllers.interfaces.ProductCommons;
+import hr.workspace.models.Discount;
+import hr.workspace.models.OrderItemDiscount;
 import hr.workspace.models.Product;
 import hr.workspace.models.SalesObject;
 import hr.workspace.security.SecurityContext;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import javax.ejb.Stateless;
@@ -56,4 +60,25 @@ public class ProductCommonsBean extends AbstractCommonsBean<Product> implements 
         }
         return null;
     }
+    
+    @Override
+    public List<Product> updateProductsWithDiscounts(SecurityContext sc, List<Product> products, List<Discount> discounts) {
+        for (Product p : products) {
+            p.setTmpDiscounts(new ArrayList<>());
+            for (Discount d : discounts) {
+                if (d.isValid(sc.getOrder(), sc.getLogedUser(), p, new Date())) {
+                    OrderItemDiscount tmpDisc = new OrderItemDiscount();
+                    tmpDisc.setAmount(d.getAmount());
+                    tmpDisc.setDiscount(d);
+                    tmpDisc.setName(d.getName());
+                    tmpDisc.setType(d.getType());
+                    if(!p.getTmpDiscounts().contains(tmpDisc)){
+                        p.getTmpDiscounts().add(tmpDisc);
+                    }
+                }
+            }
+        }
+        return products;
+    }
+    
 }

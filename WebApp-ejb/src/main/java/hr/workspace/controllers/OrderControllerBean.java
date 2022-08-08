@@ -13,6 +13,7 @@ import hr.workspace.models.ContactUser;
 import hr.workspace.models.Discount;
 import hr.workspace.models.OrderDiscount;
 import hr.workspace.models.OrderItem;
+import hr.workspace.models.OrderItemDiscount;
 import hr.workspace.models.Payment;
 import hr.workspace.models.Product;
 import hr.workspace.models.SalesObject;
@@ -219,6 +220,17 @@ public class OrderControllerBean extends MainAdminTransactionControllerBean<User
                 orderItem.setDiscount(BigDecimal.ZERO);
                 order.getOrderItems().add(orderItem);
                 persist(orderItem);
+                
+                for (OrderItemDiscount disc : product.getTmpDiscounts()) {
+                    OrderItemDiscount tmpOrderItemDiscount = new OrderItemDiscount();
+                    tmpOrderItemDiscount.setAmount(disc.getAmount());
+                    tmpOrderItemDiscount.setName(disc.getName());
+                    tmpOrderItemDiscount.setOrderItem(orderItem);
+                    tmpOrderItemDiscount.setDiscount(disc.getDiscount());
+                    tmpOrderItemDiscount.setType(disc.getType());
+                    persist(tmpOrderItemDiscount);
+                    orderItem.getOrderItemDiscounts().add(tmpOrderItemDiscount);
+                }
             }
 
             order.setUserOrderStatus(UserOrderStatus.IN_PROGRESS);
@@ -408,7 +420,7 @@ public class OrderControllerBean extends MainAdminTransactionControllerBean<User
             orderDiscount.setPromoCode(discount.getPromoCode());
             orderDiscount.setPromoCodeValue(discount.getPromoCodeValue());
             orderDiscount.setType(discount.getType());
-                    
+
             order.getOrderDiscounts().add(orderDiscount);
             persist(orderDiscount);
 
@@ -424,7 +436,7 @@ public class OrderControllerBean extends MainAdminTransactionControllerBean<User
         }
         return null;
     }
-    
+
     @Override
     public UserOrder removeOrderDiscountFromOrder(SecurityContext sc, UserOrder order, OrderDiscount orderDiscount, ContactUser user) {
         try {

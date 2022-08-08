@@ -145,7 +145,7 @@ public class UserOrder implements IEntity, Serializable, Comparable<UserOrder>{
     public BigDecimal getFinalPriceWithOutDiscount(){
         BigDecimal result = BigDecimal.ZERO;
         for(OrderItem orderItem : getOrderItems()){
-            result = result.add(orderItem.getPrice().multiply(new BigDecimal(orderItem.getQuantity())));
+            result = result.add(orderItem.getFinalPrice());
         }
         return result;
     }

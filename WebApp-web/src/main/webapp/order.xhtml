@@ -36,9 +36,22 @@
                         <p:rating readonly="true" value="#{product.rating}"/>
                     </div>
                     <div class="product-grid-item-bottom">
-                        <h:outputText value="#{row.price}" styleClass="product-price">
-                            <f:convertNumber currencySymbol="$" type="currency"/>
+                        <h:outputText value="#{row.price}" styleClass="product-price" style="text-decoration: line-through;">
+                            <f:convertNumber currencySymbol="€" type="currency"/>
                         </h:outputText>
+                        <h:outputText value="#{row.priceWithDiscount}" styleClass="product-price">
+                            <f:convertNumber currencySymbol="€" type="currency"/>
+                        </h:outputText>
+                        <p:spacer width="10" />
+                        <p:inputNumber value="#{row.discountAmountInPercentage}" 
+                                       symbol="%"
+                                       symbolPosition="s"
+                                       decimalPlaces="0"
+                                       disabled="true"
+                                       />
+                            
+                        
+                        
                         <p:commandButton update="menuform" 
                                          action="#{OrderControllerMB.addOrderItemToOrder(row)}"
                                          value="Add To Cart"

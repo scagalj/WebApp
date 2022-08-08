@@ -29,12 +29,14 @@ import javax.persistence.TemporalType;
 @Entity
 @NamedQueries({
     @NamedQuery(name = Discount.getAll, query = "select d from Discount d"),
-    @NamedQuery(name = Discount.getAllActive, query = "select d from Discount d where d.disabled=false")
+    @NamedQuery(name = Discount.getAllActive, query = "select d from Discount d where d.disabled=false"),
+    @NamedQuery(name = Discount.getAllActiveDiscount, query = "select d from Discount d where d.disabled=false and d.promoCode = false")
 })
 public class Discount implements IEntity, Serializable {
 
     public final static String getAll = "hr.workspace.models.Discount.getAll";
     public final static String getAllActive = "hr.workspace.models.Discount.getAllActive";
+    public final static String getAllActiveDiscount = "hr.workspace.models.Discount.getAllActiveDiscount";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "discount_id_seq")
@@ -65,7 +67,11 @@ public class Discount implements IEntity, Serializable {
         disabled = false;
     }
 
-    public Boolean isValid(UserOrder order, ContactUser contactUser, OrderItem orderItem, Date validOnDate) {
+    public Boolean isValid(UserOrder order, ContactUser contactUser, Product product, Date validOnDate) {
+        if(getDisabled()){
+            return false;
+        }
+        
         if (validOnDate != null && !(validOnDate.after(getValidFrom()) && validOnDate.before(getValidTo()))) {
             return false;
         }
@@ -74,7 +80,7 @@ public class Discount implements IEntity, Serializable {
             return false;
         }
         if (!getPromoCode()) {
-            if(orderItem != null && !getProducts().isEmpty() && !getProducts().contains(orderItem.getProduct())){
+            if(product != null && !getProducts().isEmpty() && !getProducts().contains(product)){
                 return false;
             }
         }

@@ -8,6 +8,7 @@ package hr.workspace.controllers;
 import hr.workspace.controllers.interfaces.DiscountCommons;
 import hr.workspace.models.ContactUser;
 import hr.workspace.models.Discount;
+import hr.workspace.models.Product;
 import hr.workspace.models.UserOrder;
 import hr.workspace.security.SecurityContext;
 import java.util.ArrayList;
@@ -41,9 +42,19 @@ public class DiscountCommonsBean extends AbstractCommonsBean<Discount> implement
     @Override
     public List<Discount> getAllActive(SecurityContext sc) {
         try {
-//            List<Discount> result = em.createNamedQuery(Discount.getAllActive).getResultList();
-//            return result;
-            return new ArrayList<>();
+            List<Discount> result = em.createNamedQuery(Discount.getAllActive).getResultList();
+            return result;
+        } catch (Exception e) {
+            log(sc, Level.ALL, e, true);
+        }
+        return null;
+    }
+    
+    @Override
+    public List<Discount> getAllActiveDiscount(SecurityContext sc) {
+        try {
+            List<Discount> result = em.createNamedQuery(Discount.getAllActiveDiscount).getResultList();
+            return result;
         } catch (Exception e) {
             log(sc, Level.ALL, e, true);
         }

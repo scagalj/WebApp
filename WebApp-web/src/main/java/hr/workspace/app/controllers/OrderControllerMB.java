@@ -5,9 +5,11 @@
  */
 package hr.workspace.app.controllers;
 
+import hr.workspace.controllers.interfaces.DiscountCommons;
 import hr.workspace.controllers.interfaces.OrderCommons;
 import hr.workspace.controllers.interfaces.OrderController;
 import hr.workspace.controllers.interfaces.ProductCommons;
+import hr.workspace.models.Discount;
 import hr.workspace.models.OrderItem;
 import hr.workspace.models.Product;
 import hr.workspace.models.UserOrder;
@@ -35,6 +37,8 @@ public class OrderControllerMB extends BaseManagedBean{
     ProductCommons productCommons;
     @EJB
     OrderCommons orderCommons;
+    @EJB
+    DiscountCommons discountCommons;
     private List<UserOrder> orders;
     List<OrderItem> orderItems;
     
@@ -100,6 +104,10 @@ public class OrderControllerMB extends BaseManagedBean{
     public List<Product> getAllActiveProducts(){
         List<Product> products = productCommons.getAllForSalesObject(getSecurityContext(), getSalesObject());
         products = products.stream().filter(p -> !p.getDisabled()).collect(Collectors.toList());
+        
+        List<Discount> discount = discountCommons.getAllActiveDiscount(getSecurityContext());
+        products = productCommons.updateProductsWithDiscounts(getSecurityContext(), products, discount);
+        
         return products;
     }
     

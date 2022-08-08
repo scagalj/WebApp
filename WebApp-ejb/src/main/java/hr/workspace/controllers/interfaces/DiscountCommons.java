@@ -23,6 +23,8 @@ public interface DiscountCommons {
     
     List<Discount> getAll(SecurityContext sc);
     
+    List<Discount> getAllActiveDiscount(SecurityContext sc);
+    
     Discount getPromoCodeForUser(SecurityContext sc, ContactUser user, UserOrder order, String promoCode);
     
 }

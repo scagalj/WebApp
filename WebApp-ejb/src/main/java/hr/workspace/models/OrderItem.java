@@ -7,11 +7,16 @@ package hr.workspace.models;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 /**
  *
@@ -33,13 +38,37 @@ public class OrderItem implements IEntity, Serializable{
     private Integer quantity;
     private BigDecimal discount;
     private BigDecimal price;
+    
+    @OneToMany(mappedBy = "orderItem", fetch = FetchType.EAGER)
+    private List<OrderItemDiscount> orderItemDiscounts;
 
     public OrderItem() {
         price = BigDecimal.ZERO;
         discount = BigDecimal.ZERO;
         quantity = 1;
+        orderItemDiscounts = new ArrayList<>();
     }
     
+    
+     public BigDecimal getDiscountAmount() {
+        BigDecimal result = BigDecimal.ZERO;
+        BigDecimal finalPriceWithOutDiscount = getPrice();
+        List<OrderItemDiscount> tmpDiscounts = getOrderItemDiscounts();
+        if (tmpDiscounts != null && !tmpDiscounts.isEmpty()) {
+            for (OrderItemDiscount disc : tmpDiscounts) {
+                result = result.add(disc.getAbsoluteAmountDiscount(finalPriceWithOutDiscount));
+            }
+        }
+        return result;
+    }
+
+    public BigDecimal getDiscountAmountInPercentage() {
+        BigDecimal percentage = getDiscountAmount().divide(getPrice(), 6, RoundingMode.HALF_UP).multiply(new BigDecimal(100));
+        if(percentage.compareTo(new BigDecimal(100)) > 0){
+            percentage = new BigDecimal(100);
+        }
+        return percentage;
+    }
     
     @Override
     public Long getId() {
@@ -90,10 +119,33 @@ public class OrderItem implements IEntity, Serializable{
         this.price = price;
     }
     
-    public BigDecimal getFinalPrice(){
-        return getPrice().multiply(new BigDecimal(getQuantity()));
+    public BigDecimal getFinalPriceWithoutDiscount(){
+        
+        BigDecimal amount = getPrice().multiply(new BigDecimal(getQuantity()));
+//        BigDecimal amount = price.subtract(getDiscountAmount());
+        if(amount.compareTo(BigDecimal.ZERO) < 0){
+            amount = BigDecimal.ZERO;
+        }
+        return amount;
     }
-    
+    public BigDecimal getFinalPrice(){
+        
+        BigDecimal price = getPrice().multiply(new BigDecimal(getQuantity()));
+        BigDecimal amount = price.subtract(getDiscountAmount());
+        if(amount.compareTo(BigDecimal.ZERO) < 0){
+            amount = BigDecimal.ZERO;
+        }
+        return amount;
+    }
+
+    public List<OrderItemDiscount> getOrderItemDiscounts() {
+        return orderItemDiscounts;
+    }
+
+    public void setOrderItemDiscounts(List<OrderItemDiscount> orderItemDiscounts) {
+        this.orderItemDiscounts = orderItemDiscounts;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;

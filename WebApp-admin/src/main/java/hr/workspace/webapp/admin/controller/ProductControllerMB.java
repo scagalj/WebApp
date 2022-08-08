@@ -10,7 +10,6 @@ import hr.workspace.models.Attachment;
 import hr.workspace.models.Product;
 import hr.workspace.models.SalesObject;
 import javax.ejb.EJB;
-import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import org.primefaces.event.SelectEvent;
