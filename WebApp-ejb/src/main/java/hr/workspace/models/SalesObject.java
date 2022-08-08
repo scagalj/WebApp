@@ -36,15 +36,6 @@ public class SalesObject implements IEntity, Serializable{
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "salesobject_id_seq")
     private Long id;
     
-//    @OneToMany(mappedBy = "salesObject", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    private List<User> contacts;
-//    
-//    @OneToMany(mappedBy = "salesObject", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    private List<ACLUser> users;
-    
-    @OneToMany(mappedBy = "salesObject", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Product> products;
-    
     @OneToMany(mappedBy = "salesObject", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<UserOrder> orders;
     
@@ -64,38 +55,12 @@ public class SalesObject implements IEntity, Serializable{
         this.id = id;
     }
 
-//    public List<User> getContacts() {
-//        return contacts;
-//    }
-//
-//    public void setContacts(List<User> contacts) {
-//        this.contacts = contacts;
-//    }
-//
-//    public List<ACLUser> getUsers() {
-//        return users;
-//    }
-//
-//    public void setUsers(List<ACLUser> users) {
-//        this.users = users;
-//    }
-
     public List<UserOrder> getOrders() {
         return orders;
     }
 
     public void setOrders(List<UserOrder> orders) {
         this.orders = orders;
-    }
-
-    
-    
-    public List<Product> getProducts() {
-        return products;
-    }
-
-    public void setProducts(List<Product> products) {
-        this.products = products;
     }
 
     public String getSalesObjectName() {

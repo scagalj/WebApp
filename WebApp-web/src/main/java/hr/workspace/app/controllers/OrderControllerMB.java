@@ -65,8 +65,6 @@ public class OrderControllerMB extends BaseManagedBean{
                     return o2.getUserOrder().getId().compareTo(o1.getUserOrder().getId());
                 }
             } );
-        System.out.println("ORDERS:");
-        orderItems.forEach(o1 -> System.out.println(o1.getUserOrder().getId()));
         }
         
     }
@@ -102,7 +100,7 @@ public class OrderControllerMB extends BaseManagedBean{
     }
     
     public List<Product> getAllActiveProducts(){
-        List<Product> products = productCommons.getAllForSalesObject(getSecurityContext(), getSalesObject());
+        List<Product> products = productCommons.getAllActive(getSecurityContext());
         products = products.stream().filter(p -> !p.getDisabled()).collect(Collectors.toList());
         
         List<Discount> discount = discountCommons.getAllActiveDiscount(getSecurityContext());

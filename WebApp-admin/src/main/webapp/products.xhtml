@@ -8,75 +8,52 @@
     <ui:param name="module" value="products" />
 
     <ui:define name="content">
-        <h:form id="salesObjectSelectForm">
-
-
-            <p:autoComplete value="#{ProductControllerMB.salesObject}" 
-                            completeMethod="#{SalesObjectCommonsMB.autoCompleteSalesObjects}"
-                            forceSelection="true" minQueryLength="2"
-                            converter="salesObjectConverter"
-                            var="salesObject"
-                            itemLabel="#{salesObject.salesObjectName}" itemValue="#{salesObject}"
-                            >
-                <p:ajax event="itemSelect" update="@form productsForm" process="@form"/> 
-
-            </p:autoComplete>
-<!--            <p:selectOneMenu value="#{ProductControllerMB.salesObject}" >
-                <f:selectItem itemValue="#{null}" itemLabel="Select one" />
-                <f:selectItems  value="#{SalesObjectCommonsMB.selectAllActive}" var="item"  itemLabel="#{item.label}" itemValue="#{item.value}"/>
-                
-                <f:ajax execute="@form"/>
-                <f:converter converterId="salesObjectConverter" />
-            </p:selectOneMenu> -->
-        </h:form>
 
         <h:form id="productsForm">
             <h:panelGroup id="productResultGroup">
-                <h:panelGroup rendered="#{ProductControllerMB.salesObject != null}">
-                    <p:dataTable value="#{ProductCommonsMB.getAllProductsForSalesObject(ProductControllerMB.salesObject)}"
-                                 var="row" rowIndexVar="x" rowKey="y"
-                                 >
+                <p:dataTable value="#{ProductCommonsMB.getAllActive()}"
+                             var="row" rowIndexVar="x" rowKey="y"
+                             >
 
-                        <p:column width="100">
-                            <p:commandButton value="edit" 
-                                             action="#{ProductControllerMB.editProduct(row)}" 
-                                             update="@form tabViewWrapper"
-                                             process="@this"
-                                             />
-                        </p:column>
+                    <p:column width="100">
+                        <p:commandButton value="edit" 
+                                         action="#{ProductControllerMB.editProduct(row)}" 
+                                         update="@form tabViewWrapper"
+                                         process="@this"
+                                         />
+                    </p:column>
 
-                        <p:column headerText="Id" width="50">
-                            <h:outputText value="#{row.id}"/>
-                        </p:column>
+                    <p:column headerText="Id" width="50">
+                        <h:outputText value="#{row.id}"/>
+                    </p:column>
 
-                        <p:column headerText="Name">
-                            <h:outputText value="#{row.name}" />
-                        </p:column>
+                    <p:column headerText="Name">
+                        <h:outputText value="#{row.name}" />
+                    </p:column>
 
-                        <p:column headerText="Quantity">
-                            <h:outputText value="#{row.quantity}" />
-                        </p:column>
+                    <p:column headerText="Quantity">
+                        <h:outputText value="#{row.quantity}" />
+                    </p:column>
 
-                        <p:column headerText="Price">
-                            <h:outputText value="#{row.price}" />
-                        </p:column>
+                    <p:column headerText="Price">
+                        <h:outputText value="#{row.price}" />
+                    </p:column>
 
-                        <p:column width="100">
-                            <p:commandButton value="delete" 
-                                             action="#{ProductControllerMB.deleteProduct(row)}" 
-                                             update="@form"
-                                             />
-                        </p:column>
+                    <p:column width="100">
+                        <p:commandButton value="delete" 
+                                         action="#{ProductControllerMB.deleteProduct(row)}" 
+                                         update="@form"
+                                         />
+                    </p:column>
 
-                    </p:dataTable>
+                </p:dataTable>
 
-                    <p:commandButton value="Create new"
-                                     action="#{ProductControllerMB.createNewProduct()}" 
-                                     update="@form tabViewWrapper:productDialogForm"
-                                     process="@this"
-                                     />
+                <p:commandButton value="Create new"
+                                 action="#{ProductControllerMB.createNewProduct()}" 
+                                 update="@form tabViewWrapper:productDialogForm"
+                                 process="@this"
+                                 />
 
-                </h:panelGroup>
             </h:panelGroup>
 
         </h:form>
@@ -180,29 +157,29 @@
                             <h:panelGroup>
                                 <h:form id="attachmentsForm">
                                     <div class="p-grid">
-                                        
-                                    <p:repeat value="#{ProductControllerMB.product.attachments}" var="att">   
-                                        <div class="p-col-1">
-                                        <p:graphicImage width="250px" 
-                                                        height="250px" 
-                                                        value="#{ProductControllerMB.generateImageContent(att.loadImageContentToAttachment())}" 
-                                                        stream="false" 
-                                                        />
-                                        <p>#{att.fileName}</p>
 
-                                        <p:commandButton value="Ajax Download" 
-                                                         ajax="false" 
-                                                         icon="pi pi-arrow-down" 
-                                                         styleClass="ui-button-outlined"
-                                                         >
-                                            <p:fileDownload value="#{ProductControllerMB.generateStreamedContent(att.loadImageContentToAttachment())}"/>
-                                        </p:commandButton>
-                                        <p:commandButton value="delete" 
-                                                         action="#{ProductControllerMB.deleteAttachment(att)}" 
-                                                         update="@form"
-                                                         />
-                                        </div>
-                                    </p:repeat>
+                                        <p:repeat value="#{ProductControllerMB.product.attachments}" var="att">   
+                                            <div class="p-col-1">
+                                                <p:graphicImage width="250px" 
+                                                                height="250px" 
+                                                                value="#{ProductControllerMB.generateImageContent(att.loadImageContentToAttachment())}" 
+                                                                stream="false" 
+                                                                />
+                                                <p>#{att.fileName}</p>
+
+                                                <p:commandButton value="Ajax Download" 
+                                                                 ajax="false" 
+                                                                 icon="pi pi-arrow-down" 
+                                                                 styleClass="ui-button-outlined"
+                                                                 >
+                                                    <p:fileDownload value="#{ProductControllerMB.generateStreamedContent(att.loadImageContentToAttachment())}"/>
+                                                </p:commandButton>
+                                                <p:commandButton value="delete" 
+                                                                 action="#{ProductControllerMB.deleteAttachment(att)}" 
+                                                                 update="@form"
+                                                                 />
+                                            </div>
+                                        </p:repeat>
                                     </div>
                                 </h:form>
                             </h:panelGroup>

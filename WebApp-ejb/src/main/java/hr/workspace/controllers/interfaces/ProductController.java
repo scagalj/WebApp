@@ -19,9 +19,9 @@ import org.primefaces.model.file.UploadedFile;
 @Local
 public interface ProductController {
     
-    Product newProduct(SecurityContext sc, SalesObject salesObject);
+    Product newProduct(SecurityContext sc);
     
-    Product saveProduct(SecurityContext sc, SalesObject salesObject, Product product);
+    Product saveProduct(SecurityContext sc, Product product);
     
     Boolean deleteProduct(SecurityContext sc, Product product);
     

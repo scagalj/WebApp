@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
-import org.eclipse.persistence.jpa.jpql.parser.OrderByItem;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.file.UploadedFile;
 import org.primefaces.model.file.UploadedFiles;
@@ -180,7 +179,7 @@ public class OrderControllerMB extends BaseManagedBean {
 
     public List<Product> autoCompleteProduct(String query) {
         ProductCommonsMB productCommonsMB = getELExpression(ProductCommonsMB.class, "#{ProductCommonsMB}");
-        List<Product> products = productCommonsMB.getAllProductsForSalesObject(getOrder().getSalesObject());
+        List<Product> products = productCommonsMB.getAllActive();
 
         List<Product> result = products.stream().filter(so -> so.getName().toLowerCase().contains(query.toLowerCase())).collect(Collectors.toList());
         return result;

@@ -9,7 +9,6 @@ import hr.workspace.controllers.interfaces.ProductCommons;
 import hr.workspace.models.Discount;
 import hr.workspace.models.OrderItemDiscount;
 import hr.workspace.models.Product;
-import hr.workspace.models.SalesObject;
 import hr.workspace.security.SecurityContext;
 import java.util.ArrayList;
 import java.util.Date;
@@ -43,17 +42,6 @@ public class ProductCommonsBean extends AbstractCommonsBean<Product> implements 
     public List<Product> getAllActive(SecurityContext sc) {
         try {
             List<Product> result = em.createNamedQuery(Product.getAllActive).getResultList();
-            return result;
-        } catch (Exception e) {
-            log(sc, Level.ALL, e, true);
-        }
-        return null;
-    }
-    
-    @Override
-    public List<Product> getAllForSalesObject(SecurityContext sc, SalesObject salesObject) {
-        try {
-            List<Product> result = em.createNamedQuery(Product.getAllBySalesObject).setParameter("so", salesObject).getResultList();
             return result;
         } catch (Exception e) {
             log(sc, Level.ALL, e, true);

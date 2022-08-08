@@ -28,13 +28,9 @@ import org.primefaces.model.file.UploadedFile;
 public class ProductControllerBean extends MainAdminTransactionControllerBean<Product> implements ProductController{
 
     @Override
-    public Product newProduct(SecurityContext sc, SalesObject salesObject) {
+    public Product newProduct(SecurityContext sc) {
         try {
-            if(salesObject == null){
-                return null;
-            }
             Product result = new Product();
-            result.setSalesObject(salesObject);
             return result;
         } catch (Exception e) {
             log(sc, Level.ALL, e, true);
@@ -43,16 +39,10 @@ public class ProductControllerBean extends MainAdminTransactionControllerBean<Pr
     }
     
     @Override
-    public Product saveProduct(SecurityContext sc, SalesObject salesObject, Product product) {
+    public Product saveProduct(SecurityContext sc, Product product) {
         try {
-            if(salesObject != null && product != null){
+            if(product != null){
                 utx.begin();
-                if(product.getId() == null){
-//                    if(!salesObject.getProducts().contains(product)){
-//                        salesObject.getProducts().add(product);
-//                        salesObject = merge(salesObject);
-//                    }
-                }
                 product = super.save(sc, product);
                 return product;
             }
@@ -65,8 +55,6 @@ public class ProductControllerBean extends MainAdminTransactionControllerBean<Pr
     @Override
     public Boolean deleteProduct(SecurityContext sc, Product product) {
         try {
-            product.getSalesObject().getProducts().remove(product);
-            product.setSalesObject(null);
             boolean removed = super.delete(sc, product);
             return removed;
         } catch (Exception e) {

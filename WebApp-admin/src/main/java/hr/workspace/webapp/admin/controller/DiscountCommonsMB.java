@@ -6,10 +6,8 @@
 package hr.workspace.webapp.admin.controller;
 
 import hr.workspace.controllers.interfaces.DiscountCommons;
-import hr.workspace.models.ContactUser;
 import hr.workspace.models.Discount;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;

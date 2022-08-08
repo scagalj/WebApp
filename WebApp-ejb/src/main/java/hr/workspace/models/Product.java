@@ -30,21 +30,16 @@ import javax.persistence.Transient;
 @Entity
 @NamedQueries({
     @NamedQuery(name = Product.getAll, query = "select p from Product p order by p.name"),
-    @NamedQuery(name = Product.getAllBySalesObject, query = "select p from Product p where p.salesObject = :so order by p.name"),
     @NamedQuery(name = Product.getAllActive, query = "select p from Product p where p.disabled=false order by p.name")
 })
 public class Product implements IEntity, Serializable {
 
     public final static String getAll = "hr.workspace.models.Product.getAll";
-    public final static String getAllBySalesObject = "hr.workspace.models.Product.getAllBySalesObject";
     public final static String getAllActive = "hr.workspace.models.Product.getAllActive";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "product_id_seq")
     private Long id;
-
-    @ManyToOne
-    private SalesObject salesObject;
 
     @Enumerated(EnumType.ORDINAL)
     private ProductType productType;
@@ -128,14 +123,6 @@ public class Product implements IEntity, Serializable {
         this.id = id;
     }
 
-    public SalesObject getSalesObject() {
-        return salesObject;
-    }
-
-    public void setSalesObject(SalesObject salesObject) {
-        this.salesObject = salesObject;
-    }
-
     public ProductType getProductType() {
         return productType;
     }
@@ -196,7 +183,6 @@ public class Product implements IEntity, Serializable {
     public int hashCode() {
         int hash = 7;
         hash = 29 * hash + this.id.hashCode();
-        hash = 29 * hash + (this.salesObject != null ? this.salesObject.hashCode() : 0);
         hash = 29 * hash + (this.productType != null ? this.productType.hashCode() : 0);
         hash = 29 * hash + (this.name != null ? this.name.hashCode() : 0);
         hash = 29 * hash + (this.price != null ? this.price.hashCode() : 0);

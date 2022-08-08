@@ -7,7 +7,6 @@ package hr.workspace.controllers.interfaces;
 
 import hr.workspace.models.Discount;
 import hr.workspace.models.Product;
-import hr.workspace.models.SalesObject;
 import hr.workspace.security.SecurityContext;
 import java.util.List;
 import javax.ejb.Local;
@@ -22,8 +21,6 @@ public interface ProductCommons{
     List<Product> getAll(SecurityContext sc);
     
     List<Product> getAllActive(SecurityContext sc);
-    
-    List<Product> getAllForSalesObject(SecurityContext sc, SalesObject salesObject);
     
     List<Product> updateProductsWithDiscounts(SecurityContext sc, List<Product> products, List<Discount> discounts);
     

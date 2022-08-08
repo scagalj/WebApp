@@ -34,10 +34,6 @@ public class ProductCommonsMB extends BaseManagedBean{
         List<Product> products = commons.getAllActive(getSecurityContext());
         return products;
     }
-    public List<Product> getAllProductsForSalesObject(SalesObject salesObject){
-        List<Product> products = commons.getAllForSalesObject(getSecurityContext(), salesObject);
-        return products;
-    }
     
     public List<Product> autoCompleteProduct(String query) {
         List<Product> products = getAll();

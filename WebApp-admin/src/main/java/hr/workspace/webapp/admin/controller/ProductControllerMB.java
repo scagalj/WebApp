@@ -22,53 +22,48 @@ import org.primefaces.model.file.UploadedFiles;
  */
 @Named(value = "ProductControllerMB")
 @ViewScoped
-public class ProductControllerMB extends BaseManagedBean{
-    
+public class ProductControllerMB extends BaseManagedBean {
+
     private final static String PRODUCT_DIALOG_NAME = "newProductDialogWidget";
-    
+
     @EJB
     private ProductController controller;
-    
-    private SalesObject salesObject;
+
     private Product product;
     private UploadedFiles attachments;
 
-    
-    public void createNewProduct(){
-        Product tmpProduct = controller.newProduct(getSecurityContext(), getSalesObject());
-        if(tmpProduct != null){
+    public void createNewProduct() {
+        Product tmpProduct = controller.newProduct(getSecurityContext());
+        if (tmpProduct != null) {
             setProduct(tmpProduct);
             showDialog(PRODUCT_DIALOG_NAME);
         }
     }
-    
-    public void editProduct(Product tmpProduct){
-        if(tmpProduct != null){
+
+    public void editProduct(Product tmpProduct) {
+        if (tmpProduct != null) {
             setProduct(tmpProduct);
             showDialog(PRODUCT_DIALOG_NAME);
         }
     }
-    
-    public void saveProduct(){
-        if(getProduct() != null){
-            Product tmpSalesObject = controller.saveProduct(getSecurityContext(), getSalesObject(), getProduct());
-            if(tmpSalesObject != null){
-//                setProduct(null);
-            }
+
+    public void saveProduct() {
+        if (getProduct() != null) {
+            Product tmpProduct = controller.saveProduct(getSecurityContext(), getProduct());
         }
     }
-    
-    public void closeProduct(){
+
+    public void closeProduct() {
         setProduct(null);
         hideDialog(PRODUCT_DIALOG_NAME);
     }
-    
-    public void deleteProduct(Product tmpProduct){
-        if(tmpProduct != null){
+
+    public void deleteProduct(Product tmpProduct) {
+        if (tmpProduct != null) {
             Boolean isObjectDeleted = controller.deleteProduct(getSecurityContext(), tmpProduct);
         }
     }
-    
+
     public void uploadMultiple() {
         if (getAttachments() != null) {
             for (UploadedFile f : getAttachments().getFiles()) {
@@ -87,24 +82,13 @@ public class ProductControllerMB extends BaseManagedBean{
             System.out.println("NIje uspio izbrisati attachment.");
         }
     }
-    
+
     public Product getProduct() {
         return product;
     }
 
     public void setProduct(Product product) {
         this.product = product;
-    }
-
-    public void listenerZaTest(SelectEvent  event){
-        Object source = event.getObject();
-        if(source != null){
-            System.out.println("222222222222222222222222222222222222TEST TEST TEST");
-            
-        }else{
-            System.out.println("TEST TEST TEST");
-            
-        }
     }
 
     public UploadedFiles getAttachments() {
@@ -114,13 +98,5 @@ public class ProductControllerMB extends BaseManagedBean{
     public void setAttachments(UploadedFiles attachments) {
         this.attachments = attachments;
     }
-    
-    public SalesObject getSalesObject() {
-        return salesObject;
-    }
 
-    public void setSalesObject(SalesObject salesObject) {
-        this.salesObject = salesObject;
-    }
-    
 }
