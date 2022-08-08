@@ -1,0 +1,65 @@
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    >
+
+
+    <p:dataGrid var="row" 
+                value="#{products}" 
+                columns="4" layout="grid">
+
+
+        <div class="product-grid-item card" style="margin: 10px">
+            <div class="product-grid-item-top">
+                <div>
+                    <i class="pi pi-tag product-category-icon"/>
+                    <span class="product-category">#{row.productType}</span>
+                </div>
+                <span class="product-badge status-#{product.inventoryStatus.name().toLowerCase()}">#{product.inventoryStatus.text}</span>
+            </div>
+            <div class="product-grid-item-content">
+                <div class="product-grid-item-content imagewrapper" style="height: 300px;">
+                    <p:graphicImage
+                        style="width: 100%; height: 100%; padding: 15px;"
+                        value="#{OrderControllerMB.generateImageContent(row.getFeaturedImage().loadImageContentToAttachment())}" 
+                        stream="false" 
+                        />
+                </div>
+                <div class="product-name">#{row.name}</div>
+                <div class="product-description">#{product.description}</div>
+                <p:rating readonly="true" value="#{product.rating}"/>
+            </div>
+            <div class="product-grid-item-bottom">
+                <h:outputText value="#{row.price}" styleClass="product-price" style="text-decoration: line-through;">
+                    <f:convertNumber currencySymbol="€" type="currency"/>
+                </h:outputText>
+                <h:outputText value="#{row.priceWithDiscount}" styleClass="product-price">
+                    <f:convertNumber currencySymbol="€" type="currency"/>
+                </h:outputText>
+                <p:spacer width="10" />
+                <p:inputNumber value="#{row.discountAmountInPercentage}" 
+                               symbol="%"
+                               symbolPosition="s"
+                               decimalPlaces="0"
+                               disabled="true"
+                               />
+
+
+
+                <p:commandButton update="menuform" 
+                                 action="#{OrderControllerMB.addOrderItemToOrder(row)}"
+                                 value="Add To Cart"
+                                 process="@form"
+                                 icon="pi pi-shopping-cart">
+                    <p:effect type="transfer" for=":menuform:shoppingCartDetails"  event="click"/>
+                </p:commandButton>
+            </div>
+        </div>
+
+
+    </p:dataGrid>
+
+</ui:composition>

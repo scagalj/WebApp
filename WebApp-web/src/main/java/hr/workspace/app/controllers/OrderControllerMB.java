@@ -12,6 +12,7 @@ import hr.workspace.controllers.interfaces.ProductCommons;
 import hr.workspace.models.Discount;
 import hr.workspace.models.OrderItem;
 import hr.workspace.models.Product;
+import hr.workspace.models.ProductType;
 import hr.workspace.models.UserOrder;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,6 +42,7 @@ public class OrderControllerMB extends BaseManagedBean{
     DiscountCommons discountCommons;
     private List<UserOrder> orders;
     List<OrderItem> orderItems;
+    List<Product> products;
     
 //    private UserOrder order;
     
@@ -99,14 +101,33 @@ public class OrderControllerMB extends BaseManagedBean{
         return "0";
     }
     
-    public List<Product> getAllActiveProducts(){
-        List<Product> products = productCommons.getAllActive(getSecurityContext());
-        products = products.stream().filter(p -> !p.getDisabled()).collect(Collectors.toList());
-        
-        List<Discount> discount = discountCommons.getAllActiveDiscount(getSecurityContext());
-        products = productCommons.updateProductsWithDiscounts(getSecurityContext(), products, discount);
-        
+    public List<Product> getAllActiveProducts() {
+        if (products == null) {
+
+            products = productCommons.getAllActive(getSecurityContext());
+            products = products.stream().filter(p -> !p.getDisabled()).collect(Collectors.toList());
+
+            List<Discount> discount = discountCommons.getAllActiveDiscount(getSecurityContext());
+            products = productCommons.updateProductsWithDiscounts(getSecurityContext(), products, discount);
+        }
+
         return products;
+    }
+    
+    public List<Product> getAllBoothProducts(){
+        return filterProductsByProductType(ProductType.BOOTH);
+    }
+    
+    public List<Product> getAllFurnitureProducts(){
+        return filterProductsByProductType(ProductType.FURNITURE);
+    }
+    
+    public List<Product> getAllElectronicsProducts(){
+        return filterProductsByProductType(ProductType.ELECTRONIC);
+    }
+    
+    private List<Product> filterProductsByProductType(ProductType productType){
+        return (List<Product>)getAllActiveProducts().stream().filter(p -> productType.equals(p.getProductType())).collect(Collectors.toList());
     }
     
     public List<UserOrder> getSortedUserOrders() {
