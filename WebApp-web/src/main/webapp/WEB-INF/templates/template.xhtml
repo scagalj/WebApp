@@ -46,14 +46,31 @@
             }
             dt{
                 font-weight: 600 !important;
-                
+
+            }
+
+            .layout-footer{
+                position: fixed;
+                bottom: 0;
+                width: 100%;
+                background: #f8f9fa;
+                padding: 8px;
+                border-top: 1px solid #c6c7c9;
+            }
+            .footer-text-right{
+                    text-align: right;
+    float: right;
+    font-size: 10pt;
             }
         </style>
 
         <div class="card">
             <h:form id="menuform">
                 <p:menubar style="position: fixed; width: 100%; z-index: 999999;">
-                    <p:menuitem value="Home" ajax="false" url="index.xhtml" />
+                    <p:menuitem value="Dashboard" ajax="false" url="index.xhtml" />
+                    <p:menuitem value="Company information" ajax="false" url="user.xhtml" />
+                    <p:menuitem value="Orders" ajax="false" url="orders.xhtml" />
+                    <p:menuitem value="Continue with shopping" ajax="false" url="order.xhtml" />
                     <f:facet name="options">
 
                         <p:badge id="shoppingCartBadge" value="#{OrderControllerMB.getNumberOrItemsInOrder()}" severity="danger" styleClass="ml-3">
@@ -141,7 +158,7 @@
 
 
 
-        <div class="layout-main" style="padding-top: 80px;">
+        <div class="layout-main" style="padding-top: 80px; padding-bottom: 50px;">
             <p:growl id="msgs" skipDetailIfEqualsSummary="true" showDetail="true" globalOnly="true" widgetVar="msgWidget">
                 <p:autoUpdate/>
             </p:growl>
@@ -152,7 +169,7 @@
 
             <ui:insert name="footer">
                 <div class="layout-footer clearfix">
-                    <span class="app-logo"></span>
+                    <span class="app-logo">Welcome at <b> #{SecurityMB.salesObject.salesObjectName}</b></span>
                     <span class="footer-text-right">
                         <span>WebApp&#x2122; </span>
                         <span class="ui-icon ui-icon-copyright"></span> 
