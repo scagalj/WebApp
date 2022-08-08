@@ -18,8 +18,8 @@
                     <i class="pi pi-tag product-category-icon"/>
                     <span class="product-category">#{row.productType}</span>
                     <b>
-                    <h:panelGroup rendered="#{OrderControllerMB.getProductQuantity(row) le 0}" class="product-category">OUT OF STOCK</h:panelGroup>
-                    <h:panelGroup rendered="#{OrderControllerMB.getProductQuantity(row) le 5 and OrderControllerMB.getProductQuantity(row) ge 1}" class="product-category">LOW ON STOCK</h:panelGroup>
+                    <h:panelGroup rendered="#{OrderControllerMB.getCurrentProductAvailability(row) le 0}" class="product-category">OUT OF STOCK</h:panelGroup>
+                    <h:panelGroup rendered="#{OrderControllerMB.getCurrentProductAvailability(row) le 5 and OrderControllerMB.getCurrentProductAvailability(row) ge 1}" class="product-category">LOW ON STOCK</h:panelGroup>
                     </b>
                 </div>
                 <span class="product-badge status-#{product.inventoryStatus.name().toLowerCase()}">#{product.inventoryStatus.text}</span>
@@ -50,14 +50,19 @@
                                disabled="true"
                                />
                 <br/>
-                <h:outputText value="Remaining products: #{OrderControllerMB.getProductQuantity(row)}" />
+                <h:outputText value="Remaining products: #{OrderControllerMB.getCurrentProductAvailability(row)}" />
+                
+                <br/>
+                <h:outputText value="Selected: #{OrderControllerMB.getCurrentOrderProductSelectionsQuantity(row)}" />
 
 
-                <p:commandButton update="menuform" 
+                <p:commandButton update="menuform @namingcontainer" 
                                  action="#{OrderControllerMB.addOrderItemToOrder(row)}"
                                  value="Add To Cart"
                                  process="@form"
-                                 icon="pi pi-shopping-cart">
+                                 icon="pi pi-shopping-cart"
+                                 disabled="#{OrderControllerMB.getCurrentProductAvailability(row) le 0}"
+                                 >
                     <p:effect type="transfer" for=":menuform:shoppingCartDetails"  event="click"/>
                 </p:commandButton>
             </div>

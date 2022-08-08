@@ -17,6 +17,7 @@ import hr.workspace.models.UserOrder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -133,13 +134,33 @@ public class OrderControllerMB extends BaseManagedBean{
         return (List<Product>)getAllActiveProducts().stream().filter(p -> productType.equals(p.getProductType())).collect(Collectors.toList());
     }
     
-    public Integer getProductQuantity(Product product){
+    public Integer getProductAvailabilityQuantity(Product product){
         Integer orderedProducts = productAvailability.get(product);
         if(orderedProducts == null){
             orderedProducts = 0;
         }
         Integer result = product.getQuantity() - orderedProducts;
         return result;
+    }
+    
+    public Integer getCurrentOrderProductSelectionsQuantity(Product product){
+        Map<Product, Integer> productSelections = new HashMap<>();
+        List<OrderItem> orderItems = getOrder().getOrderItems();
+        for(OrderItem oi : orderItems){
+            if(productSelections.containsKey(oi.getProduct())){
+                productSelections.put(oi.getProduct(), productSelections.get(oi.getProduct()) + oi.getQuantity());
+            }else{
+                productSelections.put(oi.getProduct(), oi.getQuantity());
+            }
+        }
+        Integer productSelected = productSelections.get(product);
+        return productSelected != null ? productSelected : 0;
+    }
+    
+    public Integer getCurrentProductAvailability(Product product){
+        Integer availabiltyQuantity = getProductAvailabilityQuantity(product);
+        Integer currentOrderProductSelectionsQuantity = getCurrentOrderProductSelectionsQuantity(product);
+        return availabiltyQuantity - currentOrderProductSelectionsQuantity;
     }
     
     
