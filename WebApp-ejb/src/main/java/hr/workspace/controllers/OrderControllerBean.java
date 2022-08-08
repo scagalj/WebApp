@@ -148,19 +148,19 @@ public class OrderControllerBean extends MainAdminTransactionControllerBean<User
     @Override
     public Boolean deleteOrder(SecurityContext sc, UserOrder userOrder) {
         try {
-            List<OrderItem> orderItems = userOrder.getOrderItems();
-            int size = orderItems.size();
-            for (OrderItem oi : new ArrayList<>(orderItems)) {
+            for (OrderItem oi : new ArrayList<>(userOrder.getOrderItems())) {
                 userOrder = removeOrderItemFromOrder(sc, userOrder, oi, userOrder.getUser());
             }
+            for (Payment p : new ArrayList<>(userOrder.getPayments())) {
+                userOrder = removePaymentFromOrder(sc, userOrder, p);
+            }
+            for (Attachment att : new ArrayList<>(userOrder.getAttachments())) {
+                userOrder = deleteAttachment(sc, userOrder, att);
+            }
+            for (OrderDiscount discount : new ArrayList<>(userOrder.getOrderDiscounts())) {
+                userOrder = removeOrderDiscountFromOrder(sc, userOrder, discount);
+            }
 
-            //TODO izbrisati Attachment i Paymente!!!!!
-            //TODO izbrisati Attachment i Paymente!!!!!
-            //TODO izbrisati Attachment i Paymente!!!!!
-            //TODO izbrisati Attachment i Paymente!!!!!
-            //TODO izbrisati Attachment i Paymente!!!!!
-            //TODO izbrisati Attachment i Paymente!!!!!
-            userOrder = merge(userOrder);
             Boolean success = super.delete(sc, userOrder);
             return success;
         } catch (Exception ex) {
@@ -173,6 +173,10 @@ public class OrderControllerBean extends MainAdminTransactionControllerBean<User
     public UserOrder removeOrderItemFromOrder(SecurityContext sc, UserOrder order, OrderItem orderItem, ContactUser user) {
         try {
 
+            for(OrderItemDiscount discount : new ArrayList<>(orderItem.getOrderItemDiscounts())){
+                orderItem = removeOrderItemDiscountFromOrderItem(sc, orderItem, discount);
+            }
+            
             utx.begin();
             orderItem.setUserOrder(null);
             orderItem.setProduct(null);
@@ -181,6 +185,52 @@ public class OrderControllerBean extends MainAdminTransactionControllerBean<User
             order = merge(order);
 
             user = updateUserWithOrder(user, order);
+
+            if (result) {
+                utx.commit();
+                return order;
+            } else {
+                utx.rollback();
+            }
+        } catch (Exception ex) {
+            log(sc, Level.ALL, ex, true);
+            makeTransactionRollBack(sc);
+        }
+        return order;
+    }
+    
+    
+    protected OrderItem removeOrderItemDiscountFromOrderItem(SecurityContext sc, OrderItem orderItem, OrderItemDiscount discount) {
+        try {
+
+            utx.begin();
+            discount.setDiscount(null);
+            discount.setOrderItem(null);
+            orderItem.getOrderItemDiscounts().remove(discount);
+            boolean result = super.remove(discount);
+            orderItem = merge(orderItem);
+
+            if (result) {
+                utx.commit();
+                return orderItem;
+            } else {
+                utx.rollback();
+            }
+        } catch (Exception ex) {
+            log(sc, Level.ALL, ex, true);
+            makeTransactionRollBack(sc);
+        }
+        return orderItem;
+    }
+    protected UserOrder removeOrderDiscountFromOrder(SecurityContext sc, UserOrder order, OrderDiscount discount) {
+        try {
+
+            utx.begin();
+            discount.setDiscount(null);
+            discount.setUserOrder(null);
+            order.getOrderDiscounts().remove(discount);
+            boolean result = super.remove(discount);
+            order = merge(order);
 
             if (result) {
                 utx.commit();
@@ -330,7 +380,7 @@ public class OrderControllerBean extends MainAdminTransactionControllerBean<User
     }
 
     @Override
-    public Boolean deleteAttachment(SecurityContext sc, UserOrder order, Attachment att) {
+    public UserOrder deleteAttachment(SecurityContext sc, UserOrder order, Attachment att) {
         try {
             Boolean isDeleted = FileUtils.deleteFileFromDisk(att);
             if (isDeleted) {
@@ -340,14 +390,15 @@ public class OrderControllerBean extends MainAdminTransactionControllerBean<User
                     att = em.merge(att);
                 }
                 em.remove(att);
+                order = merge(order);
                 utx.commit();
-                return true;
+                return order;
             }
         } catch (Exception e) {
             log(sc, Level.SEVERE, e, true);
             makeTransactionRollBack(sc);
         }
-        return false;
+        return null;
     }
 
     @Override

@@ -41,7 +41,7 @@ public interface OrderController {
 
     UserOrder removeOrderItemFromOrder(SecurityContext sc, UserOrder order, OrderItem orderItem, ContactUser user);
     
-    Boolean deleteAttachment(SecurityContext sc, UserOrder order, Attachment att);
+    UserOrder deleteAttachment(SecurityContext sc, UserOrder order, Attachment att);
     
     UserOrder saveAttachmen(SecurityContext sc, UserOrder order, UploadedFile file);
     

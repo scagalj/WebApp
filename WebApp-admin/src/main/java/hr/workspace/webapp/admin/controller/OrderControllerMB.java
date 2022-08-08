@@ -196,8 +196,8 @@ public class OrderControllerMB extends BaseManagedBean {
     }
 
     public void deleteAttachment(Attachment att) {
-        Boolean deleteAttachment = controller.deleteAttachment(getSecurityContext(), getOrder(), att);
-        if (deleteAttachment) {
+        UserOrder order = controller.deleteAttachment(getSecurityContext(), getOrder(), att);
+        if (order != null) {
             System.out.println("Uspijesno izbrisano.");
         } else {
             System.out.println("NIje uspio izbrisati attachment.");
