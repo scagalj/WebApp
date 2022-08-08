@@ -6,10 +6,12 @@
 package hr.workspace.controllers.interfaces;
 
 import hr.workspace.models.ContactUser;
+import hr.workspace.models.Product;
 import hr.workspace.models.SalesObject;
 import hr.workspace.models.UserOrder;
 import hr.workspace.security.SecurityContext;
 import java.util.List;
+import java.util.Map;
 import javax.ejb.Local;
 
 /**
@@ -24,4 +26,8 @@ public interface OrderCommons {
     List<UserOrder> getAllActive(SecurityContext sc);
     
     List<UserOrder> getCurrentlyActiveOrderForUser(SecurityContext sc, ContactUser user, SalesObject salesObject);
+    
+    List<UserOrder> getCompletedOrdersForSalesObject(SecurityContext sc, SalesObject salesObject);
+    
+    Map<Product,Integer> calculateAvailabeQuantityPerProduct(SecurityContext sc, List<Product> products, List<UserOrder> orders);
 }

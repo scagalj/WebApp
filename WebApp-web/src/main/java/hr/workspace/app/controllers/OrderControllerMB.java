@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -43,6 +44,7 @@ public class OrderControllerMB extends BaseManagedBean{
     private List<UserOrder> orders;
     List<OrderItem> orderItems;
     List<Product> products;
+    Map<Product,Integer> productAvailability;
     
 //    private UserOrder order;
     
@@ -69,6 +71,7 @@ public class OrderControllerMB extends BaseManagedBean{
             } );
         }
         
+        productAvailability = orderCommons.calculateAvailabeQuantityPerProduct(getSecurityContext(), getAllActiveProducts(), orderCommons.getCompletedOrdersForSalesObject(getSecurityContext(), getSalesObject()));
     }
     
     public void removeOrderItemFromOrder(OrderItem orderItem){
@@ -129,6 +132,16 @@ public class OrderControllerMB extends BaseManagedBean{
     private List<Product> filterProductsByProductType(ProductType productType){
         return (List<Product>)getAllActiveProducts().stream().filter(p -> productType.equals(p.getProductType())).collect(Collectors.toList());
     }
+    
+    public Integer getProductQuantity(Product product){
+        Integer orderedProducts = productAvailability.get(product);
+        if(orderedProducts == null){
+            orderedProducts = 0;
+        }
+        Integer result = product.getQuantity() - orderedProducts;
+        return result;
+    }
+    
     
     public List<UserOrder> getSortedUserOrders() {
         if(orders == null){

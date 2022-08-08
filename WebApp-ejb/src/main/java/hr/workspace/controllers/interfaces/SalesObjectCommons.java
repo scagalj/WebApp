@@ -8,13 +8,11 @@ package hr.workspace.controllers.interfaces;
 import hr.workspace.models.SalesObject;
 import hr.workspace.security.SecurityContext;
 import java.util.List;
-import javax.ejb.Local;
 
 /**
  *
  * @author Stjepan
  */
-@Local
 public interface SalesObjectCommons {
     
     List<SalesObject> getAll(SecurityContext sc);
