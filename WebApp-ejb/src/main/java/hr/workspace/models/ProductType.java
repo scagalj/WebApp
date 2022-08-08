@@ -13,6 +13,7 @@ public enum ProductType {
     
     BOOTH,
     FURNITURE,
-    ELECTRONIC
+    ELECTRONIC,
+    COMPANY_EXTRAS
     
 }
