@@ -13,11 +13,28 @@
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>*.jsf</url-pattern>
     </servlet-mapping>
-    <servlet-mapping>
+<!--    <servlet-mapping>
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>*.xhtml</url-pattern>
+    </servlet-mapping>-->
+    <servlet>
+        <servlet-name>faces</servlet-name>
+        <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>faces</servlet-name>
+        <url-pattern>*.xhtml</url-pattern>
     </servlet-mapping>
-   <mime-mapping>
+    <context-param>
+        <param-name>org.apache.myfaces.AUTOMATIC_EXTENSIONLESS_MAPPING</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    <context-param>    
+        <param-name>org.omnifaces.FACES_VIEWS_SCAN_PATHS</param-name>    
+        <param-value>/*.xhtml</param-value>
+    </context-param>
+    <mime-mapping>
         <extension>js</extension>
         <mime-type>text/javascript</mime-type>
     </mime-mapping>
