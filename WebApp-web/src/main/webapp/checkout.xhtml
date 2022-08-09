@@ -21,6 +21,24 @@
 
         <h:form>
 
+            <p:accordionPanel activeIndex="-1">
+                <p:tab title="Have a promo code?">
+                    <div class="container">
+                        <h:panelGroup id="promoCodeDetails" rendered="#{CheckOutControllerMB.order.hasPromoCode()}">
+                            <p:outputLabel value="Promocode: " />
+                            <p:outputLabel value="#{CheckOutControllerMB.order.fetchPromoCode().promoCodeValue}" />
+                            <p:commandButton value="Remove promocode" action="#{CheckOutControllerMB.removePromoCodeFromOrder}" process="@parent" update="@form" />
+                        </h:panelGroup>
+
+                        <h:panelGroup id="addPromoCode" rendered="#{not CheckOutControllerMB.order.hasPromoCode()}">
+                            <p:outputLabel value="Promocode: " />
+                            <p:inputText value="#{CheckOutControllerMB.promoCode}" />
+                            <p:commandButton value="Apply promocode" action="#{CheckOutControllerMB.applyPromoCodeToOrder}" process="@parent" update="@form" />
+                        </h:panelGroup>
+                    </div>
+                </p:tab>
+            </p:accordionPanel>
+
             <p:dataTable value="#{CheckOutControllerMB.orderItems}"
                          var="row"
                          >
@@ -103,23 +121,22 @@
 
             </p:dataTable>
 
-            <h:panelGroup id="promoCodeDetails" rendered="#{CheckOutControllerMB.order.hasPromoCode()}">
-                <p:outputLabel value="Promocode: " />
-                <p:outputLabel value="#{CheckOutControllerMB.order.fetchPromoCode().promoCodeValue}" />
-                <p:commandButton value="Remove promocode" action="#{CheckOutControllerMB.removePromoCodeFromOrder}" process="@parent" update="@form" />
-            </h:panelGroup>
-            
-            <h:panelGroup id="addPromoCode" rendered="#{not CheckOutControllerMB.order.hasPromoCode()}">
-                <p:outputLabel value="Promocode: " />
-                <p:inputText value="#{CheckOutControllerMB.promoCode}" />
-                <p:commandButton value="Apply promocode" action="#{CheckOutControllerMB.applyPromoCodeToOrder}" process="@parent" update="@form" />
-            </h:panelGroup>
-
             <!-- Preusmjeriti na drugu strniacu gdje ce pisati detalji narudzbe!-->
-            <p:commandButton value="Make order" action="#{CheckOutControllerMB.makeOrderAsCompleted()}" update="@form menuform" />
-            <p:commandButton value="Cancel order" action="#{CheckOutControllerMB.makeOrderAsCancelled()}" update="@form menuform" >
-                <p:confirm type="popup" header="Confirmation" message="Are you sure you want to proceed?" icon="pi pi-exclamation-triangle"/>
-            </p:commandButton>
+            <div class="container">
+                <div class="ui-g">
+                    <div class="ui-g-3">
+                        <p:commandButton value="Cancel order" action="#{CheckOutControllerMB.makeOrderAsCancelled()}" update="@form menuform" >
+                            <p:confirm type="popup" header="Confirmation" message="Are you sure you want to proceed?" icon="pi pi-exclamation-triangle"/>
+                        </p:commandButton>
+
+                    </div>
+                    <div class="ui-g-6">
+                    </div>
+                    <div class="ui-g-3">
+                        <p:commandButton value="Submit your order >" action="#{CheckOutControllerMB.makeOrderAsCompleted()}" update="@form menuform" />
+                    </div>
+                </div>
+            </div>
 
         </h:form>
     </ui:define>

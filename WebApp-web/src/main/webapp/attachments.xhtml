@@ -1,0 +1,42 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/templates/template.xhtml">
+
+
+
+    <ui:param name="module" value="attachments" />
+
+    <ui:define name="content">
+
+        <h:panelGroup id="attachmentsPanelGroup">
+
+            <div class="card">
+                <h5>Multiple</h5>
+                <h:form id="attachmentUploadForm" enctype="multipart/form-data">
+                    <p:fileUpload value="#{UserControllerMB.attachments}" mode="simple" dragDropSupport="true" skinSimple="true" multiple="true"/>
+                    <p:commandButton value="Submit" update="@form attachmentsPanelGroup" process="@form" action="#{UserControllerMB.uploadMultiple}" styleClass="p-mt-3 ui-button-outlined p-d-block"/>
+                </h:form>
+                <h:panelGroup>
+                    <h:form id="attachmentsForm">
+                        <ui:repeat value="#{UserControllerMB.user.finalAttachment}" var="att">
+                            <h:panelGrid columns="3">
+                                <p>#{att.fileName}</p>
+                                <p:commandButton value="Ajax Download" ajax="false" icon="pi pi-arrow-down" styleClass="ui-button-outlined">
+                                    <p:fileDownload value="#{UserControllerMB.generateStreamedContent(att)}"/>
+                                </p:commandButton>
+                                <p:commandButton value="delete" 
+                                                 action="#{UserControllerMB.deleteAttachment(att)}" 
+                                                 update="@form"
+                                                 />
+
+                            </h:panelGrid>
+                        </ui:repeat>
+                    </h:form>
+                </h:panelGroup>
+            </div>
+        </h:panelGroup>
+    </ui:define>
+</ui:composition>
