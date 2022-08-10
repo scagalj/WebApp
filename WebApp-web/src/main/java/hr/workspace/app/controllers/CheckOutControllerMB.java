@@ -102,6 +102,7 @@ public class CheckOutControllerMB extends BaseManagedBean{
             setOrder(null);
             addSuccessMessage("Order completed");
         }
+        navigate("ordercompleted.xhtml?faces-redirect=true");
     }
     
     public void makeOrderAsCancelled(){
@@ -110,6 +111,7 @@ public class CheckOutControllerMB extends BaseManagedBean{
             setOrder(null);
             addSuccessMessage("Order canceled");
         }
+        navigate("index.xhtml?faces-redirect=true");
     }
 
     public OrderItem getSelectedOrderItem() {

@@ -75,7 +75,8 @@
                     </h:outputText>
                 </p:column>
                 <p:column width="100">
-                    <p:spinner value="#{row.quantity}" stepFactor="1" min="1">
+                    <h:outputLabel value="#{OrderControllerMB.getProductAvailabilityQuantity(row.product)}" />
+                    <p:spinner value="#{row.quantity}" stepFactor="1" min="1" max="#{OrderControllerMB.getProductAvailabilityQuantity(row.product)}">
                         <p:ajax event="valueChange" delay="500" update="@form" listener="#{CheckOutControllerMB.updateOrderItemQuantity}" />
                         <f:attribute value="#{row}" name="selectedRow" />
                     </p:spinner>

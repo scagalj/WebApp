@@ -52,7 +52,7 @@ public class OrderItem implements IEntity, Serializable{
     
      public BigDecimal getDiscountAmount() {
         BigDecimal result = BigDecimal.ZERO;
-        BigDecimal finalPriceWithOutDiscount = getPrice();
+        BigDecimal finalPriceWithOutDiscount = getFinalPriceWithoutDiscount();
         List<OrderItemDiscount> tmpDiscounts = getOrderItemDiscounts();
         if (tmpDiscounts != null && !tmpDiscounts.isEmpty()) {
             for (OrderItemDiscount disc : tmpDiscounts) {
@@ -63,7 +63,7 @@ public class OrderItem implements IEntity, Serializable{
     }
 
     public BigDecimal getDiscountAmountInPercentage() {
-        BigDecimal percentage = getDiscountAmount().divide(getPrice(), 6, RoundingMode.HALF_UP).multiply(new BigDecimal(100));
+        BigDecimal percentage = getDiscountAmount().divide(getFinalPriceWithoutDiscount(), 6, RoundingMode.HALF_UP).multiply(new BigDecimal(100));
         if(percentage.compareTo(new BigDecimal(100)) > 0){
             percentage = new BigDecimal(100);
         }
