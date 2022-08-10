@@ -164,3 +164,9 @@ create table discount_product(
 	CONSTRAINT fk_discount_products_discount_id FOREIGN KEY (discount_id) REFERENCES public.discount(id),
 	CONSTRAINT fk_discount_products_products_id FOREIGN KEY (products_id) REFERENCES public.product(id)
 );
+
+create table orderrepresentative(
+	id serial primary key,
+	representative_id bigint not null,
+	constraint fk_representative_id_orderrepresentative FOREIGN key (representative_id) references representative(id)
+);

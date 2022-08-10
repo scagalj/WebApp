@@ -11,8 +11,10 @@ import hr.workspace.controllers.interfaces.OrderController;
 import hr.workspace.controllers.interfaces.ProductCommons;
 import hr.workspace.models.Discount;
 import hr.workspace.models.OrderItem;
+import hr.workspace.models.OrderRepresentative;
 import hr.workspace.models.Product;
 import hr.workspace.models.ProductType;
+import hr.workspace.models.Representative;
 import hr.workspace.models.UserOrder;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -161,6 +163,17 @@ public class OrderControllerMB extends BaseManagedBean{
         Integer availabiltyQuantity = getProductAvailabilityQuantity(product);
         Integer currentOrderProductSelectionsQuantity = getCurrentOrderProductSelectionsQuantity(product);
         return availabiltyQuantity - currentOrderProductSelectionsQuantity;
+    }
+    
+    public void addRepresentativeToOrder(Representative rep){
+        if(rep != null){
+            orderController.addRepresentativeToOrder(getSecurityContext(), getOrder(), getUser(), rep);
+        }
+    }
+    public void removeRepresentativeFromOrder(OrderRepresentative rep){
+        if(rep != null){
+            orderController.removeOrderRepresentativeFromOrder(getSecurityContext(), getOrder(), getUser(), rep);
+        }
     }
     
     

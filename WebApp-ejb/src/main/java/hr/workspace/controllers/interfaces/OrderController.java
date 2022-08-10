@@ -10,8 +10,10 @@ import hr.workspace.models.ContactUser;
 import hr.workspace.models.Discount;
 import hr.workspace.models.OrderDiscount;
 import hr.workspace.models.OrderItem;
+import hr.workspace.models.OrderRepresentative;
 import hr.workspace.models.Payment;
 import hr.workspace.models.Product;
+import hr.workspace.models.Representative;
 import hr.workspace.models.SalesObject;
 import hr.workspace.models.UserOrder;
 import hr.workspace.security.SecurityContext;
@@ -62,4 +64,8 @@ public interface OrderController {
     UserOrder addDiscountToOrder(SecurityContext sc, UserOrder order, Discount product, ContactUser user);
     
     UserOrder removeOrderDiscountFromOrder(SecurityContext sc, UserOrder order, OrderDiscount orderDiscount, ContactUser user);
+
+    UserOrder addRepresentativeToOrder(SecurityContext sc, UserOrder order, ContactUser user, Representative representative);
+    
+    UserOrder removeOrderRepresentativeFromOrder(SecurityContext sc, UserOrder order, ContactUser user, OrderRepresentative orderRepresentative);
 }

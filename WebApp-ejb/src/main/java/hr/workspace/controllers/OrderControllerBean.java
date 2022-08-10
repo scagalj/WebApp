@@ -14,8 +14,10 @@ import hr.workspace.models.Discount;
 import hr.workspace.models.OrderDiscount;
 import hr.workspace.models.OrderItem;
 import hr.workspace.models.OrderItemDiscount;
+import hr.workspace.models.OrderRepresentative;
 import hr.workspace.models.Payment;
 import hr.workspace.models.Product;
+import hr.workspace.models.Representative;
 import hr.workspace.models.SalesObject;
 import hr.workspace.models.UserOrder;
 import hr.workspace.models.UserOrderStatus;
@@ -514,6 +516,59 @@ public class OrderControllerBean extends MainAdminTransactionControllerBean<User
         return order;
     }
 
+    @Override
+    public UserOrder addRepresentativeToOrder(SecurityContext sc, UserOrder order, ContactUser user, Representative representative){
+        try {
+            System.out.println("Add representative to Order");
+            utx.begin();
+
+            OrderRepresentative orderRepresentative = new OrderRepresentative();
+            orderRepresentative.setRepresentative(representative);
+            orderRepresentative.setUserOrder(order);
+            orderRepresentative.setPrice(new BigDecimal(20));
+
+            order.getOrderRepresentatives().add(orderRepresentative);
+            persist(orderRepresentative);
+
+            order = merge(order);
+
+            user = updateUserWithOrder(user, order);
+
+            utx.commit();
+            return order;
+        } catch (Exception ex) {
+            log(sc, Level.SEVERE, ex, true);
+            makeTransactionRollBack(sc);
+        }
+        return null;
+    }
+    
+    @Override
+    public UserOrder removeOrderRepresentativeFromOrder(SecurityContext sc, UserOrder order, ContactUser user, OrderRepresentative orderRepresentative) {
+        try {
+
+            utx.begin();
+            orderRepresentative.setRepresentative(null);
+            orderRepresentative.setUserOrder(null);
+            order.getOrderRepresentatives().remove(orderRepresentative);
+            boolean result = super.remove(orderRepresentative);
+            order = merge(order);
+
+            user = updateUserWithOrder(user, order);
+
+            if (result) {
+                utx.commit();
+                return order;
+            } else {
+                utx.rollback();
+            }
+        } catch (Exception ex) {
+            log(sc, Level.ALL, ex, true);
+            makeTransactionRollBack(sc);
+        }
+        return order;
+    }
+    
     public Boolean canCreateNewOrder(SecurityContext sc, ContactUser user, SalesObject salesObject) {
         //TODO: Provjera postoji li vec kreirana narduzba koja je u initu ili progresu!
         return true;

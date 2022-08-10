@@ -33,56 +33,61 @@ import javax.persistence.OneToMany;
     @NamedQuery(name = UserOrder.getAll, query = "select so from UserOrder so"),
     @NamedQuery(name = UserOrder.getAllActive, query = "select so from UserOrder so where so.disabled=false")
 })
-public class UserOrder implements IEntity, Serializable, Comparable<UserOrder>{
-    
+public class UserOrder implements IEntity, Serializable, Comparable<UserOrder> {
+
     public final static String getAll = "hr.workspace.models.UserOrder.getAll";
     public final static String getAllActive = "hr.workspace.models.UserOrder.getAllActive";
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "userorder_id_seq")
     private Long id;
-    
+
     @OneToMany(mappedBy = "userOrder", fetch = FetchType.EAGER)
     private List<OrderItem> orderItems;
-    
+
     @OneToMany(mappedBy = "userOrder", fetch = FetchType.EAGER)
     private List<OrderDiscount> orderDiscounts;
-    
+
     @ManyToOne
     private SalesObject salesObject;
-    
+
     @ManyToOne
     private ContactUser contactUser;
-    
+
     @Enumerated(EnumType.ORDINAL)
     private UserOrderStatus userOrderStatus;
 
     @OneToMany(mappedBy = "userOrder", fetch = FetchType.EAGER)
     private List<Attachment> attachments;
-    
+
     @OneToMany(mappedBy = "userOrder", fetch = FetchType.EAGER)
     private List<Payment> payments;
-    
+
+    @OneToMany(mappedBy = "userOrder", fetch = FetchType.EAGER)
+    private List<OrderRepresentative> orderRepresentatives;
+
     private Boolean disabled;
-    
+
     public UserOrder() {
         orderItems = new ArrayList<>();
         orderDiscounts = new ArrayList<>();
+        orderRepresentatives = new ArrayList<>();
+        payments = new ArrayList<>();
         disabled = false;
         userOrderStatus = UserOrderStatus.INIT;
     }
-    
-    public String getAllProductsNameByComma(){
+
+    public String getAllProductsNameByComma() {
         StringBuilder result = new StringBuilder();
         getOrderItems().forEach(i -> result.append(i.getProduct().getName()).append(","));
-        
+
         return result.toString();
     }
-    
-    public Boolean hasPromoCode(){
+
+    public Boolean hasPromoCode() {
         return fetchPromoCode() != null;
     }
-    
+
     public OrderDiscount fetchPromoCode() {
         Optional<OrderDiscount> discount = getOrderDiscounts().stream().filter(d -> d.getPromoCode()).findFirst();
         if (discount.isPresent()) {
@@ -90,7 +95,7 @@ public class UserOrder implements IEntity, Serializable, Comparable<UserOrder>{
         }
         return null;
     }
-    
+
     @Override
     public Long getId() {
         return id;
@@ -139,31 +144,34 @@ public class UserOrder implements IEntity, Serializable, Comparable<UserOrder>{
     public void setDisabled(Boolean disabled) {
         this.disabled = disabled;
     }
-    
-    //Dodat discount!
-    //Dodat promo code!
-    public BigDecimal getFinalPriceWithOutDiscount(){
+
+    public BigDecimal getFinalPriceWithOutDiscount() {
         BigDecimal result = BigDecimal.ZERO;
-        for(OrderItem orderItem : getOrderItems()){
+        for (OrderItem orderItem : getOrderItems()) {
             result = result.add(orderItem.getFinalPrice());
+        }
+        if (getOrderRepresentatives() != null && !getOrderRepresentatives().isEmpty()) {
+            for (OrderRepresentative rep : getOrderRepresentatives()) {
+                result = result.add(rep.getPrice());
+            }
         }
         return result;
     }
-    public BigDecimal getFinalPrice(){
+
+    public BigDecimal getFinalPrice() {
         BigDecimal finalPrice = getFinalPriceWithOutDiscount();
         BigDecimal promoCodeDiscountAmount = getPromoCodeDiscountAmount();
-        if(promoCodeDiscountAmount.compareTo(BigDecimal.ZERO) > 0){
+        if (promoCodeDiscountAmount.compareTo(BigDecimal.ZERO) > 0) {
             finalPrice = finalPrice.subtract(promoCodeDiscountAmount).setScale(2, RoundingMode.HALF_UP);
         }
- 
-        
+
         return finalPrice;
     }
-        
-    public BigDecimal getPromoCodeDiscountAmount(){
+
+    public BigDecimal getPromoCodeDiscountAmount() {
         BigDecimal finalPriceWithOutDiscount = getFinalPriceWithOutDiscount();
         OrderDiscount promoCode = fetchPromoCode();
-        if(promoCode != null){
+        if (promoCode != null) {
             return promoCode.getAbsoluteAmountDiscount(finalPriceWithOutDiscount);
         }
         return BigDecimal.ZERO;
@@ -200,7 +208,15 @@ public class UserOrder implements IEntity, Serializable, Comparable<UserOrder>{
     public void setOrderDiscounts(List<OrderDiscount> orderDiscounts) {
         this.orderDiscounts = orderDiscounts;
     }
-    
+
+    public List<OrderRepresentative> getOrderRepresentatives() {
+        return orderRepresentatives;
+    }
+
+    public void setOrderRepresentatives(List<OrderRepresentative> orderRepresentatives) {
+        this.orderRepresentatives = orderRepresentatives;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -228,5 +244,4 @@ public class UserOrder implements IEntity, Serializable, Comparable<UserOrder>{
         return o.getId().compareTo(this.getId());
     }
 
-    
 }

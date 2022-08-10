@@ -39,6 +39,22 @@
                 </p:tab>
             </p:accordionPanel>
 
+            <p:dataTable value="#{CheckOutControllerMB.order.orderRepresentatives}"
+                         var="rep"
+                         >
+                <p:column>
+
+                    <h:outputLabel value="#{rep.representative.firstName}" />
+                    <h:outputLabel value="#{rep.representative.lastName}" />
+
+                </p:column>
+                <p:column>
+                    <h:outputText value="#{rep.price}" >
+                        <f:convertNumber type="currency" currencySymbol="€ "/>
+                    </h:outputText>
+                </p:column>
+
+            </p:dataTable>
             <p:dataTable value="#{CheckOutControllerMB.orderItems}"
                          var="row"
                          >
