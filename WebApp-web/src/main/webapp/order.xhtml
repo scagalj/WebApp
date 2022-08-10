@@ -48,7 +48,7 @@
                     
                     <p:dataTable value="#{OrderControllerMB.user.representatives}"
                                  var="row">
-                    
+                            
                         <p:column>
                             <p:outputLabel value="#{row.firstName}" />
                             <p:outputLabel value="#{row.lastName}" />
@@ -58,6 +58,7 @@
                                              action="#{OrderControllerMB.addRepresentativeToOrder(row)}"
                                              process="@this"
                                              update="@form"
+                                             disabled="#{OrderControllerMB.order.hasAddedRepresentative(row)}"
                                              />
                         </p:column>
                     </p:dataTable>

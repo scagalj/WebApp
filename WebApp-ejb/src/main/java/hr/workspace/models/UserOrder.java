@@ -96,6 +96,14 @@ public class UserOrder implements IEntity, Serializable, Comparable<UserOrder> {
         return null;
     }
 
+    public Boolean hasAddedRepresentative(Representative rep){
+        List<OrderRepresentative> orderReps = getOrderRepresentatives().stream().filter(r -> r.getRepresentative().equals(rep)).collect(Collectors.toList());
+        if(orderReps != null && !orderReps.isEmpty()){
+            return true;
+        }
+        return false;
+    }
+    
     @Override
     public Long getId() {
         return id;

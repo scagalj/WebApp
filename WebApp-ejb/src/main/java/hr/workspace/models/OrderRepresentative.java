@@ -12,14 +12,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 
 /**
  *
  * @author Stjepan
  */
 @Entity
-public class OrderRepresentative implements IEntity, Serializable {
+public class OrderRepresentative implements IEntity, Serializable, Comparable<OrderRepresentative>{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "orderrepresentative_id_seq")
@@ -68,6 +67,31 @@ public class OrderRepresentative implements IEntity, Serializable {
         this.price = price;
     }
     
-    
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (this.id != null ? this.id.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object == null) {
+            return false;
+        }
+        OrderRepresentative other = (OrderRepresentative) object;
+        if (this.getId() == null && other.getId() == null) {
+            return super.equals(other);
+        }
+        if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int compareTo(OrderRepresentative o) {
+        return o.getId().compareTo(this.getId());
+    }
 
 }
