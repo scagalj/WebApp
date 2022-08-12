@@ -65,7 +65,9 @@ public interface OrderController {
     
     UserOrder removeOrderDiscountFromOrder(SecurityContext sc, UserOrder order, OrderDiscount orderDiscount, ContactUser user);
 
-    UserOrder addRepresentativeToOrder(SecurityContext sc, UserOrder order, ContactUser user, Representative representative);
+    OrderRepresentative newOrderRepresentativeFromRepresentative(SecurityContext sc, Representative representative);
+    
+    UserOrder addOrderRepresentativeToOrder(SecurityContext sc, UserOrder order, ContactUser user, OrderRepresentative orderRepresentative);
     
     UserOrder removeOrderRepresentativeFromOrder(SecurityContext sc, UserOrder order, ContactUser user, OrderRepresentative orderRepresentative);
 }

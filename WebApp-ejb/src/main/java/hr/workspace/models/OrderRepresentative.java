@@ -18,22 +18,21 @@ import javax.persistence.ManyToOne;
  * @author Stjepan
  */
 @Entity
-public class OrderRepresentative implements IEntity, Serializable, Comparable<OrderRepresentative>{
+public class OrderRepresentative implements IEntity, Serializable, Comparable<OrderRepresentative> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "orderrepresentative_id_seq")
     private Long id;
 
     private BigDecimal price;
-    
+
     @ManyToOne
     private Representative representative;
-    
+
     @ManyToOne
     private UserOrder userOrder;
 
 //    private List<Extras> extras;
-    
     @Override
     public Long getId() {
         return id;
@@ -66,7 +65,7 @@ public class OrderRepresentative implements IEntity, Serializable, Comparable<Or
     public void setPrice(BigDecimal price) {
         this.price = price;
     }
-    
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -91,7 +90,18 @@ public class OrderRepresentative implements IEntity, Serializable, Comparable<Or
 
     @Override
     public int compareTo(OrderRepresentative o) {
-        return o.getId().compareTo(this.getId());
+        if (o.getRepresentative() != null && this.getRepresentative() != null) {
+            int firstName = this.getRepresentative().getFirstName().compareTo(o.getRepresentative().getFirstName());
+            if (firstName != 0) {
+                return firstName;
+            }
+            int lastName = this.getRepresentative().getLastName().compareTo(o.getRepresentative().getLastName());
+            if (lastName != 0) {
+                return lastName;
+            }
+        }
+
+        return this.getId().compareTo(o.getId());
     }
 
 }

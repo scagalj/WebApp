@@ -516,16 +516,22 @@ public class OrderControllerBean extends MainAdminTransactionControllerBean<User
         return order;
     }
 
+    public OrderRepresentative newOrderRepresentativeFromRepresentative(SecurityContext sc, Representative representative){
+        OrderRepresentative orderRepresentative = new OrderRepresentative();
+        orderRepresentative.setRepresentative(representative);
+        orderRepresentative.setPrice(BigDecimal.TEN.add(BigDecimal.TEN));
+                
+        return orderRepresentative;
+    }
+    
+    
     @Override
-    public UserOrder addRepresentativeToOrder(SecurityContext sc, UserOrder order, ContactUser user, Representative representative){
+    public UserOrder addOrderRepresentativeToOrder(SecurityContext sc, UserOrder order, ContactUser user, OrderRepresentative orderRepresentative){
         try {
             System.out.println("Add representative to Order");
             utx.begin();
 
-            OrderRepresentative orderRepresentative = new OrderRepresentative();
-            orderRepresentative.setRepresentative(representative);
             orderRepresentative.setUserOrder(order);
-            orderRepresentative.setPrice(new BigDecimal(20));
 
             order.getOrderRepresentatives().add(orderRepresentative);
             persist(orderRepresentative);

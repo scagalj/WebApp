@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
@@ -165,17 +166,50 @@ public class OrderControllerMB extends BaseManagedBean{
         return availabiltyQuantity - currentOrderProductSelectionsQuantity;
     }
     
-    public void addRepresentativeToOrder(Representative rep){
+    public List<OrderRepresentative> getAllOrderRepresentatives(){
+        List<Representative> representatives = getUser().getRepresentatives();
+        List<OrderRepresentative> orderRepresentatives = new ArrayList<>();
+        List<OrderRepresentative> extistingOrderRepresentatives = getOrder().getOrderRepresentatives();
+        orderRepresentatives.addAll(extistingOrderRepresentatives);
+        List<Representative> existingRepresentatives = extistingOrderRepresentatives.stream().map(o -> o.getRepresentative()).collect(Collectors.toList());
+        for(Representative rep : representatives){
+            if(!existingRepresentatives.contains(rep)) {
+                OrderRepresentative orderRepresentative = orderController.newOrderRepresentativeFromRepresentative(getSecurityContext(), rep);
+                orderRepresentatives.add(orderRepresentative);
+            }
+        }
+        Collections.sort(orderRepresentatives);
+        return orderRepresentatives;
+    }
+    
+    public void addRepresentativeToOrder(OrderRepresentative rep){
         if(rep != null){
-            orderController.addRepresentativeToOrder(getSecurityContext(), getOrder(), getUser(), rep);
+            UserOrder userOrder = orderController.addOrderRepresentativeToOrder(getSecurityContext(), getOrder(), getUser(), rep);
+            if(userOrder != null){
+                setOrder(userOrder);
+            }
         }
     }
     public void removeRepresentativeFromOrder(OrderRepresentative rep){
         if(rep != null){
-            orderController.removeOrderRepresentativeFromOrder(getSecurityContext(), getOrder(), getUser(), rep);
+            UserOrder userOrder = orderController.removeOrderRepresentativeFromOrder(getSecurityContext(), getOrder(), getUser(), rep);
+            if(userOrder != null){
+                setOrder(userOrder);
+            }
         }
     }
+    public Boolean getCanAddOrderRepresentativeToOrder(OrderRepresentative orderRep){
+        List<Representative> representatived = getOrder().getOrderRepresentatives().stream().map(o -> o.getRepresentative()).collect(Collectors.toList());
+        return !representatived.contains(orderRep.getRepresentative());
+    }
     
+    
+    public Boolean getCanAddExtrasToRepresentative(OrderRepresentative orderRep){
+        if(orderRep.getUserOrder() != null){
+            return true;
+        }
+        return false;
+    }
     
     public List<UserOrder> getSortedUserOrders() {
         if(orders == null){

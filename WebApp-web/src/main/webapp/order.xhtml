@@ -46,35 +46,27 @@
                        title="Representatives"
                        >
                     
-                    <p:dataTable value="#{OrderControllerMB.user.representatives}"
+                    <p:dataTable value="#{OrderControllerMB.getAllOrderRepresentatives()}"
                                  var="row">
                             
                         <p:column>
-                            <p:outputLabel value="#{row.firstName}" />
-                            <p:outputLabel value="#{row.lastName}" />
+                            <p:outputLabel value="#{row.representative.firstName}" />
+                            <p:outputLabel value="#{row.representative.lastName}" />
                         </p:column>
                         <p:column>
                             <p:commandButton value="Add to order" 
                                              action="#{OrderControllerMB.addRepresentativeToOrder(row)}"
                                              process="@this"
                                              update="@form"
-                                             disabled="#{OrderControllerMB.order.hasAddedRepresentative(row)}"
+                                             disabled="#{not OrderControllerMB.getCanAddOrderRepresentativeToOrder(row)}"
                                              />
                         </p:column>
-                    </p:dataTable>
-                    
-                    <h3> Order reps: </h3>
-                    
-                    <p:dataTable value="#{OrderControllerMB.order.orderRepresentatives}"
-                                  var="row">
                         <p:column>
-                            <h:outputLabel value="#{row.representative.firstName}" />
-                            <h:outputLabel value="#{row.representative.lastName}" />
-                            
+                            <h:outputLabel value="Add extras"  rendered="#{OrderControllerMB.getCanAddExtrasToRepresentative(row)}" />
                         </p:column>
-                     
-                     </p:dataTable>
-
+                            
+                            
+                    </p:dataTable>
                 </p:tab>
                 <p:tab titletip="test tool tip"
                        title="Company extras"
