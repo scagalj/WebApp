@@ -29,5 +29,7 @@ public interface OrderCommons {
     
     List<UserOrder> getCompletedOrdersForSalesObject(SecurityContext sc, SalesObject salesObject);
     
+    List<UserOrder> getAllOrdersForSalesObjectForUser(SecurityContext sc,ContactUser user, SalesObject salesObject);
+    
     Map<Product,Integer> calculateAvailabeQuantityPerProduct(SecurityContext sc, List<Product> products, List<UserOrder> orders);
 }

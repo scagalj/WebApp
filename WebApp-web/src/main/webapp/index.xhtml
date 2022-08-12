@@ -9,7 +9,77 @@
 
     <ui:define name="content">
 
+        <style>
+
+            * {
+                box-sizing: border-box;
+            }
+
+            .layout-wrapper {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                min-height: 100vh;
+            }
+
+            .layout-wrapper .layout-main {
+                flex: 1 1 0;
+                margin-left: 65px;
+                padding: 80px 10px 0px 10px;
+                -moz-transition: margin-left 0.3s;
+                -o-transition: margin-left 0.3s;
+                -webkit-transition: margin-left 0.3s;
+                transition: margin-left 0.3s;
+            }
+
+            .grid {
+                display: flex;
+                flex-wrap: wrap;
+                margin-right: -0.5rem;
+                margin-left: -0.5rem;
+                margin-top: -0.5rem;
+            }
+
+            .boxcolor {
+                background: linear-gradient(229deg, #fd9a77, #fb827a);
+                height: 90px;
+            }
+            .boxshadowclass{
+                box-shadow: 0 4px 8px 0 rgb(0 0 0 / 10%), 0 6px 20px 0 rgb(0 0 0 / 10%);
+            }
+
+
+        </style>
+
         <h:form>
+            <div class="container">
+                <h:panelGroup class="ui-g">
+                    <div class="ui-datagrid-column ui-g-12 ui-md-3">
+                        <div class="boxcolor" style="margin: 10px;">
+                            <div>Payments:</div>
+                            <div><h:outputText value="#{OrderControllerMB.getPaymentsAmount()}" >
+                                    <f:convertNumber type="currency" currencySymbol="€ "/>
+                                </h:outputText></div>
+                        </div>
+                    </div>
+                    <div class="ui-datagrid-column ui-g-12 ui-md-3">
+                        <div class="boxcolor" style="margin: 10px;">
+                            a
+                        </div>
+                    </div>
+                    <div class="ui-datagrid-column ui-g-12 ui-md-3">
+                        <div class="boxcolor" style="margin: 10px;">
+                            a
+                        </div>
+                    </div>
+                    <div class="ui-datagrid-column ui-g-12 ui-md-3">
+                        <div class="boxcolor" style="margin: 10px;">
+                            a
+                        </div>
+                    </div>
+                </h:panelGroup>
+            </div>
+
             <div class="container">
                 <h:panelGroup class="ui-g">
                     <div class="ui-datagrid-column ui-g-12 ui-md-4">
@@ -35,7 +105,7 @@
                                                 <h:outputText value="#{UserControllerMB.user.getBalance()}">
                                                     <f:convertNumber pattern="#,##0.00"  type="currency" currencySymbol="€" maxFractionDigits="2"  />
                                                 </h:outputText>
-                                                  €
+                                                €
                                             </b></h3>
                                     </div>
                                     <br/>
@@ -104,7 +174,7 @@
                                         <div style="width: 100%; display: inline-block;">
                                             <div class="ui-g">
                                                 <div class="ui-g-6">
-                                                    
+
                                                 </div>
                                                 <div class="ui-g-6">
                                                     <p:commandButton value="Go to check out" action="checkout.xhtml?faces-redirect=true" />

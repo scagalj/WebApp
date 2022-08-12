@@ -12,10 +12,12 @@ import hr.workspace.controllers.interfaces.ProductCommons;
 import hr.workspace.models.Discount;
 import hr.workspace.models.OrderItem;
 import hr.workspace.models.OrderRepresentative;
+import hr.workspace.models.Payment;
 import hr.workspace.models.Product;
 import hr.workspace.models.ProductType;
 import hr.workspace.models.Representative;
 import hr.workspace.models.UserOrder;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -23,7 +25,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
@@ -216,6 +217,14 @@ public class OrderControllerMB extends BaseManagedBean{
             return true;
         }
         return false;
+    }
+    
+    public BigDecimal getPaymentsAmount(){
+        List<UserOrder> orders = orderCommons.getAllOrdersForSalesObjectForUser(getSecurityContext(), getUser(), getSalesObject());
+        List<Payment> payments = orders.stream().flatMap(o -> o.getPayments().stream()).collect(Collectors.toList());
+        BigDecimal result = BigDecimal.ZERO;
+        payments.forEach(p -> result.add(p.getAmount()));
+        return result;
     }
     
     public List<UserOrder> getSortedUserOrders() {

@@ -72,6 +72,7 @@ public class OrderCommonsBean extends AbstractCommonsBean<UserOrder> implements 
         
     }
     
+    @Override
     public List<UserOrder> getCompletedOrdersForSalesObject(SecurityContext sc, SalesObject salesObject){
         Query query = em.createQuery("Select u from UserOrder u "
                 + "where u.salesObject = :salesObject "
@@ -79,6 +80,17 @@ public class OrderCommonsBean extends AbstractCommonsBean<UserOrder> implements 
         query.setParameter("salesObject", salesObject);
         query.setParameter("init", UserOrderStatus.COMPLETED);
         query.setParameter("progress", UserOrderStatus.AUTHORIZED);
+        List<UserOrder> orders = new ArrayList<>(query.getResultList());
+        return orders;
+    }
+    
+    @Override
+    public List<UserOrder> getAllOrdersForSalesObjectForUser(SecurityContext sc,ContactUser user, SalesObject salesObject){
+        Query query = em.createQuery("Select u from UserOrder u "
+                + "where u.salesObject = :salesObject "
+                + "and u.contactUser = :contactUser");
+        query.setParameter("salesObject", salesObject);
+        query.setParameter("contactUser", user);
         List<UserOrder> orders = new ArrayList<>(query.getResultList());
         return orders;
     }
