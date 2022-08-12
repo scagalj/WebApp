@@ -58,9 +58,9 @@
                 border-top: 1px solid #c6c7c9;
             }
             .footer-text-right{
-                    text-align: right;
-    float: right;
-    font-size: 10pt;
+                text-align: right;
+                float: right;
+                font-size: 10pt;
             }
         </style>
 
@@ -86,12 +86,40 @@
                         <p:overlayPanel  dismissable="true" widgetVar="shoppingCartDetailsOP" my="right bottom" style="width: 480px;" >
                             <h:panelGroup id="shoppingCartDetails" >
                                 <h:panelGroup rendered="#{OrderControllerMB.order != null}">
-                                    <p:outputLabel value="#{OrderControllerMB.order.id}" />
+
+                                    <p:dataList value="#{CheckOutControllerMB.order.orderRepresentatives}"
+                                                var="rep"
+                                                emptyMessage=""
+                                                type="definition"
+                                                style="border: 0px; margin: 0px; padding: 0px;"
+                                                >
+
+                                        <div class="ui-g">
+                                            <div class="ui-g-5">
+                                                <h:outputLabel value="#{rep.representative.firstName} " />
+                                                <h:outputLabel value="#{rep.representative.lastName}" />
+                                            </div>
+                                            <div class="ui-g-6" style="text-align: right;">
+                                                <h:outputText value="#{rep.price}" >
+                                                    <f:convertNumber type="currency" currencySymbol="€ "/>
+                                                </h:outputText>
+                                            </div>
+                                            <div class="ui-g-1">
+                                                <p:commandLink value="X" 
+                                                               action="#{OrderControllerMB.removeRepresentativeFromOrder(rep)}" 
+                                                               process="@this" 
+                                                               update="menuform:shoppingCartDetails menuform:shoppingCartBadge" 
+                                                               />
+                                            </div>
+                                        </div>
+                                    </p:dataList>
 
                                     <p:dataList value="#{OrderControllerMB.order.orderItems}"
                                                 var="row"
                                                 type="definition"
-                                                style="border: 0px; margin: 0px; padding: 0px;">
+                                                emptyMessage=""
+                                                style="border: 0px; margin: 0px; padding: 0px;"
+                                                >
 
 
 

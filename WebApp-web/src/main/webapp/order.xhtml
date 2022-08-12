@@ -57,7 +57,7 @@
                             <p:commandButton value="Add to order" 
                                              action="#{OrderControllerMB.addRepresentativeToOrder(row)}"
                                              process="@this"
-                                             update="@form"
+                                             update="@form menuform"
                                              disabled="#{not OrderControllerMB.getCanAddOrderRepresentativeToOrder(row)}"
                                              />
                         </p:column>

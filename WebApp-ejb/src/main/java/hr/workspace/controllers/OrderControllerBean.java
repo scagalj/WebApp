@@ -285,7 +285,7 @@ public class OrderControllerBean extends MainAdminTransactionControllerBean<User
                 }
             }
 
-            order.setUserOrderStatus(UserOrderStatus.IN_PROGRESS);
+            order = updateOrderStatusToInProgressForInitOrder(order);
             order = merge(order);
 
             user = updateUserWithOrder(user, order);
@@ -536,6 +536,7 @@ public class OrderControllerBean extends MainAdminTransactionControllerBean<User
             order.getOrderRepresentatives().add(orderRepresentative);
             persist(orderRepresentative);
 
+            order = updateOrderStatusToInProgressForInitOrder(order);
             order = merge(order);
 
             user = updateUserWithOrder(user, order);
@@ -547,6 +548,13 @@ public class OrderControllerBean extends MainAdminTransactionControllerBean<User
             makeTransactionRollBack(sc);
         }
         return null;
+    }
+    
+    private UserOrder updateOrderStatusToInProgressForInitOrder(UserOrder order){
+        if(UserOrderStatus.INIT.equals(order.getUserOrderStatus())){
+                order.setUserOrderStatus(UserOrderStatus.IN_PROGRESS);
+            }
+        return order;
     }
     
     @Override

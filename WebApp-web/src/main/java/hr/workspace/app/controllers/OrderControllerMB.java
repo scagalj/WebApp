@@ -103,7 +103,14 @@ public class OrderControllerMB extends BaseManagedBean{
     public String getNumberOrItemsInOrder(){
         UserOrder order = getOrder();
         if(order != null){
-            return Integer.toString(order.getOrderItems().size());
+            int numberOfItemsInOrder = 0;
+            if(order.getOrderItems() != null){
+                numberOfItemsInOrder += order.getOrderItems().size();
+            }
+            if(order.getOrderRepresentatives() != null){
+                numberOfItemsInOrder += order.getOrderRepresentatives().size();
+            }
+            return Integer.toString(numberOfItemsInOrder);
         }
         return "0";
     }
