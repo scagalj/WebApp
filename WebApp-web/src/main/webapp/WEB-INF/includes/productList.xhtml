@@ -4,67 +4,168 @@
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
     xmlns:p="http://primefaces.org/ui"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
     >
 
+    <style>
+
+        .addToShoppingCartButton{
+            background: none !important;
+            color: #2196F3 !important;
+        }
+        .addToShoppingCartGroup{
+            float: right;
+        }
+        .card{
+            border: none !important;
+        }
+        .product-group{
+            padding: 10px;
+        }
+        .product-group:hover{
+            box-shadow: rgba(149, 157, 165, 0.4) 0px 8px 24px;
+        }
+        .product-name{
+            text-align: center;
+            padding-bottom: 10px;
+        }
+        body .ui-datagrid .ui-datagrid-content{
+            border: none !important;
+        }
+        .discountBadge{
+            position: absolute;
+            top: 25px;
+            left: 30px;
+            background: #ffed00;
+            padding: 5px;
+            text-align: center;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .product-price-regular{
+            font-size: 13pt;
+            font-weight: 600;
+        }
+        .product-price-discount{
+            color: #cb1515;
+            font-size: 13pt;
+            font-weight: 600;
+        }
+        .product-price-regular-with-discount{
+            font-size: 11pt;
+            color: #2196F3;
+        }
+        .strikethrough {
+            position: relative;
+        }
+        .strikethrough:before {
+            position: absolute;
+            content: "";
+            left: 0;
+            top: 50%;
+            right: 0;
+            border-top: 1px solid;
+            border-color: inherit;
+
+            -webkit-transform:rotate(-5deg);
+            -moz-transform:rotate(-5deg);
+            -ms-transform:rotate(-5deg);
+            -o-transform:rotate(-5deg);
+            transform:rotate(-5deg);
+        }
+        .pricePanelGroup{
+            float: left;
+            display: block;
+            width: 60%;
+        }
+        .product-grid-item-bottom{
+            padding: 10px;
+        }
+        .product-name{
+            padding: 10px;
+        }
+    </style>
 
     <p:dataGrid var="row" 
                 value="#{products}" 
                 columns="4" layout="grid">
 
 
-        <div class="product-grid-item card" style="margin: 10px">
-            <div class="product-grid-item-top">
-                <div>
-                    <i class="pi pi-tag product-category-icon"/>
-                    <span class="product-category">#{row.productType}</span>
-                    <b>
-                    <h:panelGroup rendered="#{OrderControllerMB.getCurrentProductAvailability(row) le 0}" class="product-category">OUT OF STOCK</h:panelGroup>
-                    <h:panelGroup rendered="#{OrderControllerMB.getCurrentProductAvailability(row) le 5 and OrderControllerMB.getCurrentProductAvailability(row) ge 1}" class="product-category">LOW ON STOCK</h:panelGroup>
-                    </b>
-                </div>
-                <span class="product-badge status-#{product.inventoryStatus.name().toLowerCase()}">#{product.inventoryStatus.text}</span>
-            </div>
+        <c:set var="hasDiscount" value="#{not (row.price eq row.priceWithDiscount)}" />
+        <div class="product-grid-item card product-group">
+            <h:outputText value="Remaining products: #{OrderControllerMB.getCurrentProductAvailability(row)}" />
+            <!--            <div class="product-grid-item-top">
+                            <div>
+                                <i class="pi pi-tag product-category-icon"/>
+                                <span class="product-category">#{row.productType}</span>
+                                <b>
+                                    <h:panelGroup rendered="#{OrderControllerMB.getCurrentProductAvailability(row) le 0}" class="product-category">OUT OF STOCK</h:panelGroup>
+                                    <h:panelGroup rendered="#{OrderControllerMB.getCurrentProductAvailability(row) le 5 and OrderControllerMB.getCurrentProductAvailability(row) ge 1}" class="product-category">LOW ON STOCK</h:panelGroup>
+                                </b>
+                            </div>
+                            <span class="product-badge status-#{product.inventoryStatus.name().toLowerCase()}">#{product.inventoryStatus.text}</span>
+                        </div>-->
             <div class="product-grid-item-content">
-                <div class="product-grid-item-content imagewrapper" style="height: 300px;">
+                <div class="product-grid-item-content imagewrapper" style="height: 300px; display: block; position: relative;">
+                    <h:panelGroup class="discountBadge" rendered="#{hasDiscount}">
+                        <h:outputText value="#{row.discountAmountInPercentage}" >
+                            <f:convertNumber pattern="##" type="percent"/>
+                        </h:outputText>
+                        <h:outputText value="%" />
+                    </h:panelGroup>
                     <p:graphicImage
-                        style="width: 100%; height: 100%; padding: 15px;"
+                        style="width: 100%; height: 100%;"
                         value="#{OrderControllerMB.generateImageContent(row.getFeaturedImage().loadImageContentToAttachment())}" 
                         stream="false" 
                         />
                 </div>
                 <div class="product-name">#{row.name}</div>
-                <div class="product-description">#{product.description}</div>
             </div>
+<!--<h:outputText value="Remaining products: #{OrderControllerMB.getCurrentProductAvailability(row)}" />-->
             <div class="product-grid-item-bottom">
-                <h:outputText value="#{row.price}" styleClass="product-price" style="text-decoration: line-through;">
-                    <f:convertNumber currencySymbol="€" type="currency"/>
-                </h:outputText>
-                <h:outputText value="#{row.priceWithDiscount}" styleClass="product-price">
-                    <f:convertNumber currencySymbol="€" type="currency"/>
-                </h:outputText>
-                <p:spacer width="10" />
-                <p:inputNumber value="#{row.discountAmountInPercentage}" 
-                               symbol="%"
-                               symbolPosition="s"
-                               decimalPlaces="0"
-                               disabled="true"
-                               />
-                <br/>
-                <h:outputText value="Remaining products: #{OrderControllerMB.getCurrentProductAvailability(row)}" />
-                
-                <br/>
-                <h:outputText value="Selected: #{OrderControllerMB.getCurrentOrderProductSelectionsQuantity(row)}" />
+                <h:panelGroup layout="block" class="pricePanelGroup">
+
+                    <div>
+                        <h:panelGroup class="#{hasDiscount ? 'product-price-regular-with-discount strikethrough' : 'product-price-regular'}" style="margin-right: 5px;">
+                            <h:outputText value="#{row.price}" >
+                                <f:convertNumber pattern="#,#00.00" />
+                            </h:outputText>
+                            <h:outputText value="€" style="padding-left: 2px;" />
+                        </h:panelGroup>
+                    </div>
+                    <div>
+                        <h:panelGroup class="product-price product-price-discount" rendered="#{hasDiscount}">
+                            <h:outputText value="#{row.priceWithDiscount}">
+                                <f:convertNumber pattern="#,###.00" />
+                            </h:outputText>
+                            <h:outputText value="€" style="padding-left: 2px;"/>
+                        </h:panelGroup>
+                    </div>
+                </h:panelGroup>
 
 
-                <p:commandButton update="menuform @namingcontainer" 
-                                 action="#{OrderControllerMB.addOrderItemToOrder(row)}"
-                                 value="Add To Cart"
-                                 process="@form"
-                                 icon="pi pi-shopping-cart"
-                                 disabled="#{OrderControllerMB.getCurrentProductAvailability(row) le 0}"
-                                 >
-                    <p:effect type="transfer" for=":menuform:shoppingCartDetails"  event="click"/>
-                </p:commandButton>
+                <h:panelGroup layout="block" class="addToShoppingCartGroup">
+
+                    <p:badge id="shoppingCartAddBadge" 
+                             value="#{OrderControllerMB.getCurrentOrderProductSelectionsQuantity(row)}" 
+                             severity="info" 
+                             styleClass="ml-3"
+                             visible="#{OrderControllerMB.getCurrentOrderProductSelectionsQuantity(row) gt 0}"
+                             >
+                        <p:commandButton update="menuform @namingcontainer" 
+                                         action="#{OrderControllerMB.addOrderItemToOrder(row)}"
+                                         value="Add"
+                                         process="@form"
+                                         icon="pi pi-shopping-cart"
+                                         class="addToShoppingCartButton"
+                                         disabled="#{OrderControllerMB.getCurrentProductAvailability(row) le 0}"
+                                         >
+                            <p:effect type="transfer" for=":menuform:shoppingCartDetails"  event="click"/>
+                        </p:commandButton>
+                    </p:badge>
+                </h:panelGroup>
+
+
             </div>
         </div>
 

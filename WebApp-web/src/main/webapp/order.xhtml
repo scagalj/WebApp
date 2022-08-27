@@ -10,11 +10,11 @@
     <ui:define name="content">
         <h:form id="orderForm">
 
-            <p:accordionPanel id="orderAccordionPanel" 
+            <p:tabView  id="orderAccordionPanel" 
                               widgetVar="orderAccPanel" 
                               dynamic="true"
-                              cache="true"
-                              activeIndex="-1"
+                              cache="false"
+                              activeIndex="0"
                               >
 
                 <p:tab titletip="test tool tip"
@@ -74,7 +74,7 @@
 
                 </p:tab>
 
-            </p:accordionPanel>
+            </p:tabView>
 
         </h:form>
     </ui:define>
