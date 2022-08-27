@@ -74,15 +74,23 @@
                     <p:menuitem value="Documents" ajax="false" url="attachments.xhtml" />
                     <f:facet name="options">
 
-                        <p:badge id="shoppingCartBadge" value="#{OrderControllerMB.getNumberOrItemsInOrder()}" severity="danger" styleClass="ml-3">
-                            <p:commandLink value="" 
-                                           update=":menuform:shoppingCartDetails"
-                                           oncomplete="PF('shoppingCartDetailsOP').show('#{component.clientId}')"
-                                           >
-                                <i class="pi pi-shopping-cart" style="font-size: 1.5rem" ></i>
-                            </p:commandLink>
-                            <p:effect type="bounce" event="load"/>
-                        </p:badge>
+                        <h:panelGroup layout="block" style="padding-right: 10px; display: inline;">
+                            <h:panelGroup layout="block" style="padding-right: 5px; color:#2196F3; display: inline;">
+                                <h:outputLabel value="#{OrderControllerMB.order.finalPrice}" >
+                                    <f:convertNumber pattern="#,##0.00"  type="currency" currencySymbol="€" maxFractionDigits="2"  />
+                                </h:outputLabel>
+                                <h:outputLabel value="€"/>
+                            </h:panelGroup>
+                            <p:badge id="shoppingCartBadge" value="#{OrderControllerMB.getNumberOrItemsInOrder()}" severity="danger" styleClass="ml-3">
+                                <p:commandLink value="" 
+                                               update=":menuform:shoppingCartDetails"
+                                               oncomplete="PF('shoppingCartDetailsOP').show('#{component.clientId}')"
+                                               >
+                                    <i class="pi pi-shopping-cart" style="font-size: 1.5rem" ></i>
+                                </p:commandLink>
+                                <p:effect type="bounce" event="load"/>
+                            </p:badge>
+                        </h:panelGroup>
                         <p:overlayPanel  dismissable="true" widgetVar="shoppingCartDetailsOP" my="right bottom" style="width: 480px;" >
                             <h:panelGroup id="shoppingCartDetails" >
                                 <h:panelGroup rendered="#{OrderControllerMB.order != null}">
