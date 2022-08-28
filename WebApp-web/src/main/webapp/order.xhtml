@@ -8,19 +8,53 @@
     <ui:param name="module" value="order" />
 
     <ui:define name="content">
+        
+        <style>
+
+        @media screen and (min-width : 720px) {
+            .tabTitleNameHeaderGroup{
+                display: none !important;
+            }
+        }
+        @media screen and (max-width : 720px) {
+            .tabTitleName{
+                display: none !important;
+            }
+        }
+        .tabTitleNameHeaderGroup{
+            text-align: center;
+        }
+        .tabTitleNameHeaderName{
+            font-size: 14pt;
+            font-weight: 700;
+        }
+        .tabTitleName{
+            padding-left: 5px;
+        }
+
+    </style>
+        
         <h:form id="orderForm">
 
             <p:tabView  id="orderAccordionPanel" 
-                              widgetVar="orderAccPanel" 
-                              dynamic="true"
-                              cache="false"
-                              activeIndex="0"
-                              >
+                        widgetVar="orderAccPanel" 
+                        dynamic="true"
+                        cache="false"
+                        activeIndex="0"
+                        >
 
                 <p:tab titletip="test tool tip"
                        title="Booth"
                        >
+                    <f:facet name="title">
+                        <i class="pi pi-check"></i>
+                        <h:outputText value="Booth" class="tabTitleName"/>
+                    </f:facet>
                     
+                    <h:panelGroup layout="block" class="tabTitleNameHeaderGroup">
+                        <h:outputText value="Booth" class="tabTitleNameHeaderName" />
+                    </h:panelGroup>
+
                     <ui:include src="/WEB-INF/includes/productList.xhtml" >
                         <ui:param name="products" value="#{OrderControllerMB.getAllBoothProducts()}" />
                     </ui:include>
@@ -29,6 +63,15 @@
                 <p:tab titletip="test tool tip"
                        title="Furniture"
                        >
+
+                    <f:facet name="title">
+                        <i class="pi pi-cog"></i>
+                        <h:outputText value="Furniture" class="tabTitleName" />
+                    </f:facet>
+                    <h:panelGroup layout="block" class="tabTitleNameHeaderGroup">
+                        <h:outputText value="Furniture" class="tabTitleNameHeaderName" />
+                    </h:panelGroup>
+
                     <ui:include src="/WEB-INF/includes/productList.xhtml" >
                         <ui:param name="products" value="#{OrderControllerMB.getAllFurnitureProducts()}" />
                     </ui:include>
@@ -37,6 +80,15 @@
                 <p:tab titletip="test tool tip"
                        title="Electronics"
                        >
+                    <f:facet name="title">
+                        <i class="pi pi-check"></i>
+                        <h:outputText value="Electronics" class="tabTitleName" />
+                    </f:facet>
+
+                    <h:panelGroup layout="block" class="tabTitleNameHeaderGroup">
+                        <h:outputText value="Electronics" class="tabTitleNameHeaderName" />
+                    </h:panelGroup>
+                    
                     <ui:include src="/WEB-INF/includes/productList.xhtml" >
                         <ui:param name="products" value="#{OrderControllerMB.getAllElectronicsProducts()}" />
                     </ui:include>
@@ -45,10 +97,19 @@
                 <p:tab titletip="test tool tip"
                        title="Representatives"
                        >
+
+                    <f:facet name="title">
+                        <i class="pi pi-cog"></i>
+                        <h:outputText value="Representatives" class="tabTitleName" />
+                    </f:facet>
+
+                    <h:panelGroup layout="block" class="tabTitleNameHeaderGroup">
+                        <h:outputText value="Representatives" class="tabTitleNameHeaderName" />
+                    </h:panelGroup>
                     
                     <p:dataTable value="#{OrderControllerMB.getAllOrderRepresentatives()}"
                                  var="row">
-                            
+
                         <p:column>
                             <p:outputLabel value="#{row.representative.firstName}" />
                             <p:outputLabel value="#{row.representative.lastName}" />
@@ -64,14 +125,23 @@
                         <p:column>
                             <h:outputLabel value="Add extras"  rendered="#{OrderControllerMB.getCanAddExtrasToRepresentative(row)}" />
                         </p:column>
-                            
-                            
+
+
                     </p:dataTable>
                 </p:tab>
                 <p:tab titletip="test tool tip"
                        title="Company extras"
                        >
 
+                    <f:facet name="title">
+                        <i class="pi pi-check"></i>
+                        <h:outputText value="Company extras" class="tabTitleName" />
+                    </f:facet>
+
+                    <h:panelGroup layout="block" class="tabTitleNameHeaderGroup">
+                        <h:outputText value="Company extras" class="tabTitleNameHeaderName" />
+                    </h:panelGroup>
+                    
                 </p:tab>
 
             </p:tabView>
