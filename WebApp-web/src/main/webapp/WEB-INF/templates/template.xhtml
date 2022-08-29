@@ -48,9 +48,9 @@
                 font-weight: 600 !important;
 
             }
-            
+
             .layout-main{
-                
+
             }
 
             .layout-footer{
@@ -100,7 +100,7 @@
                 .shoppingCartAmount{
                     display: none !important;   
                 }
-                
+
 
             }
             .HeaderMenuBar{
@@ -111,7 +111,7 @@
                 background: #f8f9fa;
                 border-bottom: 1px solid #cdcdcd;
             }
-            .ui-g-6, .ui-g-5, .ui-g-7, .ui-g-4, .ui-g-8, ui-md-6{
+            .ui-g-1, .ui-g-6, .ui-g-5, .ui-g-7, .ui-g-4, .ui-g-8, ui-md-6{
                 padding: 0px; 
             }
             .menuBarClass{
@@ -134,6 +134,46 @@
                 float: left;
                 padding: 15px 0px 15px 15px;
             }
+            .shopingCartPanelGroup{
+                padding-top: 20px;
+                padding-bottom: 54px;
+            }
+            .productContainer{
+                height: 75px;
+                border-bottom: 1px solid #e3e3e3;
+                padding: 10px 0px 5px 0px;
+                padding-left: 10px;
+            }
+
+            .productContainer:hover{
+                box-shadow: rgba(149, 157, 165, 0.4) 0px 8px 24px;
+            }
+            .productName{
+                float: left;
+                padding-left: 5px;
+                width: 70%;
+            }
+            .productImage{
+                width: 55px;
+                float: left;
+            }
+            .removeProduct{
+                width: 10px;
+                float: right;
+            }
+            .totalAmount{
+                position: fixed;
+                bottom: 0;
+                width: 100%;
+                background-color: white;
+                padding: 10px;
+            }
+            .representativeContainer{
+                padding: 0px 5px 5px 10px;
+            }
+            .sideBarHeaderText{
+                padding: 5px 5px 5px 10px;
+            }
         </style>
 
         <div>
@@ -142,7 +182,7 @@
                     <div class="HeaderMenuBar">
                         <div class="logoHeader">
                             <p:commandLink action="/index.xhtml?faces-redirect=true">
-                            <i class="pi pi-cog" style="font-size: 1.8rem" ></i>
+                                <i class="pi pi-cog" style="font-size: 1.8rem" ></i>
                             </p:commandLink>
                         </div>
                         <div class="ui-g">
@@ -205,8 +245,12 @@
                     </div>
                 </nav>
 
-                <p:sidebar widgetVar="shoppingCartWidgetVar" position="right" blockScroll="false" style="overflow: scroll;">
-                    <h:panelGroup id="shoppingCartDetails" >
+                <p:sidebar widgetVar="shoppingCartWidgetVar" position="right" blockScroll="false" style="padding: 0px;">
+                    <h:panelGroup class="sideBarHeaderText" layout="block">
+                        <h5>Shopping cart details</h5>
+                    </h:panelGroup>
+
+                    <h:panelGroup id="shoppingCartDetails" class="shopingCartPanelGroup" layout="block" style="overflow-y: auto; height: 100%;">
                         <h:panelGroup rendered="#{OrderControllerMB.order != null}">
 
                             <p:dataList value="#{CheckOutControllerMB.order.orderRepresentatives}"
@@ -216,18 +260,19 @@
                                         style="border: 0px; margin: 0px; padding: 0px;"
                                         >
 
-                                <div class="ui-g">
-                                    <div class="ui-g-5">
-                                        <h:outputLabel value="#{rep.representative.firstName} " />
-                                        <h:outputLabel value="#{rep.representative.lastName}" />
+                                <div class="ui-g representativeContainer">
+                                    <div class="ui-g-6">
+                                        <i class="pi pi-user" style="padding-right: 5px;"></i>
+                                        <h:outputText value="#{rep.representative.firstName} " />
+                                        <h:outputText value="#{rep.representative.lastName}" />
                                     </div>
-                                    <div class="ui-g-6" style="text-align: right;">
+                                    <div class="ui-g-5" style="text-align: right;">
                                         <h:outputText value="#{rep.price}" >
                                             <f:convertNumber type="currency" currencySymbol="€ "/>
                                         </h:outputText>
                                     </div>
-                                    <div class="ui-g-1">
-                                        <p:commandLink value="X" 
+                                    <div class="ui-g-1" style="text-align: right;">
+                                        <p:commandLink value="x" 
                                                        action="#{OrderControllerMB.removeRepresentativeFromOrder(rep)}" 
                                                        process="@this" 
                                                        update="menuform:shoppingCartDetails menuform:shoppingCartBadge" 
@@ -244,48 +289,56 @@
                                         >
 
 
+                                <div class="productContainer">
+                                    <div class="productImage">
+                                        <p:graphicImage
+                                            style="width: 55px; height: 55px;"
+                                            value="#{OrderControllerMB.generateImageContent(row.product.getFeaturedImage().loadImageContentToAttachment())}" 
+                                            stream="false" 
+                                            />
+                                    </div>
+                                    <div class="productName">
+                                        <div>
+                                            <h:outputText value="#{row.product.name}"/>
 
-                                <div class="ui-g">
-                                    <div class="ui-g-5">
-                                        <h:outputText value="#{row.product.name} "/>
+                                        </div>
+                                        <div style="padding-top: 10px;">
+                                            <div style="    float: left; padding-left: 50px;">
+                                                qt:#{row.quantity}
+                                            </div>
+                                            <div style="    float: right;" >
+                                                <h:outputLabel value="#{row.finalPrice}" >
+                                                    <f:convertNumber pattern="#,##0.00"  type="currency" currencySymbol="€" maxFractionDigits="2"  />
+                                                </h:outputLabel>
+                                                <h:outputLabel value="€"/>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="ui-g-6" style="text-align: right;">
-                                        <h:outputText value="#{row.price}" >
-                                            <f:convertNumber pattern="#,##0.00"  type="number" />
-                                        </h:outputText>
-                                        <h:outputText value="€ " />
-                                        <h:outputText value=" x " />
-                                        <h:outputText value="#{row.quantity}" />
-                                        <h:outputText value=" =" />
-                                        <h:outputText value="#{row.finalPrice}" >
-                                            <f:convertNumber pattern="#,##0.00"  type="currency" currencySymbol="€" maxFractionDigits="2"  />
-                                        </h:outputText>
-                                        <h:outputText value="€" />
-                                    </div>
-                                    <div class="ui-g-1">
-                                        <p:commandLink value="X" 
+                                    <div class="removeProduct">
+                                        <p:commandLink value="x" 
                                                        action="#{OrderControllerMB.removeOrderItemFromOrder(row)}" 
                                                        process="@this" 
                                                        update="menuform:shoppingCartDetails menuform:shoppingCartBadge" 
                                                        />
                                     </div>
                                 </div>
-                                <hr style="margin: 5px;"/>
+
+
                             </p:dataList>
-                            <div class="ui-g" style="margin-top: -20px;">
-                                <div class="ui-g-5">
-                                    <h:outputText value="#{row.product.name} "/>
-                                </div>
-                                <div class="ui-g-6" style="text-align: right; font-weight: 700;">
-                                    <h:outputText value="Total amount: "/>
-                                    <h:outputText value="#{OrderControllerMB.order.finalPrice}" >
-                                        <f:convertNumber pattern="#,##0.00"  type="currency" currencySymbol="€" maxFractionDigits="2"  />
-                                    </h:outputText>
-                                    <h:outputText value="€"/>
-                                </div>
-                                <div class="ui-g-1">
-                                </div>
-                            </div>
+                            <!--                            <div class="ui-g" style="margin-top: -20px;">
+                                                            <div class="ui-g-5">
+                                                                <h:outputText value="#{row.product.name} "/>
+                                                            </div>
+                                                            <div class="ui-g-6" style="text-align: right; font-weight: 700;">
+                                                                <h:outputText value="Total amount: "/>
+                                                                <h:outputText value="#{OrderControllerMB.order.finalPrice}" >
+                                                                    <f:convertNumber pattern="#,##0.00"  type="currency" currencySymbol="€" maxFractionDigits="2"  />
+                                                                </h:outputText>
+                                                                <h:outputText value="€"/>
+                                                            </div>
+                                                            <div class="ui-g-1">
+                                                            </div>
+                                                        </div>-->
 
 
 
@@ -293,6 +346,21 @@
 
                         </h:panelGroup>
                     </h:panelGroup>
+
+                    <div class="totalAmount">
+                        <div style="float: left;font-size: 13pt;font-weight: 700;padding: 5px;">
+                            Total amount:
+                        </div>
+                        <div style="float:right;font-size: 13pt;font-weight: 700;color: #0d89ec;padding: 5px;">
+                            <h:outputLabel value="#{OrderControllerMB.order.finalPrice}" >
+                                <f:convertNumber pattern="#,##0.00"  type="currency" currencySymbol="€" maxFractionDigits="2"  />
+                            </h:outputLabel>
+                            <h:outputLabel value="€"/>
+                        </div>
+                        <div style="float: left; width: 100%; text-align: right;">
+                            <p:commandButton value="Go to check out >" action="checkout.xhtml?faces-redirect=true" />
+                        </div>
+                    </div>
                 </p:sidebar>
 
             </h:form>
