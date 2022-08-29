@@ -141,7 +141,9 @@
                 <nav>
                     <div class="HeaderMenuBar">
                         <div class="logoHeader">
+                            <p:commandLink action="/index.xhtml?faces-redirect=true">
                             <i class="pi pi-cog" style="font-size: 1.8rem" ></i>
+                            </p:commandLink>
                         </div>
                         <div class="ui-g">
                             <div class="headerMenuItems ui-g-4 ui-md-6">
@@ -195,6 +197,7 @@
                                 </h:panelGroup>
 
                                 <p:menuButton icon="pi pi-cog" styleClass="butonIconHeader">
+                                    <p:menuitem value="Account details" icon="pi pi-user" styleClass="ui-button-info" action="/user.xhtml?faces-redirect=true" process="@this"/>
                                     <p:menuitem value="Logout" icon="pi pi-fw pi-sign-out" styleClass="ui-button-info" action="#{SecurityMB.logout()}" process="@this"/>
                                 </p:menuButton>
                             </div>
