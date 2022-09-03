@@ -38,15 +38,6 @@ public class OrderControllerMB extends BaseManagedBean {
     private UploadedFiles attachments;
     private Payment payment;
 
-    public void createNewOrder() {
-        UserOrder tmpOrder = controller.newOrder(getSecurityContext());
-        setProduct(null);
-        if (tmpOrder != null) {
-            setOrder(tmpOrder);
-            showDialog(ORDER_DIALOG_NAME);
-        }
-    }
-
     public void editOrder(UserOrder tmpOrder) {
         if (tmpOrder != null) {
             setProduct(null);
@@ -57,7 +48,7 @@ public class OrderControllerMB extends BaseManagedBean {
 
     public void saveOrder() {
         if (getOrder() != null) {
-            UserOrder tmpOrder = controller.save(getSecurityContext(), getOrder());
+            UserOrder tmpOrder = controller.save(getSecurityContext(), getOrder(), getOrder().getUser());
             if (tmpOrder != null) {
                 setProduct(null);
             }

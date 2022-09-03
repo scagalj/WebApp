@@ -46,18 +46,6 @@ public class OrderControllerBean extends MainAdminTransactionControllerBean<User
     @EJB
     private OrderCommons commons;
 
-    @Deprecated
-    @Override
-    public UserOrder newOrder(SecurityContext sc) {
-        try {
-            UserOrder result = new UserOrder();
-            return result;
-        } catch (Exception ex) {
-            log(sc, Level.ALL, ex, true);
-        }
-        return null;
-    }
-
     @Override
     public UserOrder newOrder(SecurityContext sc, ContactUser user, SalesObject salesObject) {
         try {
@@ -69,24 +57,6 @@ public class OrderControllerBean extends MainAdminTransactionControllerBean<User
             log(sc, Level.ALL, ex, true);
         }
         return null;
-    }
-
-    @Deprecated
-    @Override
-    public UserOrder save(SecurityContext sc, UserOrder so) {
-        try {
-            utx.begin();
-            for (OrderItem oi : so.getOrderItems()) {
-                merge(oi);
-            }
-
-            UserOrder userOrder = super.save(sc, so);
-            return userOrder;
-        } catch (Exception ex) {
-            log(sc, Level.ALL, ex, true);
-            makeTransactionRollBack(sc);
-        }
-        return so;
     }
 
     @Override

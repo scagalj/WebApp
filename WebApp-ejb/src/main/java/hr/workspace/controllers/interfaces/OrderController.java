@@ -28,12 +28,7 @@ import org.primefaces.model.file.UploadedFile;
 @Local
 public interface OrderController {
     
-    UserOrder newOrder(SecurityContext sc);
-    
     UserOrder newOrder(SecurityContext sc, ContactUser user, SalesObject salesObject);
-    
-    @Deprecated
-    UserOrder save(SecurityContext sc, UserOrder so);
     
     UserOrder save(SecurityContext sc, UserOrder so, ContactUser user);
     
