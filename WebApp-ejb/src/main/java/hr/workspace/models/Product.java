@@ -53,6 +53,7 @@ public class Product implements IEntity, Serializable {
     private List<Attachment> attachments;
 
     private Boolean disabled;
+    private String coordinates;
 
     @Transient
     private List<OrderItemDiscount> tmpDiscounts;
@@ -179,6 +180,18 @@ public class Product implements IEntity, Serializable {
         this.tmpDiscounts = tmpDiscounts;
     }
 
+    public String getCoordinates() {
+        return coordinates;
+    }
+
+    public void setCoordinates(String coordinates) {
+        this.coordinates = coordinates;
+    }
+    
+    public boolean isBooth(){
+        return ProductType.BOOTH.equals(getProductType());
+    }
+    
     @Override
     public int hashCode() {
         int hash = 7;

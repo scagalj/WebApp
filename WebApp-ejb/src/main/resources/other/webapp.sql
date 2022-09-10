@@ -74,6 +74,7 @@ create table product (
 	"name" text not null,
 	price numeric not null,
 	quantity integer not null,
+        coordinates text,
 	disabled boolean not null default false,
 	constraint fk_salesObject_product FOREIGN key (salesObject_id) references salesObject(id)
 );

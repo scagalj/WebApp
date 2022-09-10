@@ -8,32 +8,62 @@
     <ui:param name="module" value="order" />
 
     <ui:define name="content">
-        
+
+
+        <script>
+
+            function callEventOnRemoreComand(e) {
+                var _bid = e.getAttribute('_bid');
+                increment([{name: 'x', value: _bid}]);
+            }
+
+        </script>
+
+
         <style>
 
-        @media screen and (min-width : 720px) {
+            @media screen and (min-width : 720px) {
+                .tabTitleNameHeaderGroup{
+                    display: none !important;
+                }
+            }
+            @media screen and (max-width : 720px) {
+                .tabTitleName{
+                    display: none !important;
+                }
+            }
             .tabTitleNameHeaderGroup{
-                display: none !important;
+                text-align: center;
             }
-        }
-        @media screen and (max-width : 720px) {
+            .tabTitleNameHeaderName{
+                font-size: 14pt;
+                font-weight: 700;
+            }
             .tabTitleName{
-                display: none !important;
+                padding-left: 5px;
             }
-        }
-        .tabTitleNameHeaderGroup{
-            text-align: center;
-        }
-        .tabTitleNameHeaderName{
-            font-size: 14pt;
-            font-weight: 700;
-        }
-        .tabTitleName{
-            padding-left: 5px;
-        }
 
-    </style>
-        
+            .testdiv2{
+                display: block;
+                position: relative;
+            }
+
+            .infoDiv{
+                padding: 10px;
+                border: 1px solid black;
+            }
+
+            .overlayImageDiv{
+                background-color: #bbbbbbc7;
+                position: absolute;
+            }
+            .selectedBoothOverlayDiv{
+                background-color: #bbbbbbc7;
+                position: absolute;
+            }
+
+        </style>
+
         <h:form id="orderForm">
 
             <p:tabView  id="orderAccordionPanel" 
@@ -41,6 +71,8 @@
                         dynamic="true"
                         cache="false"
                         activeIndex="0"
+                        touchable="false"
+                        scrollable="false"
                         >
 
                 <p:tab titletip="test tool tip"
@@ -50,14 +82,81 @@
                         <i class="pi pi-check"></i>
                         <h:outputText value="Booth" class="tabTitleName"/>
                     </f:facet>
-                    
+
                     <h:panelGroup layout="block" class="tabTitleNameHeaderGroup">
                         <h:outputText value="Booth" class="tabTitleNameHeaderName" />
                     </h:panelGroup>
 
-                    <ui:include src="/WEB-INF/includes/productList.xhtml" >
-                        <ui:param name="products" value="#{OrderControllerMB.getAllBoothProducts()}" />
-                    </ui:include>
+                    <p:scrollPanel mode="native">
+                        <div class="testdiv2">
+                            <p:remoteCommand name="increment" action="#{OrderControllerMB.increment}" update="panelGroup"/>
+
+                            <div style="float: left;">
+                                <ui:repeat value="#{OrderControllerMB.selectedBoothLocations}" var="booth">
+                                    <div class="selectedBoothOverlayDiv" style="top: #{booth.coordinates.y1}px; left: #{booth.coordinates.x1}px; width: #{booth.boothLocationWidth}px; height: #{booth.boothLocationHeight}px;"><label>SELECTED</label></div>
+                                </ui:repeat>
+                                <ui:repeat value="#{OrderControllerMB.allSoldBoothLocations}" var="booth">
+                                    <div class="overlayImageDiv" style="top: #{booth.coordinates.y1}px; left: #{booth.coordinates.x1}px; width: #{booth.boothLocationWidth}px; height: #{booth.boothLocationHeight}px;"><label>SOLD OUT</label></div>
+                                </ui:repeat>
+                                <h:graphicImage id="image" 
+                                                value="images/plan.png" 
+                                                usemap="#workmap" 
+                                                style="border: 0px solid black;"
+                                                >
+                                </h:graphicImage>
+                                <map name="workmap">
+                                    <ui:repeat value="#{OrderControllerMB.initBoothLocations}" var="booth">
+                                        <area shape="rect" _bId="#{booth.id}" coords="#{booth.coordinates.coordsAsString}" href="#" onclick="callEventOnRemoreComand(this);"/>
+                                    </ui:repeat>
+                                </map>
+                            </div>
+
+                        </div>
+                        <h:panelGroup style="float: left; margin-left: 10px;" layout="block">
+                            <h:panelGroup id="boothInfoPanel" class="infoDiv" layout="block">
+                                <h:panelGroup id="panelGroup" layout="block">
+                                    <h:panelGroup id="panelGroupSelected" layout="block" rendered="#{OrderControllerMB.boothInfo != null}">
+                                        <h:outputLabel value="Booth information:" />
+                                        <div>
+
+                                            <p:graphicImage
+                                                style="width: 300px;"
+                                                value="#{OrderControllerMB.generateImageContent(OrderControllerMB.boothInfo.product.getFeaturedImage().loadImageContentToAttachment())}" 
+                                                stream="false" 
+                                                />
+                                        </div>
+
+                                        <h:panelGrid columns="2">
+
+                                            <h:outputLabel value="Name:"  />
+                                            <h:outputLabel value="#{OrderControllerMB.boothInfo.name}"  />
+
+                                            <h:outputLabel value="Price:"  />
+                                            <h:outputLabel value="#{OrderControllerMB.boothInfo.price}"  />
+
+                                            <h:outputLabel value="Dimension:"  />
+                                            <h:outputLabel value="3400 x 4000"  />
+
+                                        </h:panelGrid>
+                                        <p:commandButton value="Book it" 
+                                                         action="#{OrderControllerMB.addOrderItemToOrder(OrderControllerMB.boothInfo.product)}"
+                                                         update="menuform @namingcontainer" 
+                                                         process="@form"
+                                                         >
+                                            <p:effect type="transfer" for=":menuform:shoppingCartDetails"  event="click"/>
+                                        </p:commandButton>
+                                    </h:panelGroup>
+                                    <h:panelGroup id="panelGroupNotSelected" layout="block" rendered="#{OrderControllerMB.boothInfo == null}">
+                                        <h:outputLabel value="Select booth for more information" />
+                                    </h:panelGroup>
+                                </h:panelGroup>
+                            </h:panelGroup>                    
+                        </h:panelGroup>
+                    </p:scrollPanel>
+
+                    <!--                    <ui:include src="/WEB-INF/includes/productList.xhtml" >
+                                            <ui:param name="products" value="#{OrderControllerMB.getAllBoothProducts()}" />
+                                        </ui:include>-->
 
                 </p:tab>
                 <p:tab titletip="test tool tip"
@@ -88,7 +187,7 @@
                     <h:panelGroup layout="block" class="tabTitleNameHeaderGroup">
                         <h:outputText value="Electronics" class="tabTitleNameHeaderName" />
                     </h:panelGroup>
-                    
+
                     <ui:include src="/WEB-INF/includes/productList.xhtml" >
                         <ui:param name="products" value="#{OrderControllerMB.getAllElectronicsProducts()}" />
                     </ui:include>
@@ -106,7 +205,7 @@
                     <h:panelGroup layout="block" class="tabTitleNameHeaderGroup">
                         <h:outputText value="Representatives" class="tabTitleNameHeaderName" />
                     </h:panelGroup>
-                    
+
                     <p:dataTable value="#{OrderControllerMB.getAllOrderRepresentatives()}"
                                  var="row">
 
@@ -141,7 +240,7 @@
                     <h:panelGroup layout="block" class="tabTitleNameHeaderGroup">
                         <h:outputText value="Company extras" class="tabTitleNameHeaderName" />
                     </h:panelGroup>
-                    
+
                 </p:tab>
 
             </p:tabView>

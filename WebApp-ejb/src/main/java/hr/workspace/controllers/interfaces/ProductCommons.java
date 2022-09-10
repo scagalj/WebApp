@@ -9,6 +9,7 @@ import hr.workspace.models.Discount;
 import hr.workspace.models.Product;
 import hr.workspace.security.SecurityContext;
 import java.util.List;
+import java.util.logging.Level;
 import javax.ejb.Local;
 
 /**
@@ -24,4 +25,7 @@ public interface ProductCommons{
     
     List<Product> updateProductsWithDiscounts(SecurityContext sc, List<Product> products, List<Discount> discounts);
     
+    <T> T getObjectById(SecurityContext sc, Class<T> clazz, Long id);
+
+    <T> T getObjectById(Class<T> clazz, Long id);
 }

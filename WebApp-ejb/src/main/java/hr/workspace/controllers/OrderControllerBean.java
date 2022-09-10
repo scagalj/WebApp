@@ -132,6 +132,9 @@ public class OrderControllerBean extends MainAdminTransactionControllerBean<User
             for (OrderDiscount discount : new ArrayList<>(userOrder.getOrderDiscounts())) {
                 userOrder = removeOrderDiscountFromOrder(sc, userOrder, discount);
             }
+            for (OrderRepresentative representatives : new ArrayList<>(userOrder.getOrderRepresentatives())) {
+                userOrder = removeOrderRepresentativeFromOrder(sc, userOrder,userOrder.getUser(), representatives);
+            }
 
             Boolean success = super.delete(sc, userOrder);
             return success;

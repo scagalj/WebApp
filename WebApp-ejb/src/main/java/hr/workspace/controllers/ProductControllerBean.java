@@ -9,9 +9,8 @@ import hr.workspace.common.FileUtils;
 import hr.workspace.controllers.interfaces.ProductController;
 import hr.workspace.models.Attachment;
 import hr.workspace.models.Product;
-import hr.workspace.models.SalesObject;
-import hr.workspace.models.UserOrder;
 import hr.workspace.security.SecurityContext;
+import java.util.ArrayList;
 import java.util.UUID;
 import java.util.logging.Level;
 import javax.ejb.Stateful;
@@ -55,6 +54,10 @@ public class ProductControllerBean extends MainAdminTransactionControllerBean<Pr
     @Override
     public Boolean deleteProduct(SecurityContext sc, Product product) {
         try {
+            for (Attachment att : new ArrayList<>(product.getAttachments())) {
+                deleteAttachment(sc, product, att);
+            }
+            
             boolean removed = super.delete(sc, product);
             return removed;
         } catch (Exception e) {
@@ -111,6 +114,7 @@ public class ProductControllerBean extends MainAdminTransactionControllerBean<Pr
         try {
             Boolean isDeleted = FileUtils.deleteImageFromDisk(att);
             if (isDeleted) {
+                att.setProduct(null);
                 product.getAttachments().remove(att);
                 utx.begin();
                 if (!em.contains(att)) {

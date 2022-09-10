@@ -30,6 +30,10 @@
                     <p:column headerText="Name">
                         <h:outputText value="#{row.name}" />
                     </p:column>
+                    
+                    <p:column headerText="Type">
+                        <h:outputText value="#{row.productType}" />
+                    </p:column>
 
                     <p:column headerText="Quantity">
                         <h:outputText value="#{row.quantity}" />
@@ -117,6 +121,9 @@
                                     value="#{ProductControllerMB.product.price}"
                                     decimalPlaces="2"
                                     />
+                                
+                                <p:outputLabel value="Cordinates: " />
+                                <p:inputText value="#{ProductControllerMB.product.coordinates}" />
 
                                 <p:outputLabel value="Quantity:" />
                                 <p:inputNumber
