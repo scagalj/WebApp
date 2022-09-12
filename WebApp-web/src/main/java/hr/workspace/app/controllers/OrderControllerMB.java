@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.context.FacesContext;
@@ -95,7 +94,7 @@ public class OrderControllerMB extends BaseManagedBean {
                 removeOrderItemFromOrder(orderItem.get());
             }
         }
-        
+
         UserOrder order = orderController.addProductToOrder(getSecurityContext(), getOrder(), product, getUser());
         setOrder(order);
         addSuccessMessage(product.getName(), "Sucessfuly added to cart!");
@@ -155,6 +154,7 @@ public class OrderControllerMB extends BaseManagedBean {
     private List<Product> filterProductsByProductType(ProductType productType) {
         return filterProductsByProductType(getAllActiveProducts(), productType);
     }
+
     private List<Product> filterProductsByProductType(List<Product> products, ProductType productType) {
         return (List<Product>) products.stream().filter(p -> productType.equals(p.getProductType())).collect(Collectors.toList());
     }
@@ -256,7 +256,7 @@ public class OrderControllerMB extends BaseManagedBean {
     }
 
     BoothLocation BoothLocation;
-    
+
     public BoothLocation getBoothInfo() {
         return BoothLocation;
     }
@@ -264,25 +264,25 @@ public class OrderControllerMB extends BaseManagedBean {
     public List<BoothLocation> getAllBoothLocations() {
         List<Product> booths = getAllBoothProducts();
         List<BoothLocation> result = new ArrayList<>();
-        for(Product b : booths){
-            if(getProductAvailabilityQuantity(b) > 0){
+        for (Product b : booths) {
+            if (getProductAvailabilityQuantity(b) > 0) {
                 result.add(new BoothLocation(b));
             }
         }
         return result;
     }
-    
-    public List<BoothLocation> getAllSoldBoothLocations(){
-         List<Product> booths = getAllBoothProducts();
+
+    public List<BoothLocation> getAllSoldBoothLocations() {
+        List<Product> booths = getAllBoothProducts();
         List<BoothLocation> result = new ArrayList<>();
-        for(Product b : booths){
-            if(getProductAvailabilityQuantity(b) <= 0){
+        for (Product b : booths) {
+            if (getProductAvailabilityQuantity(b) <= 0) {
                 result.add(new BoothLocation(b));
             }
         }
         return result;
     }
-    
+
     public List<BoothLocation> getSelectedBoothLocations() {
         List<BoothLocation> result = new ArrayList<>();
         if (getOrder() != null && !getOrder().getOrderItems().isEmpty()) {
@@ -312,7 +312,7 @@ public class OrderControllerMB extends BaseManagedBean {
         return getAllBoothLocations();
     }
 
-    
+
     public class BoothLocation {
 
         private Long id;
@@ -328,32 +328,32 @@ public class OrderControllerMB extends BaseManagedBean {
             this.price = p.getPrice();
             populateCordinates(p);
         }
-        
-        private void populateCordinates(Product p){
+
+        private void populateCordinates(Product p) {
             BoothLocationCoordinates coords = new BoothLocationCoordinates();
-            try{
-                
-                if(p.getCoordinates() == null){
-                    addErrorMessage("Product "+ p.getName() + "[ " + p.getId() + " ]" + " don't have coordingates");
+            try {
+
+                if (p.getCoordinates() == null) {
+                    addErrorMessage("Product " + p.getName() + "[ " + p.getId() + " ]" + " don't have coordingates");
                     return;
                 }
-                
-            String coordinates1 = p.getCoordinates();
-            
-            String[] points = coordinates1.split(";");
-            String onePoint = points[0];
-            String[] onePointSplitted = onePoint.split(",");
-            Double x1 = Double.parseDouble(onePointSplitted[0]);
-            Double y1 = Double.parseDouble(onePointSplitted[1]);
-            
-            String secondPoint = points[1];
-            String[] secondPointSplitted = secondPoint.split(",");
-            Double x2 = Double.parseDouble(secondPointSplitted[0]);
-            Double y2 = Double.parseDouble(secondPointSplitted[1]);
-            
-            coords = new BoothLocationCoordinates(x1, y1, x2, y2);
-            
-            }catch(Exception e){
+
+                String coordinates1 = p.getCoordinates();
+
+                String[] points = coordinates1.split(";");
+                String onePoint = points[0];
+                String[] onePointSplitted = onePoint.split(",");
+                Double x1 = Double.parseDouble(onePointSplitted[0]);
+                Double y1 = Double.parseDouble(onePointSplitted[1]);
+
+                String secondPoint = points[1];
+                String[] secondPointSplitted = secondPoint.split(",");
+                Double x2 = Double.parseDouble(secondPointSplitted[0]);
+                Double y2 = Double.parseDouble(secondPointSplitted[1]);
+
+                coords = new BoothLocationCoordinates(x1, y1, x2, y2);
+
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             this.coordinates = coords;
@@ -382,12 +382,13 @@ public class OrderControllerMB extends BaseManagedBean {
         public void setProduct(Product product) {
             this.product = product;
         }
-        
-        public String getBoothLocationWidth(){
+
+        public String getBoothLocationWidth() {
             Double width = getCoordinates().getX2() - getCoordinates().getX1();
             return width.toString();
         }
-        public String getBoothLocationHeight(){
+
+        public String getBoothLocationHeight() {
             Double height = getCoordinates().getY2() - getCoordinates().getY1();
             return height.toString();
         }
@@ -403,6 +404,7 @@ public class OrderControllerMB extends BaseManagedBean {
         public BoothLocationCoordinates() {
             this(0.0, 0.0, 0.0, 0.0);
         }
+
         public BoothLocationCoordinates(Double x1, Double y1, Double x2, Double y2) {
             this.x1 = x1;
             this.y1 = y1;
