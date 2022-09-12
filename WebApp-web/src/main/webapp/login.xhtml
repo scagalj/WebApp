@@ -20,12 +20,6 @@
                 <f:event type="preRenderView" listener="#{SecurityMB.loginOnLoad()}" />
             </f:metadata>
             <title>NauSYS.app</title>
-            <h:outputScript name="js/layout.js?#{startup.time}" library="serenity-layout" />
-            <h:outputScript name="js/ripple.js" library="serenity-layout" />
-
-            <h:outputStylesheet name="css/ripple.css" library="serenity-layout" />
-            <h:outputStylesheet name="css/layout-blue.css?#{startup.time}" library="serenity-layout" />
-            <h:outputStylesheet name="css/customisation.css?#{startup.time}" library="serenity-layout" />
         </h:head>
         <h:body>
 
@@ -54,6 +48,7 @@
                     border-radius: 10px;
                     padding: 20px;
                     background-color: white;
+                    width:  50%;
                 }
 
                 .container {
@@ -63,7 +58,7 @@
                 .center {
                     margin: 0;
                     position: absolute;
-                    top: 40%;
+                    top: 45%;
                     left: 50%;
                     -ms-transform: translate(-50%, -50%);
                     transform: translate(-50%, -50%);
@@ -94,29 +89,42 @@
 
             </style>
 
-            <h:form>
+            <h:form id="loginForm">
 
                 <div class="imageSizer">
                     <div class="container wrapper">
-                        <!--                    <h:graphicImage id="image" 
-                                                            class="imageSizer"
-                                                            value="images/ice22.png" 
-                                                            style=""
-                                                            >
-                                            </h:graphicImage>-->
                         <div class="center innerLoginPanel">
-                            <div>
-                                <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
-                            </div>
-                            <div style="padding: 10px;">
+                            <p:tabView id="tabView">
+                                <p:tab id="regUser" title="Registered user">
+                                    <div>
+                                        <p>Please provide your e-mail and we will send you login URL on you e-mail.</p>
+                                    </div>
+                                    <div style="padding: 10px;">
 
-                                <p:outputLabel value="Email: " />
-                                <p:inputText value="#{SecurityMB.email}" style="width: 90%;"/>
-                            </div>
-                            <div style="float: right;">
+                                        <p:outputLabel value="Email: " />
+                                        <p:inputText value="#{SecurityMB.email}" style="width: 90%;"/>
+                                    </div>
+                                    <div style="float: right;">
 
-                                <p:commandButton value="Login" action="#{SecurityMB.login()}" process="@form" />
-                            </div>
+                                        <p:commandButton value="Send" action="#{SecurityMB.login()}" process="loginForm:tabView:regUser" />
+                                    </div>
+                                </p:tab>
+                                <p:tab id="newUser" title="New user">
+                                    <div>
+                                        <p>Please fill your e-mail to complete registration!</p>
+                                    </div>
+                                    <div style="padding: 10px;">
+
+                                        <p:outputLabel value="Email: " />
+                                        <p:inputText id="test2" value="#{SecurityMB.email}" style="width: 90%;"/>
+                                    </div>
+                                    <div style="float: right;">
+
+                                        <p:commandButton id="test3" value="Register" action="#{SecurityMB.login()}" process="loginForm:tabView:newUser" />
+                                    </div>
+                                </p:tab>
+                            </p:tabView>
+
                         </div>
                     </div>
                 </div>

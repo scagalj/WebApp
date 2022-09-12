@@ -12,15 +12,10 @@ import hr.workspace.controllers.interfaces.UserController;
 import hr.workspace.models.ContactUser;
 import hr.workspace.models.SalesObject;
 import hr.workspace.security.SecurityContext;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
-import java.util.logging.Level;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
-import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.context.Flash;
 import javax.inject.Named;
@@ -41,7 +36,6 @@ public class SecurityMB extends BaseManagedBean {
     @EJB
     private SalesObjectCommons salesObjectCommons;
     private String email;
-    
 
     public String login() {
         try {
