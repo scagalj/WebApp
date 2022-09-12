@@ -11,8 +11,9 @@
                 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
                 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
                 <!--<meta name="viewport" content="width=device-width<meta name="viewport" content="width=1260, user-scalable=1, initial-scale=1"/>, initial-scale=0.65, maximum-scale=2.0, user-scalable=1"/>-->
-                <meta name="viewport" content="width=1260, user-scalable=1, initial-scale=1"/>
+                <!--<meta name="viewport" content="width=1260, user-scalable=1, initial-scale=1"/>-->
                 <meta name="apple-mobile-web-app-capable" content="yes" />
+                <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
 
             </f:facet>
             <f:metadata>
@@ -27,14 +28,98 @@
             <h:outputStylesheet name="css/customisation.css?#{startup.time}" library="serenity-layout" />
         </h:head>
         <h:body>
-            Hello from Facelets
+
+            <style>
+
+                body{
+                    margin: 0px !important;
+                }
+                .loginPanel{
+
+                    position: absolute;
+                    z-index: 15;
+                    top: 50%;
+                    left: 50%;
+                    width: 650px;
+                    margin: -100px 0 0 -150px;
+                }
+                .wrapper{
+                    width: 100%;
+                    width: 100vw;
+                    height: 100vh;
+                }
+
+                .innerLoginPanel{
+                    border: 2px solid black;
+                    border-radius: 10px;
+                    padding: 20px;
+                    background-color: white;
+                }
+
+                .container {
+                    position: relative;
+                }
+
+                .center {
+                    margin: 0;
+                    position: absolute;
+                    top: 40%;
+                    left: 50%;
+                    -ms-transform: translate(-50%, -50%);
+                    transform: translate(-50%, -50%);
+                }
+                .imageSizer{
+                    background-image: url(images/ice22.png);
+                    background-position: center;
+                    background-repeat: no-repeat;
+                    background-size: cover;
+                    height: 100%;
+                }
+
+                @media screen and (max-width : 751px) {
+                    .center{
+                        width: 70%;
+                    }
+                }
+                @media screen and (max-width : 621px) {
+                    .center{
+                        width: 80%;
+                    }
+                }
+                @media screen and (max-width : 521px) {
+                    .center{
+                        width: 100%;
+                    }
+                }
+
+            </style>
+
             <h:form>
-                
-                <p:outputLabel value="Email: " />
-                <p:inputText value="#{SecurityMB.email}" />
 
-                <p:commandButton value="Login" action="#{SecurityMB.login()}" process="@form" />
+                <div class="imageSizer">
+                    <div class="container wrapper">
+                        <!--                    <h:graphicImage id="image" 
+                                                            class="imageSizer"
+                                                            value="images/ice22.png" 
+                                                            style=""
+                                                            >
+                                            </h:graphicImage>-->
+                        <div class="center innerLoginPanel">
+                            <div>
+                                <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+                            </div>
+                            <div style="padding: 10px;">
 
+                                <p:outputLabel value="Email: " />
+                                <p:inputText value="#{SecurityMB.email}" style="width: 90%;"/>
+                            </div>
+                            <div style="float: right;">
+
+                                <p:commandButton value="Login" action="#{SecurityMB.login()}" process="@form" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </h:form>
         </h:body>
     </f:view>
