@@ -241,6 +241,11 @@ public class ContactUser implements IEntity, Serializable {
         return result;
     }
     
+    public List<Payment> getAllPayments(){
+        List<Payment> payments = getOrders().stream().flatMap(o -> o.getPayments().stream()).collect(Collectors.toList());
+        return payments;
+    }
+    
 //    public BigDecimal getOrdersAmount(){
 //        BigDecimal
 //    }

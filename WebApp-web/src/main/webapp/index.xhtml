@@ -48,6 +48,10 @@
                 box-shadow: 0 4px 8px 0 rgb(0 0 0 / 10%), 0 6px 20px 0 rgb(0 0 0 / 10%);
             }
 
+            .paymentBox{
+                height: 300px;
+            }
+
 
         </style>
 
@@ -83,15 +87,33 @@
             <div class="container">
                 <h:panelGroup class="ui-g">
                     <div class="ui-datagrid-column ui-g-12 ui-md-4">
-                        <div class="product-grid-item card" style="margin: 10px">
-                            <div class="midlecenter">
-                                <div style="text-align: center;">
-                                    <i class="pi pi-tag product-category-icon" style="font-size: 3em"></i>
-                                    <div>
-                                        <p:commandLink value="Fill your data" action="user.xhtml?faces-redirect=true" />
+                        <div class="product-grid-item card paymentBox" style="margin: 10px">
+                            <p>Your payments:</p>
+                            <p:dataList value="#{UserControllerMB.user.allPayments}"
+                                        var="payment"
+                                        rowIndexVar="x"
+                                        type="definition"
+                                        >
+                                <div class="ui-g" style="padding-left: 10px; padding-right: 10px;">
+                                    <div class="ui-g-1">
+                                        <p:outputLabel value="#{x+1}." />
+                                    </div>
+                                    <div class="ui-g-5">
+                                        <p:outputLabel value="#{payment.paymentDate}">
+                                            <f:convertDateTime pattern="dd.MM.yyyy hh:mm" />
+                                        </p:outputLabel>
+                                    </div>
+                                    <div class="ui-g-3">
+                                        <p:outputLabel value="#{payment.userOrder.id}" />
+                                    </div>
+                                    <div class="ui-g-3" style="text-align: right;">
+                                        <h:outputText value="#{payment.amount}">
+                                            <f:convertNumber pattern="#,##0.00"  type="currency" currencySymbol="€" maxFractionDigits="2"  />
+                                        </h:outputText>
+                                        €
                                     </div>
                                 </div>
-                            </div>
+                            </p:dataList>
                         </div>
                     </div>
                     <div class="ui-datagrid-column ui-g-12 ui-md-4">
