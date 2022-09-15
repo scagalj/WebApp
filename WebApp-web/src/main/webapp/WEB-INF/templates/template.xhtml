@@ -164,7 +164,7 @@
                 float: left;
             }
             .removeProduct{
-                width: 10px;
+                width: 15px;
                 float: right;
             }
             .totalAmount{
@@ -178,7 +178,28 @@
                 padding: 0px 5px 5px 10px;
             }
             .sideBarHeaderText{
-                padding: 5px 5px 5px 10px;
+                background: #006496;
+                color: white;
+                text-align: center;
+                padding: 10px 10px 10px 10px;
+            }
+
+            .defaultColorImage{
+                color: #006496 !important;
+            }
+            .defaultLightColorImage{
+                color: #258dc1 !important;
+            }
+            .defaultBackgroundColor{
+                background-color: #006496 !important;
+            }
+            
+            .defaultLightBackgroundColor{
+                background-color: #258dc1 !important;
+            }
+
+            body .ui-commandlink, body .ui-link{
+                color: #006496;
             }
         </style>
 
@@ -251,11 +272,18 @@
                     </div>
                 </nav>
 
-                <p:sidebar widgetVar="shoppingCartWidgetVar" position="right" blockScroll="false" style="padding: 0px;">
+                <p:sidebar widgetVar="shoppingCartWidgetVar" position="right" blockScroll="false" style="padding: 0px;" showCloseIcon="false">
                     <h:panelGroup id="shoppingCartPanelGroup">
 
-                        <h:panelGroup class="sideBarHeaderText" layout="block">
-                            <h5>Shopping cart details</h5>
+                        <h:panelGroup class="ui-g defaultBackgroundColor">
+                            <h:panelGroup class="ui-g-3 sideBarHeaderText defaultBackgroundColor" style="cursor: pointer; font-size: 9pt; padding-top: 15px;">
+                                <span onclick="PF('shoppingCartWidgetVar').hide()" >X CLOSE</span>
+                            </h:panelGroup>
+                            <h:panelGroup class="ui-g-6 sideBarHeaderText defaultBackgroundColor" style="font-size: 14pt; font-weight: 700;">
+                                <span>CART</span>
+                            </h:panelGroup>
+                            <h:panelGroup class="ui-g-3 sideBarHeaderText defaultBackgroundColor">
+                            </h:panelGroup>
                         </h:panelGroup>
 
                         <h:panelGroup id="shoppingCartDetails" class="shopingCartPanelGroup" layout="block" style="overflow-y: auto; height: 100%;">
@@ -311,8 +339,8 @@
 
                                             </div>
                                             <div style="padding-top: 10px;">
-                                                <div style="    float: left; padding-left: 50px;">
-                                                    qt:#{row.quantity}
+                                                <div style="float: left; padding-left: 20px;">
+                                                    x #{row.quantity}
                                                 </div>
                                                 <div style="    float: right;" >
                                                     <h:outputLabel value="#{row.finalPrice}" >
@@ -359,14 +387,15 @@
                             <div style="float: left;font-size: 13pt;font-weight: 700;padding: 5px;">
                                 Total amount:
                             </div>
-                            <div style="float:right;font-size: 13pt;font-weight: 700;color: #0d89ec;padding: 5px;">
+                            <div class="defaultColorImage" style="float:right;font-size: 13pt;font-weight: 700;padding: 5px;">
                                 <h:outputLabel value="#{OrderControllerMB.order.finalPrice}" >
                                     <f:convertNumber pattern="#,##0.00"  type="currency" currencySymbol="€" maxFractionDigits="2"  />
                                 </h:outputLabel>
                                 <h:outputLabel value="€"/>
                             </div>
                             <div style="float: left; width: 100%; text-align: right;">
-                                <p:commandButton value="Go to check out >" action="checkout.xhtml?faces-redirect=true" />
+                                <p:commandButton value="Continue with shopping" onclick="PF('shoppingCartWidgetVar').hide();" class="defaultLightBackgroundColor" style="width: 100%; margin-bottom: 10px;"/>
+                                <p:commandButton value="Go to check out >" action="checkout.xhtml?faces-redirect=true" class="defaultBackgroundColor" style="width: 100%" />
                             </div>
                         </div>
                     </h:panelGroup>
