@@ -138,6 +138,10 @@ public class ContactUser implements IEntity, Serializable {
     public List<UserOrder> getOrders() {
         return orders;
     }
+    public List<UserOrder> getOrdersForSalesObject(SalesObject salesObject) {
+        List<UserOrder> ordersForSalesObject = getOrders().stream().filter(o -> o.getSalesObject().getId().equals(salesObject.getId())).collect(Collectors.toList());
+        return ordersForSalesObject;
+    }
 
     public void setOrders(List<UserOrder> orders) {
         this.orders = orders;

@@ -244,7 +244,7 @@ public class OrderControllerMB extends BaseManagedBean {
 
     public List<UserOrder> getSortedUserOrders() {
         if (orders == null) {
-            orders = getUser().getOrders();
+            orders = getUser().getOrdersForSalesObject(getSecurityContext().getSalesObject());
             Collections.sort(orders);
         }
         return orders;
