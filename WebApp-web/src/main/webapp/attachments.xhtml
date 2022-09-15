@@ -11,32 +11,86 @@
 
     <ui:define name="content">
 
-        <h:panelGroup id="attachmentsPanelGroup">
+        <style>
+            .uploadFiles{
+                padding: 20px;
+            }
+            .inputTextField{
+                height: 160px !important; 
+                overflow-y: auto !important;
+                border: 4px dashed;
+            }
+            .emptyInputText{
+                text-align: center;
+                padding-top: 60px;
+                font-size: 18pt;
 
-            <div class="card">
-                <h5>Multiple</h5>
-                <h:form id="attachmentUploadForm" enctype="multipart/form-data">
-                    <p:fileUpload value="#{UserControllerMB.attachments}" mode="simple" dragDropSupport="true" skinSimple="true" multiple="true"/>
-                    <p:commandButton value="Submit" update="@form attachmentsPanelGroup" process="@form" action="#{UserControllerMB.uploadMultiple}" styleClass="p-mt-3 ui-button-outlined p-d-block"/>
-                </h:form>
-                <h:panelGroup>
-                    <h:form id="attachmentsForm">
-                        <ui:repeat value="#{UserControllerMB.user.finalAttachment}" var="att">
-                            <h:panelGrid columns="3">
-                                <p>#{att.fileName}</p>
-                                <p:commandButton value="Ajax Download" ajax="false" icon="pi pi-arrow-down" styleClass="ui-button-outlined">
-                                    <p:fileDownload value="#{UserControllerMB.generateStreamedContent(att)}"/>
-                                </p:commandButton>
-                                <p:commandButton value="delete" 
-                                                 action="#{UserControllerMB.deleteAttachment(att)}" 
-                                                 update="@form"
+            };
+        </style>
+
+        <div class="container">
+            <h:panelGroup id="attachmentsPanelGroup">
+                <h:panelGroup class="uploadFiles">
+
+                    <h:form id="attachmentUploadForm" enctype="multipart/form-data">
+                        <div class="ui-fluid">
+                            <div class="field">
+                                <p:inputTextarea id="customDropZone" widgetVar="textarea"
+                                                 value="#{UserControllerMB.getAttachedFileNames()}"
+                                                 readonly="true"
+                                                 autoResize="false"
+                                                 style="height: 160px !important; 
+                                                 overflow-y: auto !important;
+                                                 border: 4px dashed;
+                                                 #{empty UserControllerMB.attachments ? 'text-align: center;
+                                                   padding-top: 50px;
+                                                   font-size: 20pt;' : ''}"
                                                  />
+                            </div>
+                        </div>
+                        <p:fileUpload widgetVar="uploadDnd"
+                                      multiple="true"  listener="#{UserControllerMB.handleFileUploadTextarea}"
+                                      dropZone="customDropZone"
+                                      update="attachmentUploadForm"
+                                      style="display: none"/>
 
-                            </h:panelGrid>
-                        </ui:repeat>
+                        <p:commandButton value="Submit" update="@form attachmentsPanelGroup" process="@form" action="#{UserControllerMB.uploadMultiple}" styleClass="p-mt-3 ui-button-outlined p-d-block"/>
+
                     </h:form>
                 </h:panelGroup>
-            </div>
-        </h:panelGroup>
+                <h:panelGroup layout="block">
+                    <h:form id="attachmentsForm">
+                        <h:panelGroup>
+                            <div style="font-size: 14pt; font-weight: 700; margin: 10px 0px 10px 0px;"> ATTACHMENTS: </div>
+                            <ui:repeat value="#{UserControllerMB.user.finalAttachment}" var="att">
+                                <div class="ui-g" style="width: 50%;">
+                                    <div class="ui-g-8">
+                                        <p>#{att.fileName}</p>
+
+                                    </div>
+                                    <div class="ui-g-2">
+                                        <p:commandButton ajax="false" icon="pi pi-arrow-down" styleClass="ui-button-outlined">
+                                            <p:fileDownload value="#{UserControllerMB.generateStreamedContent(att)}"/>
+                                        </p:commandButton>
+                                    </div>
+
+                                    <div class="ui-g-2">
+                                        <p:commandButton icon="pi pi-trash" 
+                                                         styleClass="ui-button-outlined"
+                                                         action="#{UserControllerMB.deleteAttachment(att)}" 
+                                                         update="@form"
+                                                         />
+                                    </div>
+
+                                </div>
+
+
+
+                            </ui:repeat>
+                        </h:panelGroup>
+                    </h:form>
+                </h:panelGroup>
+            </h:panelGroup>
+        </div>
     </ui:define>
 </ui:composition>
