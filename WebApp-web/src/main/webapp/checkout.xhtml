@@ -20,127 +20,125 @@
         </style>
 
         <h:form>
-
-            <p:accordionPanel activeIndex="-1">
-                <p:tab title="Have a promo code?">
-                    <div class="container">
-                        <h:panelGroup id="promoCodeDetails" rendered="#{CheckOutControllerMB.order.hasPromoCode()}">
-                            <p:outputLabel value="Promocode: " />
-                            <p:outputLabel value="#{CheckOutControllerMB.order.fetchPromoCode().promoCodeValue}" />
-                            <p:commandButton value="Remove promocode" action="#{CheckOutControllerMB.removePromoCodeFromOrder}" process="@parent" update="@form" />
-                        </h:panelGroup>
-
-                        <h:panelGroup id="addPromoCode" rendered="#{not CheckOutControllerMB.order.hasPromoCode()}">
-                            <p:outputLabel value="Promocode: " />
-                            <p:inputText value="#{CheckOutControllerMB.promoCode}" />
-                            <p:commandButton value="Apply promocode" action="#{CheckOutControllerMB.applyPromoCodeToOrder}" process="@parent" update="@form" />
-                        </h:panelGroup>
-                    </div>
-                </p:tab>
-            </p:accordionPanel>
-
-            <p:dataTable value="#{CheckOutControllerMB.order.orderRepresentatives}"
-                         var="rep"
-                         >
-                <p:column>
-
-                    <h:outputLabel value="#{rep.representative.firstName}" />
-                    <h:outputLabel value="#{rep.representative.lastName}" />
-
-                </p:column>
-                <p:column>
-                    <h:outputText value="#{rep.price}" >
-                        <f:convertNumber type="currency" currencySymbol="€ "/>
-                    </h:outputText>
-                </p:column>
-
-            </p:dataTable>
-            <p:dataTable value="#{CheckOutControllerMB.orderItems}"
-                         var="row"
-                         >
-
-                <p:headerRow field="product.productType"
-                             expandable="false"
-                             expanded="true"
-                             style="padding: 0px; margin: 0px;">
-
-                    <p:column colspan="6">
-                        <div class="inline-flex align-items-center" style="vertical-align: middle">
-                            <h:outputText styleClass="ml-2" value="#{row.product.productType}"/>
-                        </div>
-                    </p:column>
-                </p:headerRow>
-
-                <p:column width="50">
-                    <p:outputLabel value="#{row.id}" />
-                </p:column>
-                <p:column width="120">
-                    <p:graphicImage
-                        style="width: 50px; height: 50px; margin-left: 15px;"
-                        value="#{CheckOutControllerMB.generateImageContent(row.product.getFeaturedImage().loadImageContentToAttachment())}" 
-                        stream="false" 
-                        />
-                </p:column>
-
-                <p:column headerText="Name" >
-                    <h:outputText value="#{row.product.name}" />
-                </p:column>
-                <p:column headerText="Unit price" width="100">
-                    <h:outputText value="#{row.price}" >
-                        <f:convertNumber type="currency" currencySymbol="€ "/>
-                    </h:outputText>
-                </p:column>
-                <p:column width="100">
-                    <h:outputLabel value="#{OrderControllerMB.getProductAvailabilityQuantity(row.product)}" />
-                    <p:spinner value="#{row.quantity}" stepFactor="1" min="1" max="#{OrderControllerMB.getProductAvailabilityQuantity(row.product)}">
-                        <p:ajax event="valueChange" delay="500" update="@form" listener="#{CheckOutControllerMB.updateOrderItemQuantity}" />
-                        <f:attribute value="#{row}" name="selectedRow" />
-                    </p:spinner>
-                </p:column>
-                <p:column headerText="Final price" width="140">
-                    <h:outputText value="#{row.finalPriceWithoutDiscount}" style="text-decoration: line-through;">
-                        <f:convertNumber type="currency" currencySymbol="€ "/>
-                    </h:outputText>
-                    <br/>
-                    <h:outputText value="#{row.finalPrice}" >
-                        <f:convertNumber type="currency" currencySymbol="€ "/>
-                    </h:outputText>
-                </p:column>
-
-                <p:columnGroup type="footer">
-                    <p:row>
-                        <p:column style="text-align:right" footerText="Discount"/>
-                        <p:column>
-                            <f:facet name="footer">
-                                <h:outputText value="#{CheckOutControllerMB.order.promoCodeDiscountAmount}">
-                                    <f:convertNumber type="currency" currencySymbol="€ " />
-                                </h:outputText>
-                            </f:facet>
-                        </p:column>
-                        <p:column colspan="3" style="text-align:right" footerText="Totals:"/>
-                        <p:column>
-                            <f:facet name="footer">
-                                <h:outputText value="#{CheckOutControllerMB.order.finalPriceWithOutDiscount}">
-                                    <f:convertNumber type="currency" currencySymbol="€ " />
-                                </h:outputText>
-                                <br/>
-                                -<h:outputText value="#{CheckOutControllerMB.order.promoCodeDiscountAmount}">
-                                    <f:convertNumber type="currency" currencySymbol="€ " />
-                                </h:outputText>
-                                <br/>
-                                =<h:outputText value="#{CheckOutControllerMB.order.finalPrice}">
-                                    <f:convertNumber type="currency" currencySymbol="€ " />
-                                </h:outputText>
-                            </f:facet>
-                        </p:column>
-                    </p:row>
-                </p:columnGroup>
-
-            </p:dataTable>
-
-            <!-- Preusmjeriti na drugu strniacu gdje ce pisati detalji narudzbe!-->
             <div class="container">
-                <div class="ui-g">
+
+
+                <p:accordionPanel activeIndex="-1">
+                    <p:tab title="Have a promo code?">
+                        <div class="container">
+                            <h:panelGroup id="promoCodeDetails" rendered="#{CheckOutControllerMB.order.hasPromoCode()}">
+                                <p:outputLabel value="Promocode: " />
+                                <p:outputLabel value="#{CheckOutControllerMB.order.fetchPromoCode().promoCodeValue}" />
+                                <p:commandButton value="Remove promocode" action="#{CheckOutControllerMB.removePromoCodeFromOrder}" process="@parent" update="@form" />
+                            </h:panelGroup>
+
+                            <h:panelGroup id="addPromoCode" rendered="#{not CheckOutControllerMB.order.hasPromoCode()}">
+                                <p:outputLabel value="Promocode: " />
+                                <p:inputText value="#{CheckOutControllerMB.promoCode}" />
+                                <p:commandButton value="Apply promocode" action="#{CheckOutControllerMB.applyPromoCodeToOrder}" process="@parent" update="@form" />
+                            </h:panelGroup>
+                        </div>
+                    </p:tab>
+                </p:accordionPanel>
+
+                <p:dataTable value="#{CheckOutControllerMB.order.orderRepresentatives}"
+                             var="rep"
+                             rendered="#{not empty CheckOutControllerMB.order.orderRepresentatives}"
+                             >
+                    <p:column>
+
+                        <h:outputLabel value="#{rep.representative.firstName}" />
+                        <h:outputLabel value="#{rep.representative.lastName}" />
+
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{rep.price}" >
+                            <f:convertNumber type="currency" currencySymbol="€ "/>
+                        </h:outputText>
+                    </p:column>
+
+                </p:dataTable>
+                <p:dataTable value="#{CheckOutControllerMB.orderItems}"
+                             var="row"
+                             emptyMessage="There aren't any item in cart"
+                             >
+
+                    <p:headerRow field="product.productType"
+                                 expandable="false"
+                                 expanded="true"
+                                 style="padding: 0px; margin: 0px;">
+
+                        <p:column colspan="5">
+                            <div class="inline-flex align-items-center" style="vertical-align: middle">
+                                <h:outputText styleClass="ml-2" value="#{row.product.productType}"/>
+                            </div>
+                        </p:column>
+                    </p:headerRow>
+
+                    <p:column width="120">
+                        <p:graphicImage
+                            style="width: 50px; height: 50px; margin-left: 15px;"
+                            value="#{CheckOutControllerMB.generateImageContent(row.product.getFeaturedImage().loadImageContentToAttachment())}" 
+                            stream="false" 
+                            />
+                    </p:column>
+
+                    <p:column headerText="Name" >
+                        <h:outputText value="#{row.product.name}" />
+                    </p:column>
+                    <p:column headerText="Unit price" width="100">
+                        <h:outputText value="#{row.price}" >
+                            <f:convertNumber type="currency" currencySymbol="€ "/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column width="100">
+                        <!--<h:outputLabel value="#{OrderControllerMB.getProductAvailabilityQuantity(row.product)}" />-->
+                        <p:spinner value="#{row.quantity}" stepFactor="1" min="1" max="#{OrderControllerMB.getProductAvailabilityQuantity(row.product)}">
+                            <p:ajax event="valueChange" delay="500" update="@form" listener="#{CheckOutControllerMB.updateOrderItemQuantity}" />
+                            <f:attribute value="#{row}" name="selectedRow" />
+                        </p:spinner>
+                    </p:column>
+                    <p:column headerText="Final price" width="100" style="text-align: right;">
+                        <h:outputText rendered="#{not (row.finalPriceWithoutDiscount eq row.finalPrice)}" value="#{row.finalPriceWithoutDiscount}" style="display: block; text-decoration: line-through;">
+                            <f:convertNumber type="currency" currencySymbol="€ "/>
+                        </h:outputText>
+                        <h:outputText value="#{row.finalPrice}" >
+                            <f:convertNumber type="currency" currencySymbol="€ "/>
+                        </h:outputText>
+                    </p:column>
+
+                    <p:columnGroup type="footer">
+                        <p:row>
+                            <p:column style="text-align:right" footerText="Discount" rendered="false"/>
+                            <p:column rendered="false">
+                                <f:facet name="footer" rendered="false">
+                                    <h:outputText value="#{CheckOutControllerMB.order.promoCodeDiscountAmount}">
+                                        <f:convertNumber type="currency" currencySymbol="€ " />
+                                    </h:outputText>
+                                </f:facet>
+                            </p:column>
+                            <p:column colspan="4" style="text-align:right" footerText=""/>
+                            <p:column style="text-align: right;">
+                                <f:facet name="footer">
+                                    <h:panelGroup rendered="#{not (CheckOutControllerMB.order.finalPriceWithOutDiscount eq CheckOutControllerMB.order.finalPrice)}" >
+                                        <h:outputText value="#{CheckOutControllerMB.order.finalPriceWithOutDiscount}" style="display: block;">
+                                            <f:convertNumber type="currency" currencySymbol="€ " />
+                                        </h:outputText>
+                                        -<h:outputText value="#{CheckOutControllerMB.order.promoCodeDiscountAmount}" style="display: block;" >
+                                            <f:convertNumber type="currency" currencySymbol="€ " />
+                                        </h:outputText>
+                                    </h:panelGroup>
+                                    = <h:outputText value="#{CheckOutControllerMB.order.finalPrice}">
+                                        <f:convertNumber type="currency" currencySymbol="€ " />
+                                    </h:outputText>
+                                </f:facet>
+                            </p:column>
+                        </p:row>
+                    </p:columnGroup>
+
+                </p:dataTable>
+                <!-- Preusmjeriti na drugu strniacu gdje ce pisati detalji narudzbe!-->
+                <div class="ui-g" style="padding: 30px 0px 30px 0px; ">
                     <div class="ui-g-3">
                         <p:commandButton value="Cancel order" action="#{CheckOutControllerMB.makeOrderAsCancelled()}" update="@form menuform" >
                             <p:confirm type="popup" header="Confirmation" message="Are you sure you want to proceed?" icon="pi pi-exclamation-triangle"/>
@@ -149,7 +147,7 @@
                     </div>
                     <div class="ui-g-6">
                     </div>
-                    <div class="ui-g-3">
+                    <div class="ui-g-3" style="text-align: right;">
                         <p:commandButton value="Submit your order >" action="#{CheckOutControllerMB.makeOrderAsCompleted()}" update="@form menuform" />
                     </div>
                 </div>
