@@ -6,6 +6,7 @@
                 template="/WEB-INF/templates/template.xhtml">
 
     <ui:param name="module" value="orders" />
+    <ui:param name="appyBackgroundColor" value="true" />
 
     <ui:define name="content">
 
@@ -49,71 +50,103 @@
             }
 
             .paymentBox{
-                height: 300px;
+                padding: 15px;
+            }
+
+            .activityBox{
+                margin-top: 6px;
+                margin-bottom: 6px;
+            }
+            .activityAmountBox{
+                padding: 3px 5px 0px 5px;
+                text-align: right;
+                border-radius: 4px;
+                font-weight: 700;
+                font-size: 17px;
+                color: white;
+                float: right;
+            }
+
+            .paymentActivityAmount{
+                background-color: #20d077;
+            }
+
+            .orderActivityAmount{
+                background-color: #ef6262;
+
+            }
+            .ui-scrollpanel-track{
+                width: 2px;
+                float: right;
             }
 
 
         </style>
 
         <h:form>
-            <div class="container">
-                <h:panelGroup class="ui-g">
-                    <div class="ui-datagrid-column ui-g-12 ui-md-3">
-                        <div class="boxcolor" style="margin: 10px;">
-                            <div>Payments:</div>
-                            <div><h:outputText value="#{OrderControllerMB.getPaymentsAmount()}" >
-                                    <f:convertNumber type="currency" currencySymbol="€ "/>
-                                </h:outputText></div>
-                        </div>
-                    </div>
-                    <div class="ui-datagrid-column ui-g-12 ui-md-3">
-                        <div class="boxcolor" style="margin: 10px;">
-                            a
-                        </div>
-                    </div>
-                    <div class="ui-datagrid-column ui-g-12 ui-md-3">
-                        <div class="boxcolor" style="margin: 10px;">
-                            a
-                        </div>
-                    </div>
-                    <div class="ui-datagrid-column ui-g-12 ui-md-3">
-                        <div class="boxcolor" style="margin: 10px;">
-                            a
-                        </div>
-                    </div>
-                </h:panelGroup>
-            </div>
+            <!--            <div class="container">
+                            <h:panelGroup class="ui-g">
+                                <div class="ui-datagrid-column ui-g-12 ui-md-3">
+                                    <div class="boxcolor" style="margin: 10px;">
+                                        <div>Payments:</div>
+                                        <div><h:outputText value="#{OrderControllerMB.getPaymentsAmount()}" >
+                                                <f:convertNumber type="currency" currencySymbol="€ "/>
+                                            </h:outputText></div>
+                                    </div>
+                                </div>
+                                <div class="ui-datagrid-column ui-g-12 ui-md-3">
+                                    <div class="boxcolor" style="margin: 10px;">
+                                        a
+                                    </div>
+                                </div>
+                                <div class="ui-datagrid-column ui-g-12 ui-md-3">
+                                    <div class="boxcolor" style="margin: 10px;">
+                                        a
+                                    </div>
+                                </div>
+                                <div class="ui-datagrid-column ui-g-12 ui-md-3">
+                                    <div class="boxcolor" style="margin: 10px;">
+                                        a
+                                    </div>
+                                </div>
+                            </h:panelGroup>
+                        </div>-->
 
             <div class="container">
                 <h:panelGroup class="ui-g">
                     <div class="ui-datagrid-column ui-g-12 ui-md-4">
                         <div class="product-grid-item card paymentBox" style="margin: 10px">
-                            <p>Your payments:</p>
-                            <p:dataList value="#{UserControllerMB.user.allPayments}"
-                                        var="payment"
-                                        rowIndexVar="x"
-                                        type="definition"
-                                        >
-                                <div class="ui-g" style="padding-left: 10px; padding-right: 10px;">
-                                    <div class="ui-g-1">
-                                        <p:outputLabel value="#{x+1}." />
+                            <p style="font-weight: 600; font-size: 16px;">Activity</p>
+                            <p:scrollPanel style="border: none; height: 300px;">
+
+                                <ui:repeat value="#{UserControllerMB.allActivities}"
+                                           var="payment"
+                                           >
+                                    <div class="ui-g activityBox">
+                                        <div class="ui-g-3">
+                                            <p:outputLabel value="#{payment.activityType}" />
+                                        </div>
+                                        <div class="ui-g-5">
+                                            <p:outputLabel value="#{payment.activityDate}">
+                                                <f:convertDateTime pattern="dd.MM.yyyy" />
+                                            </p:outputLabel>
+                                        </div>
+                                        <div class="ui-g-4">
+                                            <div class="activityAmountBox #{payment.activityType eq 'Payment' ? 'paymentActivityAmount' : 'orderActivityAmount'}">
+
+                                                <h:outputText value="#{payment.amount}">
+                                                    <f:convertNumber pattern="#,##0.00"  type="currency" currencySymbol="€" maxFractionDigits="2"  />
+                                                </h:outputText>
+                                                €
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="ui-g-5">
-                                        <p:outputLabel value="#{payment.paymentDate}">
-                                            <f:convertDateTime pattern="dd.MM.yyyy hh:mm" />
-                                        </p:outputLabel>
+                                    <div style="text-align: center;">
+                                        <hr style="margin-top: 0.4rem; margin-bottom: 0.3rem;"/>
+
                                     </div>
-                                    <div class="ui-g-3">
-                                        <p:outputLabel value="#{payment.userOrder.id}" />
-                                    </div>
-                                    <div class="ui-g-3" style="text-align: right;">
-                                        <h:outputText value="#{payment.amount}">
-                                            <f:convertNumber pattern="#,##0.00"  type="currency" currencySymbol="€" maxFractionDigits="2"  />
-                                        </h:outputText>
-                                        €
-                                    </div>
-                                </div>
-                            </p:dataList>
+                                </ui:repeat>
+                            </p:scrollPanel>
                         </div>
                     </div>
                     <div class="ui-datagrid-column ui-g-12 ui-md-4">

@@ -5,15 +5,20 @@
  */
 package hr.workspace.app.controllers;
 
+import hr.workspace.app.commons.ActivityDisplay;
 import hr.workspace.controllers.interfaces.UserController;
 import hr.workspace.models.Attachment;
 import hr.workspace.models.ContactUser;
+import hr.workspace.models.Payment;
 import hr.workspace.models.Representative;
 import hr.workspace.models.UserOrder;
 import hr.workspace.models.UserOrderStatus;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -145,6 +150,18 @@ public class UserControllerMB extends BaseManagedBean {
         return sb.toString();
     }
 
+    public List<ActivityDisplay> getAllActivities() {
+        List<Payment> payments = getUser().getAllPaymentsForSalesObject(getSalesObject());
+        List<ActivityDisplay> paymentActivities = payments.stream()
+                .map(p -> new ActivityDisplay(p.getPaymentDate(), p.getAmount(), "Payment")).collect(Collectors.toList());
+
+        List<UserOrder> orders = getUser().getOrdersForSalesObject(getSalesObject());
+        List<ActivityDisplay> orderActivities = orders.stream().map(o -> new ActivityDisplay(new Date(), o.getFinalPrice(), "Order")).collect(Collectors.toList());
+        paymentActivities.addAll(orderActivities);
+        Collections.sort(paymentActivities);
+        return paymentActivities;
+    }
+    
     public List<UploadedFile> getAttachments() {
         if (attachments == null) {
             attachments = new ArrayList<>();

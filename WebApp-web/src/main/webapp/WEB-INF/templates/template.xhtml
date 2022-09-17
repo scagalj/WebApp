@@ -201,6 +201,10 @@
             body .ui-commandlink, body .ui-link{
                 color: #006496;
             }
+            .mainPageBackgroundColor{
+                background-color: #f6f6f6;
+            }
+            
         </style>
 
         <div>
@@ -412,7 +416,7 @@
 
 
 
-        <div class="layout-main" style="padding-top: 80px; padding-bottom: 50px;">
+        <div class="layout-main #{not empty appyBackgroundColor ? 'mainPageBackgroundColor' : ''}" style="padding-top: 80px; padding-bottom: 50px; ">
             <p:growl id="msgs" skipDetailIfEqualsSummary="true" showDetail="true" globalOnly="true" widgetVar="msgWidget">
                 <p:autoUpdate/>
             </p:growl>
