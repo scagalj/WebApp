@@ -3,7 +3,8 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
-                template="/WEB-INF/templates/template.xhtml">
+                template="/WEB-INF/templates/template.xhtml"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
 
     <ui:param name="module" value="orders" />
     <ui:param name="appyBackgroundColor" value="true" />
@@ -63,6 +64,15 @@
                 border-radius: 4px;
                 font-weight: 700;
                 font-size: 17px;
+                color: white;
+                float: right;
+            }
+            .activityAmountBox{
+                padding: 3px 5px 0px 5px;
+                text-align: right;
+                border-radius: 4px;
+                font-weight: 500;
+                font-size: 15px;
                 color: white;
                 float: right;
             }
@@ -172,16 +182,47 @@
                         </div>
                     </div>
                     <div class="ui-datagrid-column ui-g-12 ui-md-4">
-                        <div class="product-grid-item card" style="margin: 10px">
-                            <div class="midlecenter">
-                                <div style="text-align: center;">
-                                    <i class="pi pi-tag product-category-icon" style="font-size: 3em"></i>
-                                    <div>
-                                        <h5>Your booth location:</h5>
-                                        <h4><b>Not defined yet!</b></h4>
+                        <div class="product-grid-item card paymentBox" style="margin: 10px">
+                            <p style="font-weight: 600; font-size: 16px;">Booth locations</p>
+                            <c:set var="hasbooth" value="#{not empty OrderControllerMB.allBoothOrderItemFromOrders}" />
+                            <h:panelGroup rendered="#{hasbooth}">
+                                <ui:repeat value="#{OrderControllerMB.allBoothOrderItemFromOrders}"
+                                           var="booth"
+                                           >
+                                    <div class="ui-g activityBox">
+                                        <div class="ui-g-2">
+                                            <p:graphicImage
+                                                style="width: 50px; height: 50px;"
+                                                value="#{CheckOutControllerMB.generateImageContent(booth.product.getFeaturedImage().loadImageContentToAttachment())}" 
+                                                stream="false" 
+                                                />
+                                        </div>
+                                        <div class="ui-g-4">
+                                            <p:outputLabel value="#{booth.product.name}" />
+                                        </div>
+                                        <div class="ui-g-6" style="padding: 10px;">
+                                            <div class="activityAmountBox #{booth.userOrder.orderAuthorized ? 'paymentActivityAmount' : 'orderActivityAmount'}">
+
+                                                <h:outputText value="#{booth.userOrder.orderAuthorized ? 'AUTHORIZED' : 'NOT CONFIRM'}" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style="text-align: center;">
+                                        <hr style="margin-top: 0.4rem; margin-bottom: 0.3rem;"/>
+
+                                    </div>
+                                </ui:repeat>
+                            </h:panelGroup>
+                            <h:panelGroup rendered="#{not hasbooth}">
+                                <div class="midlecenter">
+                                    <div style="text-align: center;">
+                                        <i class="pi pi-tag product-category-icon" style="font-size: 3em"></i>
+                                        <div>
+                                            <p> You didn0t select any booth location </p>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            </h:panelGroup>
                         </div>
                     </div>
                 </h:panelGroup>

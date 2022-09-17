@@ -293,6 +293,16 @@ public class OrderControllerMB extends BaseManagedBean {
         }
         return result;
     }
+    
+    public List<OrderItem> getAllBoothOrderItemFromOrders(){
+        List<UserOrder> orders = getUser().getOrdersForSalesObject(getSalesObject());
+        List<OrderItem> orderItems = orders.stream().flatMap(o -> o.getOrderItems().stream()).collect(Collectors.toList());
+        List<OrderItem> boothOrderItems = orderItems.stream().filter(oi -> oi.getProduct().getProductType().equals(ProductType.BOOTH)).collect(Collectors.toList());
+        Collections.sort(boothOrderItems,(o1, o2) -> {
+            return o1.getId().compareTo(o2.getId());
+        });
+        return boothOrderItems;
+    }
 
     public void increment() {
         String param1 = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("x");

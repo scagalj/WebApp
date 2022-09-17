@@ -224,6 +224,13 @@ public class UserOrder implements IEntity, Serializable, Comparable<UserOrder> {
     public void setOrderRepresentatives(List<OrderRepresentative> orderRepresentatives) {
         this.orderRepresentatives = orderRepresentatives;
     }
+    
+    public boolean isOrderCompleted(){
+        return UserOrderStatus.COMPLETED.equals(getUserOrderStatus());
+    }
+    public boolean isOrderAuthorized(){
+        return UserOrderStatus.AUTHORIZED.equals(getUserOrderStatus());
+    }
 
     @Override
     public int hashCode() {
