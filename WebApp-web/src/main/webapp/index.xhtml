@@ -157,6 +157,17 @@
                                     </div>
                                 </ui:repeat>
                             </p:scrollPanel>
+                            <div style="padding-top: 22px; padding-left: 5px; font-weight: 600; float: right; text-align: right;">
+                                <h5 style="display: inline;">Balance:</h5>    
+                                <div style="display: inline; color: #{UserControllerMB.user.getBalance() > 0 ? 'green' : 'red'}">
+                                    <h5 style="display: inline;"><b>
+                                                <h:outputText value="#{UserControllerMB.user.getBalance()}">
+                                                    <f:convertNumber pattern="#,##0.00"  type="currency" currencySymbol="€" maxFractionDigits="2"  />
+                                                </h:outputText>
+                                                €
+                                            </b></h5>
+                                    </div>
+                            </div>
                         </div>
                     </div>
                     <div class="ui-datagrid-column ui-g-12 ui-md-4">
