@@ -62,6 +62,9 @@
                 background-color: #bbbbbbc7;
                 position: absolute;
             }
+/*            .missingItem{
+                color: red;
+            }*/
 
         </style>
 
@@ -71,17 +74,18 @@
                         widgetVar="orderAccPanel" 
                         dynamic="true"
                         cache="false"
-                        activeIndex="0"
+                        activeIndex="#{OrderControllerMB.hasUserBooth ? '1' : '0'}"
                         touchable="false"
                         scrollable="false"
                         >
 
                 <p:tab titletip="test tool tip"
                        title="Booth"
+                       class="titleName"
                        >
                     <f:facet name="title">
                         <i class="pi pi-check"></i>
-                        <h:outputText value="Booth" class="tabTitleName"/>
+                        <h:outputText value="Booth" class="tabTitleName missingItem"/>
                     </f:facet>
 
                     <h:panelGroup layout="block" class="tabTitleNameHeaderGroup">

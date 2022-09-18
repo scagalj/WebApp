@@ -5,6 +5,7 @@
  */
 package hr.workspace.app.controllers;
 
+import hr.workspace.controllers.interfaces.OrderController;
 import hr.workspace.models.Attachment;
 import hr.workspace.models.ContactUser;
 import hr.workspace.models.SalesObject;
@@ -14,6 +15,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Arrays;
+import javax.ejb.EJB;
 import javax.el.MethodExpression;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
@@ -28,6 +30,9 @@ import org.primefaces.model.StreamedContent;
  */
 public abstract class BaseManagedBean implements Serializable {
 
+    @EJB
+    OrderController orderController;
+    
     protected void executeScript(String script) {
         PrimeFaces.current().executeScript(script);
     }
@@ -198,9 +203,21 @@ public abstract class BaseManagedBean implements Serializable {
     public void setUser(ContactUser user) {
         getSecurityContext().setLogedUser(user);
     }
+
+    public UserOrder getOrder() {
+        UserOrder order = getSecurityContext().getOrder();
+        if(order == null){
+            order = createNewOrderInternal();
+            setOrder(order);
+        }
+        return order;
+    }
     
-        public UserOrder getOrder(){
-        return getSecurityContext().getOrder();
+    protected UserOrder createNewOrderInternal() {
+        UserOrder newOrder = orderController.newOrder(getSecurityContext(), getUser(), getSalesObject());
+        newOrder = orderController.save(getSecurityContext(), newOrder, getUser());
+        setOrder(newOrder);
+        return newOrder;
     }
 
     public void setOrder(UserOrder order) {

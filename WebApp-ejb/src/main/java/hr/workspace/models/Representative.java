@@ -12,15 +12,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
 
 /**
  *
  * @author Stjepan
  */
 @Entity
-public class Representative implements IEntity, Serializable{
-    
+public class Representative implements IEntity, Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "representative_id_seq")
     private Long id;
@@ -29,7 +28,7 @@ public class Representative implements IEntity, Serializable{
     private Boolean ceo;
     @ManyToOne
     private ContactUser contactUser;
-    
+
     @Override
     public Long getId() {
         return id;
@@ -70,8 +69,20 @@ public class Representative implements IEntity, Serializable{
     public void setContactUser(ContactUser contactUser) {
         this.contactUser = contactUser;
     }
-    
-     @Override
+
+    public String getName() {
+        String name = "";
+        if (getFirstName() != null) {
+            name += getFirstName() + " ";
+        }
+        if (getLastName() != null) {
+            name += getLastName() + " ";
+        }
+
+        return name;
+    }
+
+    @Override
     public int hashCode() {
         int hash = 0;
         hash += (this.id != null ? this.id.hashCode() : 0);
@@ -92,5 +103,5 @@ public class Representative implements IEntity, Serializable{
         }
         return true;
     }
-    
+
 }

@@ -90,44 +90,33 @@
                 float: right;
             }
 
+            .contactBox{
+                padding: 10px;
+            }
+
+            .randomImageDiv{
+                height: 100px;
+            }
+
+            @media screen and (max-width : 720px) {
+                .randomImageDiv{
+                    height: 250px;
+                }
+                .randomDiv{
+                    padding-bottom: 15px;
+                }
+            }
+
 
         </style>
 
         <h:form>
-            <!--            <div class="container">
-                            <h:panelGroup class="ui-g">
-                                <div class="ui-datagrid-column ui-g-12 ui-md-3">
-                                    <div class="boxcolor" style="margin: 10px;">
-                                        <div>Payments:</div>
-                                        <div><h:outputText value="#{OrderControllerMB.getPaymentsAmount()}" >
-                                                <f:convertNumber type="currency" currencySymbol="€ "/>
-                                            </h:outputText></div>
-                                    </div>
-                                </div>
-                                <div class="ui-datagrid-column ui-g-12 ui-md-3">
-                                    <div class="boxcolor" style="margin: 10px;">
-                                        a
-                                    </div>
-                                </div>
-                                <div class="ui-datagrid-column ui-g-12 ui-md-3">
-                                    <div class="boxcolor" style="margin: 10px;">
-                                        a
-                                    </div>
-                                </div>
-                                <div class="ui-datagrid-column ui-g-12 ui-md-3">
-                                    <div class="boxcolor" style="margin: 10px;">
-                                        a
-                                    </div>
-                                </div>
-                            </h:panelGroup>
-                        </div>-->
-
             <div class="container">
                 <h:panelGroup class="ui-g">
                     <div class="ui-datagrid-column ui-g-12 ui-md-4">
                         <div class="product-grid-item card paymentBox" style="margin: 10px">
                             <p style="font-weight: 600; font-size: 16px;">Activity</p>
-                            <p:scrollPanel style="border: none; height: 300px;">
+                            <p:scrollPanel style="border: none; height: 250px;">
 
                                 <ui:repeat value="#{UserControllerMB.allActivities}"
                                            var="payment"
@@ -161,33 +150,11 @@
                                 <h5 style="display: inline;">Balance:</h5>    
                                 <div style="display: inline; color: #{UserControllerMB.user.getBalance() > 0 ? 'green' : 'red'}">
                                     <h5 style="display: inline;"><b>
-                                                <h:outputText value="#{UserControllerMB.user.getBalance()}">
-                                                    <f:convertNumber pattern="#,##0.00"  type="currency" currencySymbol="€" maxFractionDigits="2"  />
-                                                </h:outputText>
-                                                €
-                                            </b></h5>
-                                    </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="ui-datagrid-column ui-g-12 ui-md-4">
-                        <div class="product-grid-item card" style="margin: 10px; border-color: #{UserControllerMB.user.getBalance() > 0 ? 'green' : 'red'};">
-                            <div class="midlecenter">
-                                <div style="text-align: center;">
-                                    <i class="pi pi-tag product-category-icon" style="font-size: 3em"></i>
-                                    <div style="color: #{UserControllerMB.user.getBalance() > 0 ? 'green' : 'red'}">
-                                        <h5> Yor account balance is : </h5>
-                                        <h3><b>
-                                                <h:outputText value="#{UserControllerMB.user.getBalance()}">
-                                                    <f:convertNumber pattern="#,##0.00"  type="currency" currencySymbol="€" maxFractionDigits="2"  />
-                                                </h:outputText>
-                                                €
-                                            </b></h3>
-                                    </div>
-                                    <br/>
-                                    <div>
-                                        <p:commandLink value="Your orders" action="orders.xhtml?faces-redirect=true" />
-                                    </div>
+                                            <h:outputText value="#{UserControllerMB.user.getBalance()}">
+                                                <f:convertNumber pattern="#,##0.00"  type="currency" currencySymbol="€" maxFractionDigits="2"  />
+                                            </h:outputText>
+                                            €
+                                        </b></h5>
                                 </div>
                             </div>
                         </div>
@@ -236,6 +203,89 @@
                             </h:panelGroup>
                         </div>
                     </div>
+                    <div class="ui-datagrid-column ui-g-12 ui-md-4">
+                        <div class="product-grid-item card contactBox" style="margin: 10px;">
+                            <p style="font-weight: 600; font-size: 16px;">Contacts</p>
+                            <p:scrollPanel style="border: none; height: 130px;">
+
+                                <ui:repeat value="#{UserControllerMB.user.contacts}"
+                                           var="contact"
+                                           >
+                                    <div class="ui-g activityBox">
+                                        <div class="ui-g-6">
+                                            <p:outputLabel value="#{contact.name}" />
+                                        </div>
+                                        <div class="ui-g-5">
+                                            <p:outputLabel value="#{contact.email}">
+                                                <f:convertDateTime pattern="dd.MM.yyyy" />
+                                            </p:outputLabel>
+                                        </div>
+                                        <div class="ui-g-1">
+                                            <i class="pi pi-bell"></i>
+                                        </div>
+                                    </div>
+                                    <div style="text-align: center;">
+                                        <hr style="margin-top: 0.4rem; margin-bottom: 0.3rem;"/>
+
+                                    </div>
+                                </ui:repeat>
+                            </p:scrollPanel>
+                            <p style="font-weight: 600; font-size: 16px;">Representatives</p>
+                            <p:scrollPanel style="border: none; height: 130px; width: 97%;">
+                                <ui:repeat value="#{UserControllerMB.user.representatives}"
+                                           var="contact"
+                                           >
+                                    <div class="ui-g activityBox">
+                                        <div class="ui-g-11">
+                                            <p:outputLabel value="#{contact.name}" />
+                                        </div>
+                                        <div class="ui-g-1">
+                                            <h:panelGroup rendered="#{contact.ceo}">
+                                                <i title="CEO" class="pi pi-prime"></i>
+                                            </h:panelGroup>
+                                        </div>
+                                    </div>
+                                    <div style="text-align: center;">
+                                        <hr style="margin-top: 0.4rem; margin-bottom: 0.3rem;"/>
+
+                                    </div>
+                                </ui:repeat>
+                            </p:scrollPanel>
+                        </div>
+                    </div>
+                </h:panelGroup>
+
+                <h:panelGroup class="card" style="margin:0px 10px 0px 10px;">
+
+                    <h:panelGroup class="ui-g " style="padding: 20px; text-align: center;">
+                        <div class="ui-datagrid-column ui-g-12 ui-md-9 ui-lg-9">
+                            <div class="ui-datagrid-column ui-g">
+                                <ui:repeat value="#{OrderControllerMB.randomThreeProducts}"
+                                           var="row">
+                                    <div class="ui-datagrid-column ui-g-12 ui-md-3 ui-lg-3 randomDiv">
+                                        <div class="randomImageDiv">
+                                            <p:graphicImage
+                                                style="max-width: 100%; max-height: 100%;"
+                                                value="#{OrderControllerMB.generateImageContent(row.getFeaturedImage().loadImageContentToAttachment())}" 
+                                                stream="false" 
+                                                />
+                                        </div>
+                                        <div>
+                                            #{row.name}
+
+                                        </div>
+                                    </div>
+
+                                </ui:repeat>
+                            </div>
+                        </div>
+                        <div class="ui-datagrid-column ui-g-12 ui-md-3 ui-lg-3">
+                            <p:commandButton value="Continue with shopping" action="order.xhtml?faces-redirect=true" class="defaultLightBackgroundColor" style="width: 100%; margin-bottom: 10px;"/>
+                            <p:commandButton value="Go to check out >" action="checkout.xhtml?faces-redirect=true" class="defaultBackgroundColor" style="width: 100%" />
+                        </div>
+
+
+                    </h:panelGroup>
                 </h:panelGroup>
 
                 <style>

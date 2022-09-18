@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.context.FacesContext;
@@ -40,8 +41,6 @@ import javax.inject.Named;
 @ViewScoped
 public class OrderControllerMB extends BaseManagedBean {
 
-    @EJB
-    OrderController orderController;
     @EJB
     ProductCommons productCommons;
     @EJB
@@ -100,12 +99,6 @@ public class OrderControllerMB extends BaseManagedBean {
         addSuccessMessage(product.getName(), "Sucessfuly added to cart!");
     }
 
-    protected void createNewOrderInternal() {
-        UserOrder newOrder = orderController.newOrder(getSecurityContext(), getUser(), getSalesObject());
-        newOrder = orderController.save(getSecurityContext(), newOrder, getUser());
-        setOrder(newOrder);
-    }
-
     public void createNewOrder() {
         createNewOrderInternal();
         navigate("order.xhtml?faces-redirect=true");
@@ -158,7 +151,32 @@ public class OrderControllerMB extends BaseManagedBean {
     private List<Product> filterProductsByProductType(List<Product> products, ProductType productType) {
         return (List<Product>) products.stream().filter(p -> productType.equals(p.getProductType())).collect(Collectors.toList());
     }
+    
+    public List<Product> getRandomThreeProducts(){
+        List<Product> activeProducts = getAllActiveProducts();
+        List<Product> products = activeProducts.stream().filter(p -> !ProductType.BOOTH.equals(p.getProductType())).collect(Collectors.toList());
+        
+        List<UserOrder> orders = getUser().getOrdersForSalesObject(getSalesObject());
+        List<Product> productsFromOrders = orders.stream().flatMap(o -> o.getOrderItems().stream().map(oi -> oi.getProduct())).collect(Collectors.toList());
+        products.removeAll(productsFromOrders);
+        Collections.shuffle(products);
+        if(products.size() < 4){
+            return products;
+        }
+        return products.subList(0, 4);
+    }
 
+    private Boolean hasUserBooth = null;
+        
+    public Boolean getHasUserBooth(){
+        if(hasUserBooth == null){
+            List<UserOrder> orders = getUser().getOrdersForSalesObject(getSalesObject());
+            Optional<OrderItem> boothOrderItem = orders.stream().flatMap(o -> o.getOrderItems().stream().filter(oi -> ProductType.BOOTH.equals(oi.getProduct().getProductType()))).findAny();
+            hasUserBooth = boothOrderItem.isPresent();
+        }
+        return hasUserBooth;
+    }
+    
     public Integer getProductAvailabilityQuantity(Product product) {
         Integer orderedProducts = productAvailability.get(product);
         if (orderedProducts == null) {
