@@ -44,8 +44,6 @@ public class OrderControllerMB extends BaseManagedBean {
     @EJB
     ProductCommons productCommons;
     @EJB
-    OrderCommons orderCommons;
-    @EJB
     DiscountCommons discountCommons;
     private List<UserOrder> orders;
     List<OrderItem> orderItems;
@@ -56,12 +54,6 @@ public class OrderControllerMB extends BaseManagedBean {
     @PostConstruct
     public void init() {
         System.out.println("TEST MAKE ORDER INIT");
-        if (getOrder() == null) {
-            List<UserOrder> orders = orderCommons.getCurrentlyActiveOrderForUser(getSecurityContext(), getUser(), getSalesObject());
-            if (orders != null && !orders.isEmpty()) {
-                setOrder(orders.get(0));
-            }
-        }
 
         if (orderItems == null) {
             orderItems = new ArrayList<>();

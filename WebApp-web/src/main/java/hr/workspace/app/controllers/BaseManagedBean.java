@@ -5,6 +5,7 @@
  */
 package hr.workspace.app.controllers;
 
+import hr.workspace.controllers.interfaces.OrderCommons;
 import hr.workspace.controllers.interfaces.OrderController;
 import hr.workspace.models.Attachment;
 import hr.workspace.models.ContactUser;
@@ -15,6 +16,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.el.MethodExpression;
 import javax.faces.application.FacesMessage;
@@ -31,7 +33,9 @@ import org.primefaces.model.StreamedContent;
 public abstract class BaseManagedBean implements Serializable {
 
     @EJB
-    OrderController orderController;
+    protected OrderController orderController;
+    @EJB
+    protected OrderCommons orderCommons;
     
     protected void executeScript(String script) {
         PrimeFaces.current().executeScript(script);
@@ -207,7 +211,13 @@ public abstract class BaseManagedBean implements Serializable {
     public UserOrder getOrder() {
         UserOrder order = getSecurityContext().getOrder();
         if(order == null){
-            order = createNewOrderInternal();
+            List<UserOrder> orders = orderCommons.getCurrentlyActiveOrderForUser(getSecurityContext(), getUser(), getSalesObject());
+            if (orders != null && !orders.isEmpty()) {
+                order = orders.get(0);
+            }
+            if(order == null){
+                order = createNewOrderInternal();
+            }
             setOrder(order);
         }
         return order;
